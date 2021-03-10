@@ -8,25 +8,12 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 endpoint_url = "https://query.wikidata.org/sparql"
 
-query = """SELECT ?entityLabel ?item ?itemLabel ?wd ?wdLabel ?ps_Label ?wdpqLabel ?pq_Label {
-  VALUES (?property ?entity) {(wdt:P31 wd:Q15407956)}
-
-  ?item ?property ?entity .
-  ?item ?p ?statement .
-  ?statement ?ps ?ps_ .
-
-  ?wd wikibase:claim ?p.
-  ?wd wikibase:statementProperty ?ps.
-
-  OPTIONAL {
-  ?statement ?pq ?pq_ .
-  ?wdpq wikibase:qualifier ?pq .
-  }
-
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-} 
-
-ORDER BY ?entityLabel ?statement ?ps_"""
+query = """SELECT ?item ?itemLabel 
+WHERE 
+{
+  ?item wdt:P31 wd:Q3918.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}"""
 
 
 def get_results(endpoint_url, query):
@@ -41,9 +28,5 @@ def get_results(endpoint_url, query):
 results = get_results(endpoint_url, query)
 
 print(results.columns)
-print(results[['wd.type', 'wd.value']])
+print(results[['item.value', 'itemLabel.value']])
 
-#for result in results["results"]["bindings"]:
-#    print(result)
-
-#print(str(len(results["results"]["bindings"])) + " statements found")
