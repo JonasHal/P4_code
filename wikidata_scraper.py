@@ -2,8 +2,6 @@
 # https://rdflib.github.io/sparqlwrapper/
 
 import sys
-import pandas as pd
-from pandas import json_normalize
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 endpoint_url = "https://query.wikidata.org/sparql"
@@ -35,15 +33,12 @@ def get_results(endpoint_url, query):
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
-    result = sparql.query().convert()
-    return json_normalize(result["results"]["bindings"])
+    return sparql.query().convert()
+
 
 results = get_results(endpoint_url, query)
 
-print(results.columns)
-print(results[['wd.type', 'wd.value']])
+for result in results["results"]["bindings"]:
+    print(result)
 
-#for result in results["results"]["bindings"]:
-#    print(result)
-
-#print(str(len(results["results"]["bindings"])) + " statements found")
+print(str(len(results["results"]["bindings"])) + " statements found")
