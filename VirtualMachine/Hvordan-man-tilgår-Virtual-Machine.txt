@@ -5,12 +5,12 @@ Mac: Sørg for at have filen "Dashboard.pem" liggende i Downloads
 Step 2:
 Windows: Åbn Commando prompt og copy paste det her ind:
 "
-ssh ubuntu@130.226.98.247 -i Dashboard.pem
+ssh ubuntu@130.226.98.29 -i Dashboard.pem
 "
 
 Mac: Åbn terminal og gå til Downloads og copy paste det her ind:
 "
-ssh ubuntu@130.226.98.247 -i Dashboard.pem
+ssh ubuntu@130.226.98.29 -i Dashboard.pem
 "
 
 Du er nu connected til clAAUdia Virtual Machine :)
@@ -30,13 +30,13 @@ Højreklik på Server -> create -> server
 i UI: 
 I General: skal du kalde den et navn
 I Connection: skriver du i host "localhost", port er 5432, username "postgres", password "Grundfos".
-I SSH Tunnel: Sig ja til USE SSH tunnelling, Tunneh host "130.226.98.247" (IP adressen), Username "ubuntu", 
+I SSH Tunnel: Sig ja til USE SSH tunnelling, Tunneh host "130.226.98.29" (IP adressen), Username "ubuntu", 
 ja til Authentication. Til sidst skal du vælge SSH filen, Dashboard.pem
 
 
 Tilføj filer (Gå i egen command prompt):
 
-scp -i Dashboard.pem C:/path/to/file.csv ubuntu@130.226.98.247:
+scp -i Dashboard.pem C:/path/to/file.csv ubuntu@130.226.98.29:
 
 Filen kommer til at ligge i
 /home/ubuntu/filnavn
