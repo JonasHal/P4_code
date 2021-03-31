@@ -1,0 +1,1981 @@
+{
+  "type": "item",
+
+  "id": "Q16947",
+
+  "labels": {
+    "en": {
+      "language": "en",
+      "value": "Tongji University"
+    },
+    "zh": {
+      "language": "zh",
+      "value": "同济大学"
+    },
+    "zh-cn": {
+      "language": "zh-cn",
+      "value": "同济大学"
+    },
+    "fr": {
+      "language": "fr",
+      "value": "université Tongji"
+    },
+    "de": {
+      "language": "de",
+      "value": "Tongji-Universität"
+    },
+    "et": {
+      "language": "et",
+      "value": "Tongji Ülikool"
+    },
+    "it": {
+      "language": "it",
+      "value": "Università Tongji"
+    },
+    "ja": {
+      "language": "ja",
+      "value": "同済大学"
+    },
+    "ru": {
+      "language": "ru",
+      "value": "Университет Тунцзи"
+    },
+    "uk": {
+      "language": "uk",
+      "value": "Університет Тонджі"
+    },
+    "vi": {
+      "language": "vi",
+      "value": "Đại học Đồng Tế"
+    },
+    "zh-hans": {
+      "language": "zh-hans",
+      "value": "同济大学"
+    },
+    "en-ca": {
+      "language": "en-ca",
+      "value": "Tongji University"
+    },
+    "en-gb": {
+      "language": "en-gb",
+      "value": "Tongji University"
+    },
+    "de-ch": {
+      "language": "de-ch",
+      "value": "Tongji-Universität"
+    },
+    "wuu": {
+      "language": "wuu",
+      "value": "同济大学"
+    },
+    "zh-hant": {
+      "language": "zh-hant",
+      "value": "同濟大學"
+    },
+    "zh-sg": {
+      "language": "zh-sg",
+      "value": "同济大学"
+    },
+    "zh-my": {
+      "language": "zh-my",
+      "value": "同济大学"
+    },
+    "zh-hk": {
+      "language": "zh-hk",
+      "value": "同濟大學"
+    },
+    "zh-tw": {
+      "language": "zh-tw",
+      "value": "同濟大學"
+    },
+    "zh-mo": {
+      "language": "zh-mo",
+      "value": "同濟大學"
+    },
+    "es": {
+      "language": "es",
+      "value": "Universidad de Tongji"
+    },
+    "nb": {
+      "language": "nb",
+      "value": "Tongjiuniversitetet"
+    },
+    "ko": {
+      "language": "ko",
+      "value": "통지 대학"
+    },
+    "yue": {
+      "language": "yue",
+      "value": "同濟大學"
+    },
+    "nl": {
+      "language": "nl",
+      "value": "Tongji University"
+    },
+    "nan": {
+      "language": "nan",
+      "value": "Tông-chè Tāi-ha̍k"
+    },
+    "id": {
+      "language": "id",
+      "value": "Universitas Tongji"
+    },
+    "ca": {
+      "language": "ca",
+      "value": "Universitat Tongji"
+    },
+    "tl": {
+      "language": "tl",
+      "value": "Pamantasang Tongji"
+    },
+    "ar": {
+      "language": "ar",
+      "value": "جامعة تونغجي"
+    },
+    "he": {
+      "language": "he",
+      "value": "אוניברסיטת טונג'י"
+    },
+    "cs": {
+      "language": "cs",
+      "value": "univerzita Tchung-ťi"
+    },
+    "cy": {
+      "language": "cy",
+      "value": "Prifysgol Tongji"
+    },
+    "az": {
+      "language": "az",
+      "value": "Tunçzi Universiteti"
+    },
+    "ga": {
+      "language": "ga",
+      "value": "Ollscoil Tongji"
+    },
+    "tt": {
+      "language": "tt",
+      "value": "Туңҗи үнивирситите"
+    },
+    "ast": {
+      "language": "ast",
+      "value": "Universidá de Tongji"
+    }
+  },
+  "descriptions": {
+    "en": {
+      "language": "en",
+      "value": "university located in Shanghai, China"
+    },
+    "zh": {
+      "language": "zh",
+      "value": "位于中国上海的一所著名综合性大学"
+    },
+    "zh-cn": {
+      "language": "zh-cn",
+      "value": "位于中国上海的一所综合性大学"
+    },
+    "zh-hans": {
+      "language": "zh-hans",
+      "value": "位于中国上海的一所综合性大学"
+    },
+    "zh-hant": {
+      "language": "zh-hant",
+      "value": "位於中國上海的一所綜合性大學"
+    },
+    "wuu": {
+      "language": "wuu",
+      "value": "勒海中国上海个一只综合性个大学"
+    },
+    "zh-sg": {
+      "language": "zh-sg",
+      "value": "位于中国上海的一所综合性大学"
+    },
+    "zh-my": {
+      "language": "zh-my",
+      "value": "位于中国上海的一所综合性大学"
+    },
+    "zh-hk": {
+      "language": "zh-hk",
+      "value": "位於中國上海的一所綜合性大學"
+    },
+    "zh-tw": {
+      "language": "zh-tw",
+      "value": "位於中國上海的一所綜合性大學"
+    },
+    "zh-mo": {
+      "language": "zh-mo",
+      "value": "位於中國上海的一所綜合性大學"
+    },
+    "es": {
+      "language": "es",
+      "value": "universidad localizada en Shanghai, China"
+    },
+    "de": {
+      "language": "de",
+      "value": "Hochschule in China"
+    },
+    "it": {
+      "language": "it",
+      "value": "università cinese"
+    },
+    "fr": {
+      "language": "fr",
+      "value": "université chinoise"
+    },
+    "nl": {
+      "language": "nl",
+      "value": "universiteit in Volksrepubliek China"
+    },
+    "he": {
+      "language": "he",
+      "value": "אוניברסיטה ברפובליקה העממית של סין"
+    },
+    "id": {
+      "language": "id",
+      "value": "universitas di Shanghai, Tiongkok"
+    },
+    "ar": {
+      "language": "ar",
+      "value": "جامعة في شانغهاي، الصين"
+    },
+    "cs": {
+      "language": "cs",
+      "value": "univerzita v Šanghaji v Čínské lidové republice"
+    }
+  },
+  "aliases": {
+    "en": [{
+      "language": "en",
+      "value": "Tongji"
+    }, {
+      "language": "en",
+      "value": "Tóngjì Dàxué"
+    }],
+    "zh": [{
+      "language": "zh",
+      "value": "同济"
+    }],
+    "zh-cn": [{
+      "language": "zh-cn",
+      "value": "同济"
+    }],
+    "zh-hans": [{
+      "language": "zh-hans",
+      "value": "同济"
+    }],
+    "zh-hant": [{
+      "language": "zh-hant",
+      "value": "同濟"
+    }],
+    "wuu": [{
+      "language": "wuu",
+      "value": "同济"
+    }],
+    "zh-sg": [{
+      "language": "zh-sg",
+      "value": "同济"
+    }],
+    "zh-my": [{
+      "language": "zh-my",
+      "value": "同济"
+    }],
+    "zh-hk": [{
+      "language": "zh-hk",
+      "value": "同濟"
+    }],
+    "zh-tw": [{
+      "language": "zh-tw",
+      "value": "同濟"
+    }],
+    "zh-mo": [{
+      "language": "zh-mo",
+      "value": "同濟"
+    }],
+    "cs": [{
+      "language": "cs",
+      "value": "Tongji"
+    }]
+  },
+
+  "claims": {
+    "P31": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P31",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 3918,
+            "id": "Q3918"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "q16947$56F669EF-A4BE-45B9-B892-A8A0D88C2564",
+      "rank": "normal",
+      "references": [{
+        "hash": "288ab581e7d2d02995a26dfa8b091d96e78457fc",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 206855,
+                "id": "Q206855"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P31",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 98658352,
+            "id": "Q98658352"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$A039C369-926A-4202-95E9-30DAE16CA2A1",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P31",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 16077796,
+            "id": "Q16077796"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$D4D3620C-F1D1-4EAC-9002-04AF01EBDDDB",
+      "rank": "normal"
+    }],
+    "P373": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P373",
+        "datavalue": {
+          "value": "Tongji University",
+          "type": "string"
+        },
+        "datatype": "string"
+      },
+      "type": "statement",
+      "id": "q16947$B89C4057-7409-418B-8FDC-57FCDC5C44CB",
+      "rank": "normal"
+    }],
+    "P159": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P159",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 8686,
+            "id": "Q8686"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P625": [{
+          "snaktype": "value",
+          "property": "P625",
+          "hash": "4f71006d52b623fb74713beda93fe07a4e5740f3",
+          "datavalue": {
+            "value": {
+              "latitude": 31.2827,
+              "longitude": 121.506632,
+              "altitude": null,
+              "precision": 0.000001,
+              "globe": "http://www.wikidata.org/entity/Q2"
+            },
+            "type": "globecoordinate"
+          },
+          "datatype": "globe-coordinate"
+        }]
+      },
+      "qualifiers-order": ["P625"],
+      "id": "Q16947$71693964-43b1-3fc9-1d58-1939d42cd0f9",
+      "rank": "normal"
+    }],
+    "P856": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P856",
+        "datavalue": {
+          "value": "https://www.tongji.edu.cn/",
+          "type": "string"
+        },
+        "datatype": "url"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P407": [{
+          "snaktype": "value",
+          "property": "P407",
+          "hash": "3b33ca235f16338704ecefe35d73712fbf0377a5",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 7850,
+              "id": "Q7850"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }]
+      },
+      "qualifiers-order": ["P407"],
+      "id": "Q16947$d08e5445-4eac-8347-8b28-fd9191b7f020",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P856",
+        "datavalue": {
+          "value": "https://en.tongji.edu.cn/",
+          "type": "string"
+        },
+        "datatype": "url"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P407": [{
+          "snaktype": "value",
+          "property": "P407",
+          "hash": "daf1c4fcb58181b02dff9cc89deb084004ddae4b",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 1860,
+              "id": "Q1860"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }]
+      },
+      "qualifiers-order": ["P407"],
+      "id": "Q16947$9f703fb5-4221-613b-7171-f4e884140077",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P856",
+        "datavalue": {
+          "value": "https://de.tongji.edu.cn/",
+          "type": "string"
+        },
+        "datatype": "url"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P407": [{
+          "snaktype": "value",
+          "property": "P407",
+          "hash": "46bfd327b830f66f7061ea92d1be430c135fa91f",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 188,
+              "id": "Q188"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }]
+      },
+      "qualifiers-order": ["P407"],
+      "id": "Q16947$0b467a20-492e-a4b2-49bf-78201ae42d31",
+      "rank": "normal"
+    }],
+    "P646": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P646",
+        "datavalue": {
+          "value": "/m/03jvm8",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$E398655F-FAD1-4CA7-8B36-7523D1597378",
+      "rank": "normal",
+      "references": [{
+        "hash": "2b00cb481cddcac7623114367489b5c194901c4a",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 15241312,
+                "id": "Q15241312"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }],
+          "P577": [{
+            "snaktype": "value",
+            "property": "P577",
+            "datavalue": {
+              "value": {
+                "time": "+2013-10-28T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P248", "P577"]
+      }]
+    }],
+    "P17": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P17",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 148,
+            "id": "Q148"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$AB8FEA19-08DC-4978-8B4C-3BFA84FE9806",
+      "rank": "normal",
+      "references": [{
+        "hash": "319be7567edc13bda3ce06c2df30b6e8436d66e6",
+        "snaks": {
+          "P2427": [{
+            "snaktype": "value",
+            "property": "P2427",
+            "datavalue": {
+              "value": "grid.24516.34",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }],
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 27768150,
+                "id": "Q27768150"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }],
+          "P813": [{
+            "snaktype": "value",
+            "property": "P813",
+            "datavalue": {
+              "value": {
+                "time": "+2020-05-13T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P2427", "P248", "P813"]
+      }]
+    }],
+    "P910": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P910",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 20205211,
+            "id": "Q20205211"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$B9AE0562-D15F-4F77-9AFF-000C1688FD38",
+      "rank": "normal",
+      "references": [{
+        "hash": "fa278ebfc458360e5aed63d5058cca83c46134f1",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 328,
+                "id": "Q328"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P571": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P571",
+        "datavalue": {
+          "value": {
+            "time": "+1907-00-00T00:00:00Z",
+            "timezone": 0,
+            "before": 0,
+            "after": 0,
+            "precision": 9,
+            "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+          },
+          "type": "time"
+        },
+        "datatype": "time"
+      },
+      "type": "statement",
+      "id": "Q16947$781C6715-CA7F-419D-922D-C6650C86A1D2",
+      "rank": "normal",
+      "references": [{
+        "hash": "d4bd87b862b12d99d26e86472d44f26858dee639",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 8447,
+                "id": "Q8447"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P213": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P213",
+        "datavalue": {
+          "value": "0000 0001 2370 4535",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$3F7C667C-5133-4BB2-9C31-0D376AE43333",
+      "rank": "normal",
+      "references": [{
+        "hash": "f20e7cc1dc95f8af90470df9ddea266baf12be00",
+        "snaks": {
+          "P356": [{
+            "snaktype": "value",
+            "property": "P356",
+            "datavalue": {
+              "value": "10.6084/M9.FIGSHARE.4539889",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }]
+        },
+        "snaks-order": ["P356"]
+      }]
+    }],
+    "P3500": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P3500",
+        "datavalue": {
+          "value": "12476",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$90067945-5F0C-457A-881C-C089300DFE58",
+      "rank": "normal",
+      "references": [{
+        "hash": "45e8fa2e37c421b7e5970029041dbdeac9824284",
+        "snaks": {
+          "P356": [{
+            "snaktype": "value",
+            "property": "P356",
+            "datavalue": {
+              "value": "10.5281/ZENODO.758080",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }]
+        },
+        "snaks-order": ["P356"]
+      }]
+    }],
+    "P3579": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P3579",
+        "datavalue": {
+          "value": "tongjiuniversity",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$A7F8A9C5-C891-4EF5-B659-8B8ADD90B6FF",
+      "rank": "normal",
+      "references": [{
+        "hash": "0ee3b3ba1c958f4c3dcba7ed8091fe4b57311348",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 30239,
+                "id": "Q30239"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P3417": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P3417",
+        "datavalue": {
+          "value": "Tongji",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$CA63F8FD-A03B-44CB-B15D-E4DC51DE3F9E",
+      "rank": "normal",
+      "references": [{
+        "hash": "3b0a5bb3c1f955edce73740124f7d935698092ad",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 51711,
+                "id": "Q51711"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P248"]
+      }]
+    }],
+    "P18": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P18",
+        "datavalue": {
+          "value": "Tongjidaxue Tushuguan.JPG",
+          "type": "string"
+        },
+        "datatype": "commonsMedia"
+      },
+      "type": "statement",
+      "id": "Q16947$1E0D7BD8-7688-41BA-B9E9-CE943EF1F18D",
+      "rank": "normal",
+      "references": [{
+        "hash": "288ab581e7d2d02995a26dfa8b091d96e78457fc",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 206855,
+                "id": "Q206855"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P3153": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P3153",
+        "datavalue": {
+          "value": "501100004204",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$1920BE0E-B53B-4F67-AA4D-09A06C211867",
+      "rank": "normal",
+      "references": [{
+        "hash": "f20e7cc1dc95f8af90470df9ddea266baf12be00",
+        "snaks": {
+          "P356": [{
+            "snaktype": "value",
+            "property": "P356",
+            "datavalue": {
+              "value": "10.6084/M9.FIGSHARE.4539889",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }]
+        },
+        "snaks-order": ["P356"]
+      }]
+    }],
+    "P214": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P214",
+        "datavalue": {
+          "value": "153628781",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$21D5BEE1-0F7D-4F21-880D-C095AE90D0F6",
+      "rank": "normal",
+      "references": [{
+        "hash": "a29a646602abf65105ed0f39a44231c962ece9ee",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 177837,
+                "id": "Q177837"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P227": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P227",
+        "datavalue": {
+          "value": "62518-8",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$9B224D5C-6465-4FC5-BB31-28930870C07B",
+      "rank": "normal",
+      "references": [{
+        "hash": "a29a646602abf65105ed0f39a44231c962ece9ee",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 177837,
+                "id": "Q177837"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P409": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P409",
+        "datavalue": {
+          "value": "36612457",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$F8282A9A-556C-4A67-9BC6-151643F15706",
+      "rank": "normal",
+      "references": [{
+        "hash": "a29a646602abf65105ed0f39a44231c962ece9ee",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 177837,
+                "id": "Q177837"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P244": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P244",
+        "datavalue": {
+          "value": "n82093636",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$12ADEAE7-C0E1-40CE-BAA2-0E29B0321D1F",
+      "rank": "normal",
+      "references": [{
+        "hash": "a29a646602abf65105ed0f39a44231c962ece9ee",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 177837,
+                "id": "Q177837"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P268": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P268",
+        "datavalue": {
+          "value": "16271645n",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$35A68E69-A73B-49C3-AACD-7E9A366385B8",
+      "rank": "normal",
+      "references": [{
+        "hash": "a29a646602abf65105ed0f39a44231c962ece9ee",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 177837,
+                "id": "Q177837"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P3876": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P3876",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 8855551,
+            "id": "Q8855551"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$5EC7EF3E-1D79-4FAB-ACE4-A42741ED6E7D",
+      "rank": "normal"
+    }],
+    "P2427": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P2427",
+        "datavalue": {
+          "value": "grid.24516.34",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$184FAEA8-4A88-4306-9A7F-EC0983663CDD",
+      "rank": "normal",
+      "references": [{
+        "hash": "40fdc7f3ce7f6771a8f285a1267bfc3f3de154d9",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 53869345,
+                "id": "Q53869345"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P248"]
+      }, {
+        "hash": "a1914c8952a5bc482eafeb26be4fda504fe701f9",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 53705036,
+                "id": "Q53705036"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P248"]
+      }]
+    }],
+    "P269": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P269",
+        "datavalue": {
+          "value": "176924906",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$e177516b-424d-daad-5fb0-3c2f808a3ab1",
+      "rank": "normal"
+    }],
+    "P4195": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P4195",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 9599878,
+            "id": "Q9599878"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$601C58DA-020D-4160-9431-8547771D5802",
+      "rank": "normal"
+    }],
+    "P5242": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P5242",
+        "datavalue": {
+          "value": "Tongji-University",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$942EE05E-A6F3-4426-9AD7-87C222F741CF",
+      "rank": "normal"
+    }],
+    "P5584": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P5584",
+        "datavalue": {
+          "value": "tongji-university",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$F8745F17-7351-47BC-BD63-42EA5684929A",
+      "rank": "normal"
+    }],
+    "P5586": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P5586",
+        "datavalue": {
+          "value": "tongji-university",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$04D72935-9244-4A94-8DBE-38CCCC21728F",
+      "rank": "normal"
+    }],
+    "P5600": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P5600",
+        "datavalue": {
+          "value": "tongji-university",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$3CF6AFFC-BF43-4A29-91B2-76388B6CFEF3",
+      "rank": "normal"
+    }],
+    "P6366": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P6366",
+        "datavalue": {
+          "value": "116953780",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$4DD9530F-A1B8-44AC-A849-65AABC01D394",
+      "rank": "normal",
+      "references": [{
+        "hash": "3bc9f3886ab5cfceaf5b681cfb6ac1a012158cfb",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 60683589,
+                "id": "Q60683589"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }],
+          "P2427": [{
+            "snaktype": "value",
+            "property": "P2427",
+            "datavalue": {
+              "value": "grid.24516.34",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }],
+          "P813": [{
+            "snaktype": "value",
+            "property": "P813",
+            "datavalue": {
+              "value": {
+                "time": "+2019-01-19T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P248", "P2427", "P813"]
+      }]
+    }],
+    "P1128": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1128",
+        "datavalue": {
+          "value": {
+            "amount": "+2786",
+            "unit": "1"
+          },
+          "type": "quantity"
+        },
+        "datatype": "quantity"
+      },
+      "type": "statement",
+      "id": "Q16947$58604FAE-CED3-460A-877F-8D1910FB4D29",
+      "rank": "normal",
+      "references": [{
+        "hash": "effcae5cfc023f55a098d361f40c33b4067cb6e6",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 48183,
+                "id": "Q48183"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }],
+          "P4656": [{
+            "snaktype": "value",
+            "property": "P4656",
+            "datavalue": {
+              "value": "https://de.wikipedia.org/w/index.php?title=Tongji-Universität&oldid=184644321",
+              "type": "string"
+            },
+            "datatype": "url"
+          }]
+        },
+        "snaks-order": ["P143", "P4656"]
+      }]
+    }],
+    "P112": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P112",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 91420,
+            "id": "Q91420"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$fedfde43-4af7-b420-d470-a16580575e42",
+      "rank": "normal"
+    }],
+    "P6773": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P6773",
+        "datavalue": {
+          "value": "305897",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$B6BA7A96-99D5-4028-B128-6909FAD629E6",
+      "rank": "normal",
+      "references": [{
+        "hash": "3a9b20640ac0661b0ee8ef5d59c534ec06e6df35",
+        "snaks": {
+          "P248": [{
+            "snaktype": "value",
+            "property": "P248",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 3144107,
+                "id": "Q3144107"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }],
+          "P813": [{
+            "snaktype": "value",
+            "property": "P813",
+            "datavalue": {
+              "value": {
+                "time": "+2019-05-07T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P248", "P813"]
+      }]
+    }],
+    "P6782": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P6782",
+        "datavalue": {
+          "value": "03rc6as71",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$86CDAF3A-248F-473A-B1DE-350E7062C88E",
+      "rank": "normal"
+    }],
+    "P463": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P463",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 388314,
+            "id": "Q388314"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P2868": [{
+          "snaktype": "value",
+          "property": "P2868",
+          "hash": "2c22d4643b4603d46aa43bdaaf2af2964cffdabb",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 65598546,
+              "id": "Q65598546"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }],
+        "P528": [{
+          "snaktype": "value",
+          "property": "P528",
+          "hash": "1949a9dd26d1062e718018fc22451d6de4b89fd5",
+          "datavalue": {
+            "value": "415",
+            "type": "string"
+          },
+          "datatype": "string"
+        }],
+        "P580": [{
+          "snaktype": "value",
+          "property": "P580",
+          "hash": "66d16d15afb9a5d83257061455cc790eddf2b9df",
+          "datavalue": {
+            "value": {
+              "time": "+2019-00-00T00:00:00Z",
+              "timezone": 0,
+              "before": 0,
+              "after": 0,
+              "precision": 9,
+              "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+            },
+            "type": "time"
+          },
+          "datatype": "time"
+        }]
+      },
+      "qualifiers-order": ["P2868", "P528", "P580"],
+      "id": "Q16947$80D6E0E6-3E6C-4669-9CA0-708BC4E23A55",
+      "rank": "normal",
+      "references": [{
+        "hash": "7000ea0e75b1ee73053e130beba092dc13094e5a",
+        "snaks": {
+          "P854": [{
+            "snaktype": "value",
+            "property": "P854",
+            "datavalue": {
+              "value": "https://vademecum.uic.org/en/memberDetail/415",
+              "type": "string"
+            },
+            "datatype": "url"
+          }],
+          "P813": [{
+            "snaktype": "value",
+            "property": "P813",
+            "datavalue": {
+              "value": {
+                "time": "+2019-07-18T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P854", "P813"]
+      }]
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P463",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 1284740,
+            "id": "Q1284740"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$00d23898-4b37-c0a3-71a8-99242d77806a",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P463",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 98690928,
+            "id": "Q98690928"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$ad330f90-4863-e177-aecb-e4bf0061cce9",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P463",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 18344941,
+            "id": "Q18344941"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$507a21b7-4f66-a80f-d725-bd2691e5e1be",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P463",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 65061603,
+            "id": "Q65061603"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$a1f3d8f8-48d8-c8bd-73be-44956aef109d",
+      "rank": "normal"
+    }],
+    "P7859": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P7859",
+        "datavalue": {
+          "value": "lccn-n82093636",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$77955092-E29B-4244-9687-6DC4E3302E8A",
+      "rank": "normal",
+      "references": [{
+        "hash": "4cb56b33d8b331826989df630b00d6cde931c80d",
+        "snaks": {
+          "P214": [{
+            "snaktype": "value",
+            "property": "P214",
+            "datavalue": {
+              "value": "153628781",
+              "type": "string"
+            },
+            "datatype": "external-id"
+          }]
+        },
+        "snaks-order": ["P214"]
+      }]
+    }],
+    "P6269": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P6269",
+        "datavalue": {
+          "value": "https://idp2.tongji.edu.cn/idp/shibboleth",
+          "type": "string"
+        },
+        "datatype": "url"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P2700": [{
+          "snaktype": "value",
+          "property": "P2700",
+          "hash": "ab0fe890dd6c21397aa3b2e6f85b482ebdce5641",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 458022,
+              "id": "Q458022"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }]
+      },
+      "qualifiers-order": ["P2700"],
+      "id": "Q16947$2E0A5998-5AA4-4B03-92AE-D58315F5E499",
+      "rank": "normal",
+      "references": [{
+        "hash": "19f351fefd610a866859a3ffe6a2a2413936521f",
+        "snaks": {
+          "P854": [{
+            "snaktype": "value",
+            "property": "P854",
+            "datavalue": {
+              "value": "https://orcid.org/signin",
+              "type": "string"
+            },
+            "datatype": "url"
+          }],
+          "P813": [{
+            "snaktype": "value",
+            "property": "P813",
+            "datavalue": {
+              "value": {
+                "time": "+2020-06-23T00:00:00Z",
+                "timezone": 0,
+                "before": 0,
+                "after": 0,
+                "precision": 11,
+                "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+              },
+              "type": "time"
+            },
+            "datatype": "time"
+          }]
+        },
+        "snaks-order": ["P854", "P813"]
+      }]
+    }],
+    "P138": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P138",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 188,
+            "id": "Q188"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P8338": [{
+          "snaktype": "value",
+          "property": "P8338",
+          "hash": "8319e9cabd8e1c0d1e8ff47b5a61a7e14e0742a1",
+          "datavalue": {
+            "value": {
+              "text": "Deutsch",
+              "language": "de"
+            },
+            "type": "monolingualtext"
+          },
+          "datatype": "monolingualtext"
+        }]
+      },
+      "qualifiers-order": ["P8338"],
+      "id": "Q16947$0a91c59a-428a-05b5-63d1-bcd3f51faa0e",
+      "rank": "normal",
+      "references": [{
+        "hash": "0ee3b3ba1c958f4c3dcba7ed8091fe4b57311348",
+        "snaks": {
+          "P143": [{
+            "snaktype": "value",
+            "property": "P143",
+            "datavalue": {
+              "value": {
+                "entity-type": "item",
+                "numeric-id": 30239,
+                "id": "Q30239"
+              },
+              "type": "wikibase-entityid"
+            },
+            "datatype": "wikibase-item"
+          }]
+        },
+        "snaks-order": ["P143"]
+      }]
+    }],
+    "P1451": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1451",
+        "datavalue": {
+          "value": {
+            "text": "同舟共济",
+            "language": "zh-hans"
+          },
+          "type": "monolingualtext"
+        },
+        "datatype": "monolingualtext"
+      },
+      "type": "statement",
+      "id": "Q16947$7c343dc9-440f-5195-ebf4-da821f8e6ff2",
+      "rank": "normal"
+    }],
+    "P1416": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1416",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 2502602,
+            "id": "Q2502602"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$C30CDAB2-59E3-4EDD-9889-AC9C65012EF9",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1416",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 1970502,
+            "id": "Q1970502"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$4E39857C-1DD8-490B-B3B3-1B8FF0023E3E",
+      "rank": "normal"
+    }, {
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1416",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 1042167,
+            "id": "Q1042167"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$87D840BD-8115-4438-9F29-0A910553E22A",
+      "rank": "normal"
+    }],
+    "P85": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P85",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 18866244,
+            "id": "Q18866244"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$7cdab4d6-42cc-d62d-b2e7-0567e5d30b75",
+      "rank": "normal"
+    }],
+    "P1424": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1424",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 20695389,
+            "id": "Q20695389"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "id": "Q16947$cf3dfaa4-456b-6023-de13-3d928cc37313",
+      "rank": "normal"
+    }],
+    "P361": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P361",
+        "datavalue": {
+          "value": {
+            "entity-type": "item",
+            "numeric-id": 11065496,
+            "id": "Q11065496"
+          },
+          "type": "wikibase-entityid"
+        },
+        "datatype": "wikibase-item"
+      },
+      "type": "statement",
+      "qualifiers": {
+        "P4649": [{
+          "snaktype": "value",
+          "property": "P4649",
+          "hash": "e69c8c12237ee1c75e50bd7b6514bed75427cd0d",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 15912437,
+              "id": "Q15912437"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        }]
+      },
+      "qualifiers-order": ["P4649"],
+      "id": "Q16947$aa3f2f47-4f20-5e62-f5ae-4036b3d31bd2",
+      "rank": "normal"
+    }],
+    "P5909": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P5909",
+        "datavalue": {
+          "value": "9811106118703406",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$62C4354E-3AC5-4905-B5DA-BCD5D124C018",
+      "rank": "normal"
+    }],
+    "P1015": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P1015",
+        "datavalue": {
+          "value": "5094297",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$0ab24f42-4011-ac76-966e-be08061b6293",
+      "rank": "normal"
+    }],
+    "P6795": [{
+      "mainsnak": {
+        "snaktype": "value",
+        "property": "P6795",
+        "datavalue": {
+          "value": "12100000425006125J",
+          "type": "string"
+        },
+        "datatype": "external-id"
+      },
+      "type": "statement",
+      "id": "Q16947$f052c4d3-4a3a-921c-d6dd-42539fb866a6",
+      "rank": "normal"
+    }]
+  },
+  "sitelinks": {
+    "enwiki": {
+      "site": "enwiki",
+      "title": "Tongji University",
+      "badges": []
+    },
+    "dewiki": {
+      "site": "dewiki",
+      "title": "Tongji-Universität",
+      "badges": []
+    },
+    "etwiki": {
+      "site": "etwiki",
+      "title": "Tongji Ülikool",
+      "badges": []
+    },
+    "frwiki": {
+      "site": "frwiki",
+      "title": "Université Tongji",
+      "badges": []
+    },
+    "itwiki": {
+      "site": "itwiki",
+      "title": "Università Tongji",
+      "badges": []
+    },
+    "jawiki": {
+      "site": "jawiki",
+      "title": "同済大学",
+      "badges": []
+    },
+    "nowiki": {
+      "site": "nowiki",
+      "title": "Tongjiuniversitetet",
+      "badges": []
+    },
+    "ruwiki": {
+      "site": "ruwiki",
+      "title": "Университет Тунцзи",
+      "badges": []
+    },
+    "ukwiki": {
+      "site": "ukwiki",
+      "title": "Університет Тонджі",
+      "badges": []
+    },
+    "viwiki": {
+      "site": "viwiki",
+      "title": "Đại học Đồng Tế",
+      "badges": []
+    },
+    "zhwiki": {
+      "site": "zhwiki",
+      "title": "同济大学",
+      "badges": []
+    },
+    "wuuwiki": {
+      "site": "wuuwiki",
+      "title": "同济大学",
+      "badges": []
+    },
+    "kowiki": {
+      "site": "kowiki",
+      "title": "퉁지 대학",
+      "badges": []
+    },
+    "zh_yuewiki": {
+      "site": "zh_yuewiki",
+      "title": "同濟大學",
+      "badges": []
+    },
+    "zh_min_nanwiki": {
+      "site": "zh_min_nanwiki",
+      "title": "Tông-chè Tāi-ha̍k",
+      "badges": []
+    },
+    "tlwiki": {
+      "site": "tlwiki",
+      "title": "Pamantasang Tongji",
+      "badges": []
+    },
+    "arwiki": {
+      "site": "arwiki",
+      "title": "جامعة تونغجي",
+      "badges": []
+    },
+    "cswiki": {
+      "site": "cswiki",
+      "title": "Univerzita Tchung-ťi",
+      "badges": []
+    },
+    "idwiki": {
+      "site": "idwiki",
+      "title": "Universitas Tongji",
+      "badges": []
+    }
+  },
+
+  "lastrevid": 1357262343
+}
