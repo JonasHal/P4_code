@@ -1,5 +1,5 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-P4_code.iml
-misc.xml
+.idea\P4_code.iml
+.idea\misc.xml
