@@ -26,7 +26,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth
 from mlxtend.frequent_patterns import association_rules
 
-filename = "C:\\Users\\Ronni Carlsen\\Documents\\GitHub\\P4_code\\Data\\universities_latest_all.ndjson"
+filename = "..\\..\\Data\\universities_latest_all.ndjson"
 property_list = []
 
 # Open and read the file to a value
@@ -45,7 +45,7 @@ df = pd.DataFrame(te_ary, columns=te.columns_)
 
 # FPgrowth algorithm:
 
-frequent_itemsets_growth = fpgrowth(df, min_support=0.6, use_colnames=True)
+frequent_itemsets_growth = fpgrowth(df, min_support=0.5, use_colnames=True)
 # print(frequent_itemsets_growth.info())
 # print(frequent_itemsets_growth.describe())
 
@@ -60,10 +60,10 @@ rules_growth = rules_growth[
     (rules_growth["confidence"] > 0.75) &
     (rules_growth["lift"] > 1.2)]
 rules_growth = rules_growth[['antecedents', 'consequents', 'support', 'confidence', 'lift', 'leverage']]
-# print(rules_growth.head(18))
+print(rules_growth.head(25))
 
 # Apriori algorithm:
-frequent_itemsets_apriori = apriori(df, min_support=0.6, use_colnames=True)
+frequent_itemsets_apriori = apriori(df, min_support=0.5, use_colnames=True)
 association_rules_apriori = association_rules(frequent_itemsets_apriori, metric="confidence", min_threshold=0.7)
 # print(association_rules_apriori.head(10))
 
@@ -74,7 +74,7 @@ rules_apriori = rules_apriori[
     (rules_apriori["confidence"] > 0.75) &
     (rules_apriori["lift"] > 1.2)]
 rules_apriori = rules_apriori[['antecedents', 'consequents', 'support', 'confidence', 'lift', 'leverage']]
-print(rules_apriori.head(18))
+# print(rules_apriori.head(25))
 
 # FPmax algorithm:
 frequent_itemsets_max = fpmax(df, min_support=0.6, use_colnames=True)
