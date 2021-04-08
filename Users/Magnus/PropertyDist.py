@@ -5,7 +5,6 @@ import plotly.graph_objects as go
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 
-
 number_of_properties = len(property_list)
 print(number_of_properties)
 
@@ -21,7 +20,7 @@ property_dataframe = property_dataframe.sort_values(by=['Frequency'], ascending=
 print(property_dataframe)
 
 fig = go.Figure()
-fig.add_trace(go.Histogram(x=property_dataframe['Property'], y=property_dataframe['Frequency']))
+fig.add_trace(go.Bar(x=property_dataframe['Property'], y=property_dataframe['Frequency']))
 fig.show()
 
 
