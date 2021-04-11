@@ -1,5 +1,4 @@
-#Hvis man skal bruge flere P'er printet, kan man med fordel køre dette script én gang
-#og efterfølgende kalde f.eks. p_dict['P6'] i sin konsol
+import pandas as pd
 import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -19,20 +18,12 @@ def get_results(endpoint_url, query):
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
+p_df = pd.DataFrame(columns=['Property', 'Value'])
 
 results = get_results(endpoint_url, query)
-p_dict = dict()
 for result in results["results"]["bindings"]:
-    p_dict[result['property']['value'].split("/")[-1]] = result['propertyLabel']['value']
+    p_df = p_df.append({'Property': (result['property']['value'].split("/")[-1]), 'Value' : result['propertyLabel']['value']}, ignore_index=True)
+p_df = p_df.set_index('Property')
 
+p_df.to_csv('properties.csv')
 
-# Når jeg bliver til et modul, kan I importere mig som funktion
-#TODO: gem p_dict som fil, så den kan indlæses uden at oprette forbindelse til Wikidata
-def get_property_name(p):
-    if p in p_dict.keys():
-        return p_dict[p]
-    else:
-        return("Property " + p + " not found")
-
-
-print(get_property_name('P31'))
