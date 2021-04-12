@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 def extractProperties(filename):
+
     """
 
     :param filename: What file to open: for example Path("Data/universities_latest_all.ndjson")
