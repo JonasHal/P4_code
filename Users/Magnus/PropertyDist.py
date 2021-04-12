@@ -40,9 +40,8 @@ def entity_property_count_function(listOfProperties):
     entity_property_count = {}
     for lists in listOfProperties:
         if len(lists) not in entity_property_count:
-            entity_property_count.setdefault(len(lists), 0)
-            #entity_property_count.setdefault(0, len(lists)) #Er ret sikker på den her linje skal væk
-        if len(lists) in entity_property_count:
+            entity_property_count.setdefault(len(lists), 1)
+        elif len(lists) in entity_property_count:
             entity_property_count[len(lists)] += 1
 
     entity_property_dataframe = pd.DataFrame(list(entity_property_count.items()), columns=['#Properties',
@@ -79,13 +78,12 @@ if __name__ == '__main__':
         xaxis_title="Property",
         yaxis_title="Property Frequency"
     )
-    fig.show()
+    #fig.show()
 
     # print("The median value for the property frequency is {}".format(df['Frequency'].median()))
     # print("The average value for the property frequency is {}".format(df['Frequency'].mean()))
 
     df2 = entity_property_count_function(property_list)
-
 
     violin_plot = go.Figure(data=go.Violin(y=df2["#Properties"], fillcolor="lightblue", points="all", box_visible=True,
                                     line_color='black', opacity=0.6, x0="Number of Properties"))
@@ -100,6 +98,4 @@ if __name__ == '__main__':
     )
     #university_property_fig.show()
 
-    # print("The median value for the property frequency is {}".format(df2['#Properties'].median()))
-    # print("The average value for the property frequency is {}".format(df2['#Properties'].mean()))
-    # print(df2['#Universities'].sum())
+    #print(df2['#Universities'].sum())
