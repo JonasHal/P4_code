@@ -19,11 +19,14 @@ def get_results(endpoint_url, query):
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
+
 p_df = pd.DataFrame(columns=['Property', 'Value'])
 
 results = get_results(endpoint_url, query)
 for result in results["results"]["bindings"]:
-    p_df = p_df.append({'Property': (result['property']['value'].split("/")[-1]), 'Value' : result['propertyLabel']['value']}, ignore_index=True)
+    p_df = p_df.append(
+        {'Property': (result['property']['value'].split("/")[-1]), 'Value': result['propertyLabel']['value']},
+        ignore_index=True)
 p_df = p_df.set_index('Property')
 
 p_df.to_csv(Path('../Data/properties.csv'))
