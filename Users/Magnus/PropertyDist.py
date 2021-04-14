@@ -66,10 +66,32 @@ def entity_property_count_function(listOfProperties):
     return entity_property_dataframe, number_of_properties_list
 
 
-if __name__ == '__main__':
+def replacePcodesWithPlabels(property_dataframe):
+    """
+    A function that replaces a dataframe column ['Property'] with the property labels from the csv
+    propertes.csv.
+
+    :param property_dataframe: Input is a dataframe with the P-codes you want to replace with P-labels.
+    Notice(!) in the code that the it expects the P-code column to be called 'Property'!
+    :return: property_dataframe: returns a dataframe with the P-codes replaced with P-labels
+    """
 
     # Converts the csv file containing P-codes and P label values to a dataframe
     property_label_dataframe = pd.read_csv(Path("../../Data/properties.csv"))
+
+    for prop in property_dataframe['Property']:
+        # This for loop goes trough each property and replaces it with each corresponding label
+        if prop in list(property_label_dataframe['Property']):
+            prop_label_value = property_label_dataframe.loc[property_label_dataframe['Property'] == prop,
+                                                            'Value'].iloc[0]
+
+            # This line replaces the P-code with the P label value - Notice inplace=True
+            property_dataframe['Property'].replace({prop: prop_label_value}, inplace=True)
+
+    return property_dataframe
+
+
+if __name__ == '__main__':
 
     # The full list of properties
     property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
@@ -78,13 +100,19 @@ if __name__ == '__main__':
     property_count_df = property_count_function(property_list)
     property_count_df = property_count_df[property_count_df.Property != 'P31']  # Drops the instanceOf property
 
-    for prop in property_count_df['Property']:
-        # This for loop goes trough each property and replaces it with each corresponding label
-        if prop in list(property_label_dataframe['Property']):
-            prop_label_value = property_label_dataframe.loc[property_label_dataframe['Property'] == prop,
-                                                            'Value'].iloc[0]
-            # This line replaces the P-code with the P label value
-            property_count_df['Property'].replace({prop: prop_label_value}, inplace=True)
+    # Copy of the property_count_df that should be with P-codes and not P label values
+    property_count_df_without_labels = property_count_df.copy()
+
+    # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
+    property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
+
+    # for prop in property_count_df['Property']:
+    #     # This for loop goes trough each property and replaces it with each corresponding label
+    #     if prop in list(property_label_dataframe['Property']):
+    #         prop_label_value = property_label_dataframe.loc[property_label_dataframe['Property'] == prop,
+    #                                                         'Value'].iloc[0]
+    #         # This line replaces the P-code with the P label value
+    #         property_count_df['Property'].replace({prop: prop_label_value}, inplace=True)
 
     number_of_properties_above_1000 = []
     number_of_properties_below_1000 = []
@@ -94,25 +122,32 @@ if __name__ == '__main__':
         else:
             number_of_properties_below_1000.append(index)
 
-    # print(len(number_of_properties_above_1000))
-    # print(len(number_of_properties_below_1000))
+    # Below are the figures
+    # Barplot with ALL P-codes and their frequency
+    fig_without_labels = go.Figure()
+    fig_without_labels.add_trace(go.Bar(x=property_count_df_without_labels['Property'],
+                                        y=property_count_df_without_labels['Frequency']))
+    fig_without_labels.update_layout(
+        xaxis_title="Property", yaxis_title="Property Frequency"
+    )
+    fig_without_labels.show()
 
-    fig = go.Figure()
-    #fig.add_trace(go.Bar(x=property_count_df['Property'][0:24], y=property_count_df['Frequency']))
-    fig.add_trace(go.Bar(x=property_count_df['Frequency'][0:24], y=property_count_df['Property'],
-                         orientation='h'))
-    fig.update_layout(
+    # Horizontal barplot with top 24 P label values and their frequency
+    fig_with_labels = go.Figure()
+    fig_with_labels.add_trace(go.Bar(x=property_count_df_with_labels['Frequency'][0:24],
+                                     y=property_count_df_with_labels['Property'],
+                                     orientation='h'))
+    fig_with_labels.update_layout(
         xaxis_title="Property Frequency",
         yaxis_title="Property"
     )
-    #fig.show()
+    fig_with_labels.show()
 
-    # print("The median value for the property frequency is {}".format(property_count_df['Frequency'].median()))
-    # print("The average value for the property frequency is {}".format(property_count_df['Frequency'].mean()))
-
+    # The two lines below are the dataframe and a list. The list is used for median and average calculations.
     university_property_dataframe = entity_property_count_function(property_list)[0]
     count_list = entity_property_count_function(property_list)[1]
 
+    # Barplot showing how many properties have the exact number of properties in them.
     university_property_fig = go.Figure()
     university_property_fig.add_trace(go.Bar(x=university_property_dataframe['#Properties'],
                                              y=university_property_dataframe['#Universities']))
