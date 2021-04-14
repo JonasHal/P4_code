@@ -5,9 +5,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth
 from mlxtend.frequent_patterns import association_rules
 
-property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
-
-
+property_list = extractProperties(Path("Data/universities_latest_all.ndjson"))
 
 te = TransactionEncoder()
 te_ary = te.fit(property_list).transform(property_list)
@@ -24,6 +22,12 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-frequent_properties = fpgrowth(property_dataframe, min_support=0.6, use_colnames=True)
-print(frequent_properties)
-property_rules = association_rules(frequent_properties, metric="confidence", min_threshold=0.7)
+frequent_properties = fpgrowth(property_dataframe, min_support=0.7, use_colnames=True)
+
+#print(frequent_properties.sort_values(by=['support'], ascending=False).head(5))
+
+property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
+#print(property_rules.to_string())
+
+for row in range(len(property_rules)):
+    print(property_rules.iloc[row, ])
