@@ -44,4 +44,10 @@ if __name__ == "__main__":
     df = pd.DataFrame(te_ary, columns=te.columns_)
 
     runtime_frequent(df, min_sup=0.2)
+    runtime_frequent(df, min_sup=0.3)
+    runtime_frequent(df, min_sup=0.4)
+    runtime_frequent(df, min_sup=0.5)
+    runtime_frequent(df, min_sup=0.6)
+    runtime_frequent(df, min_sup=0.7)
+    runtime_frequent(df, min_sup=0.8)
 
