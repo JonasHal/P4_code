@@ -26,3 +26,5 @@ def extractProperties(filename):
 if __name__ == '__main__':
     property_list = extractProperties(Path("Data/universities_latest_all.ndjson"))
     print(property_list)
+
+
