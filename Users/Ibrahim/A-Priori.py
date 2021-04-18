@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
 
 property_list = extractProperties(Path("/Users/ibrahimharas/Documents/GitHub/P4_code/Data/universities_latest_all.ndjson"))
 
@@ -26,9 +26,13 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-frequent_properties = apriori(property_dataframe, min_support=0.7, use_colnames=True)
-property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
+frequent_properties = apriori(property_dataframe, min_support=0.2, use_colnames=True)
+#property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
 
+#print(property_dataframe)
 #print(property_dataframe['country, official website'].sum())
 
-print(property_rules.to_string())
+
+print(frequent_properties.sort_values("support", ascending=False).head(5).to_string())
+
+#print(frequent_properties.head(20).to_string())
