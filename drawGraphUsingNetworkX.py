@@ -35,7 +35,7 @@ nx.draw_networkx(G, pos=pos)
 nx.draw_networkx_edge_labels(G, pos=pos)
 plt.show()
 
-#I følge Matteo these measures (eccentricitiy, raidus and diameter) ignore directions of edges
+#I følge Matteo these measures (eccentricitiy, radius and diameter) ignore directions of edges
 
 print('The eccentricitiy of the graph is {}'.format(nx.eccentricity(G.to_undirected()) ) )
 print('The radius (minimum eccentricitiy) of the graph is {}'.format(nx.radius(G.to_undirected()) ) )
