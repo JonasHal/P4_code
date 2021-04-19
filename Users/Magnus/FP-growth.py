@@ -3,7 +3,6 @@ from extractPropertiesFromNDJSON import extractProperties
 from pathlib import Path
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth
-from mlxtend.frequent_patterns import association_rules
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 
@@ -22,13 +21,12 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-frequent_properties = fpgrowth(property_dataframe, min_support=0.7, use_colnames=True)
+frequent_properties = fpgrowth(property_dataframe, min_support=0.2, use_colnames=True)
+print(frequent_properties)
+#print(frequent_properties.sort_values(by=['support'], ascending=False).head(5))
 
-
-print(frequent_properties.sort_values(by=['support'], ascending=False).head(5))
-
-property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
+#property_rules = association_rules(frequent_properties, metric="lift", min_threshold=3.2)
 #print(property_rules.to_string())
 
-for row in range(len(property_rules)):
-    print(property_rules.iloc[row, ])
+# for row in range(len(property_rules)):
+#     print(property_rules.iloc[row, ])

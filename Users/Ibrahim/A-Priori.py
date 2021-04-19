@@ -5,7 +5,7 @@ from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, association_rules
 
-property_list = extractProperties(Path("/Users/ibrahimharas/Documents/GitHub/P4_code/Data/universities_latest_all.ndjson"))
+property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 
 #print(property_list)
 
