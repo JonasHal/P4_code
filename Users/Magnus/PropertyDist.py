@@ -98,21 +98,12 @@ if __name__ == '__main__':
 
     # Uses the property_count_function to create a dataframe containing properties and their frequency.
     property_count_df = property_count_function(property_list)
-    property_count_df = property_count_df[property_count_df.Property != 'P31']  # Drops the instanceOf property
 
     # Copy of the property_count_df that should be with P-codes and not P label values
     property_count_df_without_labels = property_count_df.copy()
 
     # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
     property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
-
-    # for prop in property_count_df['Property']:
-    #     # This for loop goes trough each property and replaces it with each corresponding label
-    #     if prop in list(property_label_dataframe['Property']):
-    #         prop_label_value = property_label_dataframe.loc[property_label_dataframe['Property'] == prop,
-    #                                                         'Value'].iloc[0]
-    #         # This line replaces the P-code with the P label value
-    #         property_count_df['Property'].replace({prop: prop_label_value}, inplace=True)
 
     number_of_properties_above_1000 = []
     number_of_properties_below_1000 = []
@@ -130,18 +121,18 @@ if __name__ == '__main__':
     fig_without_labels.update_layout(
         xaxis_title="Property", yaxis_title="Property Frequency"
     )
-    fig_without_labels.show()
+    #fig_without_labels.show()
 
     # Horizontal barplot with top 24 P label values and their frequency
     fig_with_labels = go.Figure()
-    fig_with_labels.add_trace(go.Bar(x=property_count_df_with_labels['Frequency'][0:24],
+    fig_with_labels.add_trace(go.Bar(x=property_count_df_with_labels['Frequency'][0:25],
                                      y=property_count_df_with_labels['Property'],
                                      orientation='h'))
     fig_with_labels.update_layout(
         xaxis_title="Property Frequency",
         yaxis_title="Property"
     )
-    fig_with_labels.show()
+    #fig_with_labels.show()
 
     # The two lines below are the dataframe and a list. The list is used for median and average calculations.
     university_property_dataframe = entity_property_count_function(property_list)[0]
@@ -155,7 +146,7 @@ if __name__ == '__main__':
         xaxis_title="Number of Properties",
         yaxis_title="Number of Universities"
     )
-    # university_property_fig.show()
+    #university_property_fig.show()
 
-    # print("The median value for the amount of properties in universities is {}".format(np.median(count_list)))
-    # print("The average value for the amount of properties in universities is {}".format(np.average(count_list)))
+    #print("The median value for the amount of properties in universities is {}".format(np.median(count_list)))
+    #print("The average value for the amount of properties in universities is {}".format(np.average(count_list)))

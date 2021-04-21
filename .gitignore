@@ -140,3 +140,4 @@ cython_debug/
 .idea/P4_code.iml
 .idea/misc.xml
 .idea/P4_code.iml
+Data/danish_humans.ndjson

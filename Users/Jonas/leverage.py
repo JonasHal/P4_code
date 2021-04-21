@@ -22,13 +22,11 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-frequent_properties = fpgrowth(property_dataframe, min_support=0.7, use_colnames=True)
+frequent_properties = fpgrowth(property_dataframe, min_support=0.4, use_colnames=True)
 
+property_rules = association_rules(frequent_properties, metric="confidence", min_threshold=0.7)
 
-print(frequent_properties.sort_values(by=['support'], ascending=False).head(5))
+leverage_threshhold = property_rules[(property_rules['leverage'] < 0.1)]
 
-property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
-#print(property_rules.to_string())
-
-for row in range(len(property_rules)):
-    print(property_rules.iloc[row, ])
+for row in range(len(leverage_threshhold)):
+    print(leverage_threshhold.iloc[row, ])
