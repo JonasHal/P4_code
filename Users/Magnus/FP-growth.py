@@ -21,7 +21,7 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-frequent_properties = fpgrowth(property_dataframe, min_support=0.2, use_colnames=True)
+frequent_properties = fpgrowth(property_dataframe, min_support=0.1, use_colnames=True)
 print(frequent_properties)
 #print(frequent_properties.sort_values(by=['support'], ascending=False).head(5))
 
