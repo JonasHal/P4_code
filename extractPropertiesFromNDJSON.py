@@ -23,35 +23,52 @@ def extractProperties(filename):
 
     return property_list
 
-def replacePcodesWithPlabels(nested_list):
+
+def replacePcodesWithPlabels(listofproperties):
     """
 
-    :param nested_list: Input the nested list from the extractProperties function
-    :return: new_list: A new list containing the same data as the original nested list only the
-    P-codes are replaced with the P-label values from Wikidata.
+    :param listofproperties: Input the nested list from the extractProperties function
+    :return: listofproperties_with_labels: A new list containing the same data as the original nested list
+    only the P-codes are replaced with the P-label values from Wikidata.
     """
     # Converts the csv file containing P-codes and P label values to a dataframe
     property_label_dataframe = pd.read_csv(Path("Data/properties.csv"))
     property_label_dataframe.set_index(['Property'], inplace=True)
 
-    new_list = []
+    listofproperties_with_labels = []
 
-    for list in nested_list:
-        entity_list = []
-        for prop in list:
+    for nested_list in listofproperties:
+        prop_list = []
+        for prop in nested_list:
             try:
                 # if prop in property_label_dataframe.index:
                 prop_label_value = property_label_dataframe.loc[prop,].Value
-                entity_list.append(prop_label_value)
+                prop_list.append(prop_label_value)
             except KeyError:
                 print("The P-code does not exist in the property_label_dataframe")
 
-        new_list.append(entity_list)
+        listofproperties_with_labels.append(prop_list)
 
-    return new_list
+    return listofproperties_with_labels
+
+
+def convertPropertyListToTXT(property_list, output_filename):
+
+    with open(output_filename, 'w') as f:
+        for nested_lists in property_list:
+            try:
+                f.write(str(tuple(nested_lists)))
+                f.write("\n")
+            except TypeError:
+                print('The type of data is wrong')
+        f.close()
+
 
 
 if __name__ == '__main__':
     property_list = extractProperties(Path("Data/universities_latest_all.ndjson"))
     property_list_with_labels = replacePcodesWithPlabels(property_list)
-    print(property_list_with_labels)
+
+    #convertPropertyListWithLabelsToTXT(property_list_with_labels, 'test.txt')
+
+    convertPropertyListToTXT(property_list, 'transaction.txt')
