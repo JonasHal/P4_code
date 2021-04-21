@@ -50,11 +50,13 @@ if __name__ == "__main__":
     te_ary = te.fit(property_list).transform(property_list)
     df = pd.DataFrame(te_ary, columns=te.columns_)
 
+    print("the length of the dataframe is: " + str(len(df)))
+
     runtime_frequent(df, min_sup=0.2)
-    # runtime_frequent(df, min_sup=0.3)
-    # runtime_frequent(df, min_sup=0.4)
-    # runtime_frequent(df, min_sup=0.5)
-    # runtime_frequent(df, min_sup=0.6)
-    # runtime_frequent(df, min_sup=0.7)
-    # runtime_frequent(df, min_sup=0.8)
+    runtime_frequent(df, min_sup=0.3)
+    runtime_frequent(df, min_sup=0.4)
+    runtime_frequent(df, min_sup=0.5)
+    runtime_frequent(df, min_sup=0.6)
+    runtime_frequent(df, min_sup=0.7)
+    runtime_frequent(df, min_sup=0.8)
 
