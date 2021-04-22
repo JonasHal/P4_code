@@ -19,27 +19,34 @@ if __name__ == '__main__':
     # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
     property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
 
-    fig = go.box(property_count_df_without_labels['Frequency'])
+
+
+    fig = go.Figure()
+    fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency']))
     fig.show()
 
 
 
-    def getBoxplotValues():
-        Q1 = df["COLUMN_NAME"].quantile(0.25)
-
-        Q3 = df["COLUMN_NAME"].quantile(0.75)
-
-        IQR = Q3 - Q1
-
-        Lower_Fence = Q1 - (1.5 * IQR)
-
-        Upper_Fence = Q3 + (1.5 * IQR)
-
-        return Upper_Fence
-
-
-above_trash = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues()]
-below_trash = property_count_df_without_labels[property_count_df_without_labels['Frequency'] <= getBoxplotValues()]
 
 
 
+def getBoxplotValues():
+    #TODO: more general
+    Q1 = property_count_df_without_labels['Frequency'].quantile(0.25)
+
+    Q3 = property_count_df_without_labels['Frequency'].quantile(0.75)
+
+    IQR = Q3 - Q1
+
+    Lower_Fence = Q1 - (1.5 * IQR)
+
+    Upper_Fence = Q3 + (1.5 * IQR)
+
+    return Upper_Fence
+
+
+above_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues()]
+below_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] <= getBoxplotValues()]
+
+
+print(below_trashold)
