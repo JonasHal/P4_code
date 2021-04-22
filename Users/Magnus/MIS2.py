@@ -1,5 +1,5 @@
 from extractPropertiesFromNDJSON import extractProperties
-from PropertyDist import property_count_function
+from PropertyDistUni import property_count_function
 from pathlib import Path
 import pandas as pd
 

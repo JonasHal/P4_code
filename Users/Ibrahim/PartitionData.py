@@ -1,7 +1,7 @@
 from extractPropertiesFromNDJSON import extractProperties
 from pathlib import Path
 import pandas as pd
-from Users.Magnus.PropertyDist import property_count_function, entity_property_count_function
+from Users.Magnus.PropertyDistUni import property_count_function, entity_property_count_function
 
 
 
