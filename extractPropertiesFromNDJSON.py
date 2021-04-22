@@ -2,6 +2,25 @@ import ndjson
 import pandas as pd
 from pathlib import Path
 
+def extractItemCodes(filename):
+    """
+
+    :param filename: What file to open: for example Path("Data/universities_latest_all.ndjson")
+    :return: returns a Python list with all the properties from the .ndjson file.
+    """
+
+    item_list = []
+
+    with open(filename, encoding="utf-8") as f:
+        wikidata = ndjson.load(f)
+
+    wikidata_df = pd.DataFrame(wikidata)
+
+    # Walks the .ndjson file and extracts the properties
+    for i in range(len(wikidata_df)):
+        item_list.append(wikidata_df["id"][i])
+
+    return item_list
 
 def extractProperties(filename):
     """
