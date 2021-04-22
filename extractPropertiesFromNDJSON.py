@@ -76,7 +76,9 @@ def convertPropertyListToTXT(property_list, output_filename):
     with open(output_filename, 'w') as f:
         for nested_lists in property_list:
             try:
-                f.write(str(tuple(nested_lists)))
+                int_list = [int(list[1:]) for list in nested_lists]
+                string_list = str(int_list).replace('[', '{').replace(']', '}')
+                f.write(string_list)
                 f.write("\n")
             except TypeError:
                 print('The type of data is wrong')
@@ -90,4 +92,4 @@ if __name__ == '__main__':
 
     #convertPropertyListWithLabelsToTXT(property_list_with_labels, 'test.txt')
 
-    convertPropertyListToTXT(property_list, 'transaction.txt')
+    convertPropertyListToTXT(property_list, 'Users/Magnus/transaction.txt')
