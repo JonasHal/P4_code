@@ -121,7 +121,7 @@ def level2CandidateGeneration():
 
 # Using itertools to find subsets
 def findSubsets(S, m):
-    print("findSubsets")
+    print("findSubsets", str(S), str(m))
     return list(set(itertools.combinations(S, m)))
 
 
