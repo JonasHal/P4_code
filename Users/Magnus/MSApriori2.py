@@ -39,6 +39,7 @@ def main():
 
 # Reading data
 def readData():
+    print ('readData')
     '''To read the MIS values and phi (SDC) from parameterfile.txt'''
     global MS, TCount, IList, ICount, phi, TList, cannotBeTogether, mustHave
 
@@ -70,6 +71,7 @@ def readData():
     items = sorted(MS, key=MS.__getitem__)
 
     for item in items:
+        print('IList.append')
         IList.append(int(item))
         ICount[int(item)] = 0
 
@@ -79,6 +81,7 @@ def readData():
     file2 = open(abs_filepath_data)
 
     for i in file2:
+        print('TList.append')
         TList.append(list())
         transaction = i.replace(' ', '').replace('{', '').replace('}', '').replace('<', '').replace('>', '').split(',')
         for t in transaction:
@@ -109,6 +112,7 @@ def level2CandidateGeneration():
     print("level2CandidateGeneration")
     global CList, L
     for l in range(0, len(L)):
+        print("level2CandidateGeneration", str(l))
         if (ICount[L[l]] / TCount) >= MS[L[l]]:
             for h in range(l + 1, len(L)):
                 if (ICount[L[h]] / TCount) >= MS[L[l]] and abs(
@@ -155,6 +159,7 @@ def MSCandidateGeneration(n):
 
 # Adding 1-Itemsets to the FList
 def F1():
+    print('F1')
     global FList
     if (not FList[1]):
         for i in range(len(L)):
@@ -164,6 +169,7 @@ def F1():
 
 # Adding i-Itemsets to the FList
 def Fi():
+    print('Fi')
     global FList, CDict, tailCount
     k = 2
     while (True):
