@@ -1,10 +1,10 @@
-from aifc import Error
-
 from Users.Magnus.PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
+from Apriori import runApriori
 from pathlib import Path
+from aifc import Error
 import pandas as pd
 
 
@@ -41,9 +41,9 @@ if __name__ == '__main__':
     property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
 
 
-    # fig = go.Figure()
-    # fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency']))
-    # fig.show()
+    fig = go.Figure()
+    fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
+    fig.show()
 
 def splitBooleanDF(type):
     above_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues(property_count_df_without_labels['Frequency'])]
@@ -62,10 +62,7 @@ def splitBooleanDF(type):
 
 
 if __name__ == '__main__':
-    print(splitBooleanDF('above'))
-
-
-
+    runApriori(splitBooleanDF('above'))
 
 
 
