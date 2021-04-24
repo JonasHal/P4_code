@@ -1,9 +1,30 @@
+from aifc import Error
+
+from Users.Magnus.PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from extractPropertiesFromNDJSON import extractProperties
+from mlxtend.preprocessing import TransactionEncoder
+import plotly.graph_objects as go
 from pathlib import Path
 import pandas as pd
-from Users.Magnus.PropertyDistUni import property_count_function, entity_property_count_function
 
 
+def getBooleanDF(property_list):
+
+    te = TransactionEncoder()
+    te_ary = te.fit(property_list).transform(property_list)
+    property_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
+    #property_dataframe = property_dataframe.drop('P31', axis=1)
+    return property_dataframe
+
+def getBoxplotValues(df):
+    Q1 = df.quantile(0.25)
+    Q3 = df.quantile(0.75)
+
+    IQR = Q3 - Q1
+
+    Upper_Fence = Q3 + (1.5 * IQR)
+
+    return Upper_Fence
 
 if __name__ == '__main__':
 
@@ -20,33 +41,33 @@ if __name__ == '__main__':
     property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
 
 
+    # fig = go.Figure()
+    # fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency']))
+    # fig.show()
 
-    fig = go.Figure()
-    fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency']))
-    fig.show()
+def splitBooleanDF(type):
+    above_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues(property_count_df_without_labels['Frequency'])]
+    below_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] <= getBoxplotValues(property_count_df_without_labels['Frequency'])]
 
+    above_trashold_df = getBooleanDF(property_list).drop(above_trashold['Property'].tolist(), axis='columns')
+    below_trashold_df = getBooleanDF(property_list).drop(below_trashold['Property'].tolist(), axis='columns')
 
-
-
-
-
-def getBoxplotValues():
-    #TODO: more general
-    Q1 = property_count_df_without_labels['Frequency'].quantile(0.25)
-
-    Q3 = property_count_df_without_labels['Frequency'].quantile(0.75)
-
-    IQR = Q3 - Q1
-
-    Lower_Fence = Q1 - (1.5 * IQR)
-
-    Upper_Fence = Q3 + (1.5 * IQR)
-
-    return Upper_Fence
+    if type == 'above':
+        return above_trashold_df
+    elif type == 'below':
+        return below_trashold_df
+    else:
+        raise Error("it can only take above or below. Please try again")
 
 
-above_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues()]
-below_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] <= getBoxplotValues()]
+
+if __name__ == '__main__':
+    print(splitBooleanDF('above'))
 
 
-print(below_trashold)
+
+
+
+
+
+
