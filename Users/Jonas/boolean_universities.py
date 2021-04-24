@@ -1,5 +1,5 @@
 import pandas as pd
-from extractPropertiesFromNDJSON import extractProperties, extractItemCodes
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties, extractItemCodes
 from pathlib import Path
 from mlxtend.preprocessing import TransactionEncoder
 

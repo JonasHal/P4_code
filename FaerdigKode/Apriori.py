@@ -1,18 +1,17 @@
 import pandas as pd
 from pathlib import Path
-from extractPropertiesFromNDJSON import extractProperties
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
+from mlxtend.frequent_patterns import apriori, association_rules
 
-property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
+property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
 te = TransactionEncoder()
 te_ary = te.fit(property_list).transform(property_list)
 property_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
 property_dataframe = property_dataframe.drop('P31', axis=1)
 
-
-property_label_dataframe = pd.read_csv(Path("../../Data/properties.csv"))
+property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
 
 for prop in property_dataframe.columns:
     # This for loop goes trough each property and replaces it with each corresponding label

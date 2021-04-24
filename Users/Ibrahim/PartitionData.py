@@ -1,8 +1,8 @@
-from Users.Magnus.PropertyDistUni import property_count_function, replacePcodesWithPlabels
-from extractPropertiesFromNDJSON import extractProperties
+from FaerdigKode.PropertyDistUni import property_count_function, replacePcodesWithPlabels
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
-from Apriori import runApriori
+from FaerdigKode.Apriori import runApriori
 from pathlib import Path
 from aifc import Error
 import pandas as pd

@@ -51,7 +51,7 @@ def replacePcodesWithPlabels(listofproperties):
     only the P-codes are replaced with the P-label values from Wikidata.
     """
     # Converts the csv file containing P-codes and P label values to a dataframe
-    property_label_dataframe = pd.read_csv(Path("Data/properties.csv"))
+    property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
     property_label_dataframe.set_index(['Property'], inplace=True)
 
     listofproperties_with_labels = []
@@ -87,9 +87,9 @@ def convertPropertyListToTXT(property_list, output_filename):
 
 
 if __name__ == '__main__':
-    property_list = extractProperties(Path("Data/universities_latest_all.ndjson"))
+    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
     property_list_with_labels = replacePcodesWithPlabels(property_list)
 
     #convertPropertyListWithLabelsToTXT(property_list_with_labels, 'test.txt')
 
-    convertPropertyListToTXT(property_list, 'Users/Magnus/transaction.txt')
+    convertPropertyListToTXT(property_list, '../Users/Magnus/transaction.txt')
