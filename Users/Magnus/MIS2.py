@@ -1,7 +1,6 @@
-from extractPropertiesFromNDJSON import extractProperties
-from PropertyDistUni import property_count_function
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from FaerdigKode.PropertyDistUni import property_count_function
 from pathlib import Path
-import pandas as pd
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 

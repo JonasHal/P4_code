@@ -1,10 +1,9 @@
-import ndjson
 import pandas as pd
 from pathlib import Path
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpgrowth
 
-from extractPropertiesFromNDJSON import extractProperties
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 
 def replacePcodesWithPlabels(nested_list):
     # Converts the csv file containing P-codes and P label values to a dataframe

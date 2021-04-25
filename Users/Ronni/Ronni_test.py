@@ -1,10 +1,8 @@
-import ndjson
 import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth
-from mlxtend.frequent_patterns import association_rules
+from mlxtend.frequent_patterns import fpgrowth
 from pathlib import Path
-from extractPropertiesFromNDJSON import extractProperties
+from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 
