@@ -33,7 +33,7 @@ df = pd.DataFrame(te_ary, columns=te.columns_)
 
 # FPgrowth algorithm:
 
-frequent_itemsets_growth = fpgrowth(df, min_support=0.5, use_colnames=True)
+frequent_itemsets_growth = fpgrowth(df, min_support=0.2, use_colnames=True)
 # print(frequent_itemsets_growth.info())
 # print(frequent_itemsets_growth.describe())
 frequent_itemsets_growth["itemsets_len"] = frequent_itemsets_growth["itemsets"].apply(lambda x: len(x))
