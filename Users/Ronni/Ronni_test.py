@@ -31,12 +31,12 @@ df = pd.DataFrame(te_ary, columns=te.columns_)
 
 # FPgrowth algorithm:
 
-frequent_itemsets_growth = fpgrowth(df, min_support=0.5, use_colnames=True)
+frequent_itemsets_growth = fpgrowth(df, min_support=0.05, use_colnames=True)
 # print(frequent_itemsets_growth.info())
 # print(frequent_itemsets_growth.describe())
 frequent_itemsets_growth["itemsets_len"] = frequent_itemsets_growth["itemsets"].apply(lambda x: len(x))
 frequent_itemsets_growth = frequent_itemsets_growth[
-    (frequent_itemsets_growth["itemsets_len"] >= 5)]
+    (frequent_itemsets_growth["itemsets_len"] >= 10)]
 frequent_itemsets_growth = frequent_itemsets_growth[['support', 'itemsets']]
 
 print(frequent_itemsets_growth.head(10))
