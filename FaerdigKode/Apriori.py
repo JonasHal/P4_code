@@ -21,7 +21,7 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-def runApriori(properth_dataframe):
+def runApriori(property_dataframe):
     frequent_properties = apriori(property_dataframe, min_support=0.2, use_colnames=True)
     property_rules = association_rules(frequent_properties, metric="lift", min_threshold=1.1)
 
