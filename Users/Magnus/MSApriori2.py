@@ -4,6 +4,7 @@
 # Importing the required libraries
 import os
 import itertools
+from pathlib import Path
 
 # Initializing the datastructures and constants
 phi = 0.0
@@ -22,7 +23,8 @@ cannotBeTogether = list()
 mustHave = list()
 tailCount = {}
 
-script_dir = os.path.dirname(__file__)
+
+script_dir = Path.cwd()
 
 
 # All functions run here according to MSApriory
@@ -71,7 +73,6 @@ def readData():
     items = sorted(MS, key=MS.__getitem__)
 
     for item in items:
-        print('IList.append')
         IList.append(int(item))
         ICount[int(item)] = 0
 
@@ -81,7 +82,6 @@ def readData():
     file2 = open(abs_filepath_data)
 
     for i in file2:
-        print('TList.append')
         TList.append(list())
         transaction = i.replace(' ', '').replace('{', '').replace('}', '').replace('<', '').replace('>', '').split(',')
         for t in transaction:
@@ -94,7 +94,6 @@ def readData():
 
 # Making the initial pass
 def initPass():
-    print("initPass")
     global L
     for i in range(len(IList)):
         if (i == 0):
@@ -112,7 +111,6 @@ def level2CandidateGeneration():
     print("level2CandidateGeneration")
     global CList, L
     for l in range(0, len(L)):
-        print("level2CandidateGeneration", str(l))
         if (ICount[L[l]] / TCount) >= MS[L[l]]:
             for h in range(l + 1, len(L)):
                 if (ICount[L[h]] / TCount) >= MS[L[l]] and abs(
@@ -233,7 +231,7 @@ def output():
     global FList, tailCount, ICount, CDict
     FList = [x for x in FList if x != []]
 
-    rel_path_results = "results/result1-1.txt"
+    rel_path_results = Path("results/result1-1.txt")
     abs_filepath_results = os.path.join(script_dir, rel_path_results)
     file3 = open(abs_filepath_results, "w")
 

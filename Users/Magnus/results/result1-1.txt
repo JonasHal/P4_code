@@ -1,0 +1,35 @@
+
+Frequent 1-itemsets
+	1892 : { 8687 }
+	2238 : { 910 }
+	2384 : { 373 }
+	2814 : { 2013 }
+	2932 : { 2002 }
+	7183 : { 571 }
+	Total number of frequent 1-itemsets = 6
+
+
+Frequent2-itemsets
+	1892 : {8687, 31}
+Tail Count = 8515
+	2238 : {910, 31}
+Tail Count = 8515
+	2384 : {373, 31}
+Tail Count = 8515
+	2814 : {2013, 31}
+Tail Count = 8515
+	2932 : {2002, 31}
+Tail Count = 8515
+	7183 : {571, 31}
+Tail Count = 8515
+	1892 : {8687, 2002}
+Tail Count = 2932
+
+	Total number of frequent 2-itemsets = 7
+
+
+Frequent3-itemsets
+	1892 : {8687, 2002, 31}
+Tail Count = 2932
+
+	Total number of frequent 3-itemsets = 1
