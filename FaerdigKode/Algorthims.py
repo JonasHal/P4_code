@@ -23,9 +23,9 @@ for prop in property_dataframe.columns:
         # # This line replaces the P-code with the P label value
         property_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-def runAlgorthims(property_dataframe, type):
-    apriori_frequent_properties = apriori(property_dataframe, min_support=0.2, use_colnames=True)
-    fpgrowth_frequent_properties = fpgrowth(property_dataframe, min_support=0.2, use_colnames=True)
+def runAlgorthims(property_dataframe, type, minSub):
+    apriori_frequent_properties = apriori(property_dataframe, min_support=minSub, use_colnames=True)
+    fpgrowth_frequent_properties = fpgrowth(property_dataframe, min_support=minSub, use_colnames=True)
 
     if type == 'apriori':
         return apriori_frequent_properties

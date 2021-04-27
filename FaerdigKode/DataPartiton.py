@@ -1,7 +1,8 @@
 from PropertyDistUni import property_count_function, replacePcodesWithPlabels
+from mlxtend.frequent_patterns import association_rules
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-#from Algorthims import runAlgorthimsimport
+from Algorthims import runAlgorthims
 import plotly.graph_objects as go
 from pathlib import Path
 from aifc import Error
@@ -60,4 +61,6 @@ def splitBooleanDF(type):
 
 
 if __name__ == '__main__':
-    print(splitBooleanDF('above'))
+    #print(runAlgorthims(splitBooleanDF('below'), 'apriori').to_string())
+    property_rules = association_rules(runAlgorthims(splitBooleanDF('below'), 'apriori', 0.2), metric="lift", min_threshold=1.1)
+    print(property_rules)
