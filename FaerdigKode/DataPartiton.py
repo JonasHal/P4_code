@@ -1,13 +1,28 @@
 from PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
+#from Algorthims import runAlgorthimsimport
 import plotly.graph_objects as go
-from Algorthims import runAlgorthims
 from pathlib import Path
-
 from aifc import Error
 import pandas as pd
 
+
+# The full list of properties
+property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
+
+# Uses the property_count_function to create a dataframe containing properties and their frequency.
+property_count_df = property_count_function(property_list)
+
+# Copy of the property_count_df that should be with P-codes and not P label values
+property_count_df_without_labels = property_count_df.copy()
+
+# Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
+property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
+
+fig = go.Figure()
+fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
+fig.show()
 
 def getBooleanDF(property_list):
 
@@ -16,6 +31,7 @@ def getBooleanDF(property_list):
     property_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
     #property_dataframe = property_dataframe.drop('P31', axis=1)
     return property_dataframe
+
 
 def getBoxplotValues(df):
     Q1 = df.quantile(0.25)
@@ -27,24 +43,6 @@ def getBoxplotValues(df):
 
     return Upper_Fence
 
-if __name__ == '__main__':
-
-    # The full list of properties
-    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
-
-    # Uses the property_count_function to create a dataframe containing properties and their frequency.
-    property_count_df = property_count_function(property_list)
-
-    # Copy of the property_count_df that should be with P-codes and not P label values
-    property_count_df_without_labels = property_count_df.copy()
-
-    # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
-    property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
-
-
-    fig = go.Figure()
-    fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
-    fig.show()
 
 def splitBooleanDF(type):
     above_trashold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > getBoxplotValues(property_count_df_without_labels['Frequency'])]
@@ -61,8 +59,5 @@ def splitBooleanDF(type):
         raise Error("it can only take above or below. Please try again")
 
 
-
 if __name__ == '__main__':
     print(splitBooleanDF('above'))
-
-

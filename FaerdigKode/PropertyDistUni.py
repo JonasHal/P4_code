@@ -1,4 +1,4 @@
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from extractPropertiesFromNDJSON import extractProperties
 from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
