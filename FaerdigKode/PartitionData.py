@@ -1,9 +1,10 @@
-from FaerdigKode.PropertyDistUni import property_count_function, replacePcodesWithPlabels
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from PropertyDistUni import property_count_function, replacePcodesWithPlabels
+from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
-from FaerdigKode.Apriori import runApriori
+from Algorthims import runAlgorthims
 from pathlib import Path
+
 from aifc import Error
 import pandas as pd
 
@@ -29,7 +30,7 @@ def getBoxplotValues(df):
 if __name__ == '__main__':
 
     # The full list of properties
-    property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
+    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
     # Uses the property_count_function to create a dataframe containing properties and their frequency.
     property_count_df = property_count_function(property_list)
@@ -62,9 +63,6 @@ def splitBooleanDF(type):
 
 
 if __name__ == '__main__':
-    runApriori(splitBooleanDF('above'))
-
-
-
+    print(splitBooleanDF('above'))
 
 
