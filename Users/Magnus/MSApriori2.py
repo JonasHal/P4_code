@@ -29,19 +29,24 @@ script_dir = Path.cwd()
 
 # All functions run here according to MSApriory
 def main():
+    print("readData")
     readData()
+    print("initPass")
     initPass()
+    print("F1")
     F1()
+    print("Fi")
     Fi()
+    print("cannotBeTogetherConstraint()")
     cannotBeTogetherConstraint()
     if (mustHave != []):
         mustHaveConstraint()
+    print("output")
     output()
 
 
 # Reading data
 def readData():
-    print ('readData')
     '''To read the MIS values and phi (SDC) from parameterfile.txt'''
     global MS, TCount, IList, ICount, phi, TList, cannotBeTogether, mustHave
 
