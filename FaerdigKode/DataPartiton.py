@@ -1,3 +1,4 @@
+import timeit
 from PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from mlxtend.frequent_patterns import association_rules
 from extractPropertiesFromNDJSON import extractProperties
@@ -62,5 +63,5 @@ def splitBooleanDF(type):
 
 if __name__ == '__main__':
     #print(runAlgorthims(splitBooleanDF('below'), 'apriori').to_string())
-    property_rules = association_rules(runAlgorthims(splitBooleanDF('below'), 'apriori', 0.2), metric="lift", min_threshold=1.1)
-    print(property_rules)
+    property_rules = association_rules(runAlgorthims(splitBooleanDF('below'), 'fpgrowth', 0.2), metric="lift", min_threshold=1.1)
+    print(timeit.timeit(property_rules.to_string))
