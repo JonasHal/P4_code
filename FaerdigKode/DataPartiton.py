@@ -1,29 +1,10 @@
-import timeit
 from PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
 from pathlib import Path
-from aifc import Error
 import pandas as pd
-
-if __name__ == '__main__':
-    # The full list of properties
-    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
-
-    # Uses the property_count_function to create a dataframe containing properties and their frequency.
-    property_count_df = property_count_function(property_list)
-
-    # Copy of the property_count_df that should be with P-codes and not P label values
-    property_count_df_without_labels = property_count_df.copy()
-
-    # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
-    property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
-
-    fig = go.Figure()
-    fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
-    fig.show()
 
 def getBooleanDF(property_list):
     """
@@ -33,9 +14,9 @@ def getBooleanDF(property_list):
     """
     te = TransactionEncoder()
     te_ary = te.fit(property_list).transform(property_list)
-    property_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
+    boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
     #property_dataframe = property_dataframe.drop('P31', axis=1)
-    return property_dataframe
+    return boolean_dataframe
 
 
 def getBoxplotValues(df):
@@ -44,8 +25,8 @@ def getBoxplotValues(df):
     :param df: A dataframe with columns "item" and "count"
     :return: The number of the threshold used to partition data
     """
-    Q1 = df.quantile(0.25)
-    Q3 = df.quantile(0.75)
+    Q1 = df['Frequency'].quantile(0.25)
+    Q3 = df['Frequency'].quantile(0.75)
 
     IQR = Q3 - Q1
 
@@ -53,31 +34,57 @@ def getBoxplotValues(df):
 
     return Upper_Fence
 
+def splitBooleanDF(property_list):
+    '''
 
-def splitBooleanDF(df_without_labels, type):
-    """
-    Partition the dataframe into two groups with the threshold on the Upper Fence
-    :param df_without_labels: A boolean df with the P-value as columns
-    :param type: Either above or below, decides the output
-    :return: The dataframe with the properties in the selected type
-    """
-    if type == 'above':
-        above_threshold = property_count_df_without_labels[
-            property_count_df_without_labels['Frequency'] > getBoxplotValues(df_without_labels['Frequency'])]
-        above_threshold_df = getBooleanDF(property_list).drop(above_threshold['Property'].tolist(), axis='columns')
-        return above_threshold_df
-    elif type == 'below':
-        below_threshold = property_count_df_without_labels[
-            property_count_df_without_labels['Frequency'] <= getBoxplotValues(df_without_labels['Frequency'])]
-        below_threshold_df = getBooleanDF(property_list).drop(below_threshold['Property'].tolist(), axis='columns')
-        return below_threshold_df
-    else:
-        raise Error("it can only take above or below. Please try again")
+    :param property_list: Input is the nested property list extracted from extractProperties()
+    :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
+    index 2 is the most frequent properties
+    '''
 
+    #Uses the two functions property_count_function() and getBooleanDF()
+    df = property_count_function(property_list)
+    boolean_df = getBooleanDF(property_list)
+
+    #Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
+    lower_split = round(getBoxplotValues(df), 0) #Skal være count dataframe - svarer til Upper Fence
+    upper_split = round(len(boolean_df)*0.25, 0) #Skal være boolean dataframe - svarer til support > 0.25
+
+    #Define lists of properties belonging to the partitions
+    below_lower_split = df[df['Frequency'] <= lower_split]
+    between_splits = df[(df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split)] # & means and
+    above_upper_split = df[df['Frequency'] > upper_split]
+
+    #Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
+    below_lower_split_df = boolean_df.drop(between_splits['Property'].tolist() + above_upper_split['Property'].tolist(),
+                                           axis='columns')
+    between_splits_df = boolean_df.drop(below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(),
+                                        axis='columns')
+    above_upper_split_df = boolean_df.drop(below_lower_split['Property'].tolist() + between_splits['Property'].tolist(),
+                                           axis='columns')
+
+    return below_lower_split_df, between_splits_df, above_upper_split_df
 
 if __name__ == '__main__':
-    frequent_items = fpgrowth(splitBooleanDF(property_count_df_without_labels, 'below'),
-                                                min_support=0.4, use_colnames=True)
+    # The full list of properties
+    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
-    property_rules = association_rules(frequent_items,
-                                       metric="lift", min_threshold=1.1)
+    def makeBoxPlot():
+        # Uses the property_count_function to create a dataframe containing properties and their frequency.
+        property_count_df = property_count_function(property_list)
+
+        # Copy of the property_count_df that should be with P-codes and not P label values
+        property_count_df_without_labels = property_count_df.copy()
+
+        # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
+        property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
+
+        fig = go.Figure()
+        fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
+        fig.show()
+
+    #makeBoxPlot()
+
+    test_df = splitBooleanDF(property_list)[2]
+
+    frequent_items = fpgrowth(test_df, min_support=0.25, use_colnames=True)

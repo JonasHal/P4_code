@@ -3,7 +3,6 @@ from PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from mlxtend.frequent_patterns import association_rules, apriori
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-from Algorithms import runAlgorthims
 import plotly.graph_objects as go
 from pathlib import Path
 from aifc import Error
@@ -28,19 +27,24 @@ fig = px.box(property_count_df_without_labels, x=property_count_df_without_label
 #fig.show()
 
 
+
 te = TransactionEncoder()
 te_ary = te.fit(property_list).transform(property_list)
-property_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
+boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
 
 Q1 = property_count_df_without_labels['Frequency'].quantile(0.25)
 Q3 = property_count_df_without_labels['Frequency'].quantile(0.75)
 
 IQR = Q3 - Q1
 
+print(property_count_df_without_labels)
+print(boolean_dataframe)
+
 Upper_Fence = round(Q3 + (1.5 * IQR), 0)
 print(Upper_Fence)
-Middle_Ground = round(len(property_dataframe)*0.25, 0)
+Middle_Ground = round(len(boolean_dataframe)*0.25, 0)
 print(Middle_Ground)
+
 
 above_threshold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] > Middle_Ground]
 print('Der er {} antal properties OVER threshold'.format(len(above_threshold)))
@@ -53,18 +57,18 @@ print('Der er {} antal properties MELLEM thresholds'.format(len(between_threshol
 below_threshold = property_count_df_without_labels[property_count_df_without_labels['Frequency'] <= Upper_Fence]
 print('Der er {} antal properties UNDER threshold'.format(len(below_threshold)))
 
-above_threshold_df = property_dataframe.drop(below_threshold['Property'].tolist()+between_thresholds['Property'].tolist()
+above_threshold_df = boolean_dataframe.drop(below_threshold['Property'].tolist()+between_thresholds['Property'].tolist()
                                              , axis='columns')
 
-between_thresholds_df = property_dataframe.drop(below_threshold['Property'].tolist()+above_threshold['Property'].tolist()
+between_thresholds_df = boolean_dataframe.drop(below_threshold['Property'].tolist()+above_threshold['Property'].tolist()
                                                 , axis='columns')
 
-below_threshold_df = property_dataframe.drop(above_threshold['Property'].tolist()+between_thresholds['Property'].tolist()
+below_threshold_df = boolean_dataframe.drop(above_threshold['Property'].tolist()+between_thresholds['Property'].tolist()
                                              , axis='columns')
 
 print(above_threshold_df)
 print(between_thresholds_df)
 print(below_threshold_df)
-#apriori_frequent_properties = apriori(property_dataframe, min_support=0.2, use_colnames=True)
+#apriori_frequent_properties = apriori(boolean_dataframe, min_support=0.2, use_colnames=True)
 #property_rules = association_rules(apriori_frequent_properties, metric="lift", min_threshold=1.1)
 #print(property_rules)
