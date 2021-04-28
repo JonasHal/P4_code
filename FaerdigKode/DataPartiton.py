@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 import pandas as pd
 
+
 def getBooleanDF(property_list):
     """
     Transform the nested list into a boolean dataframe with transactions on rows and items on columns
@@ -15,7 +16,7 @@ def getBooleanDF(property_list):
     te = TransactionEncoder()
     te_ary = te.fit(property_list).transform(property_list)
     boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
-    #property_dataframe = property_dataframe.drop('P31', axis=1)
+    # property_dataframe = property_dataframe.drop('P31', axis=1)
     return boolean_dataframe
 
 
@@ -34,6 +35,7 @@ def getBoxplotValues(df):
 
     return upper_fence, overlap_range
 
+
 def splitBooleanDF(property_list, partition):
     '''
 
@@ -42,7 +44,7 @@ def splitBooleanDF(property_list, partition):
     index 2 is the most frequent properties
     '''
 
-    #Uses the two functions property_count_function() and getBooleanDF()
+    # Uses the two functions property_count_function() and getBooleanDF()
     df = property_count_function(property_list)
     boolean_df = getBooleanDF(property_list)
 
@@ -88,9 +90,11 @@ def splitBooleanDF(property_list, partition):
 
     return split_df
 
+
 if __name__ == '__main__':
     # The full list of properties
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
+
 
     def makeBoxPlot():
         # Uses the property_count_function to create a dataframe containing properties and their frequency.
@@ -103,16 +107,31 @@ if __name__ == '__main__':
         property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
 
         fig = go.Figure()
-        fig.add_trace(go.Box(x=property_count_df_without_labels['Frequency']))
+        fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency'], boxpoints='all', marker_size=3,
+                             jitter=0.3, name='Boxplot'))
+
+        fig.add_trace(go.Bar(x=[0.8], y=[81], base=0, name='Partition 1 - Rare Properties'))
+        fig.add_trace(go.Bar(x=[0.8], y=[2098], base=31, name='Partition 2 - Properties'))
+        fig.add_trace(go.Bar(x=[0.8], y=[6386], base=2129, name='Partition 3 - Frequent Properties'))
+
+        fig.update_layout(
+            yaxis_title='Property Frequency',
+            xaxis_visible=False, xaxis_showticklabels=False
+        )
+
         fig.show()
 
-    #makeBoxPlot()
+        fig2 = go.Figure()
+        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency']))
+        # fig2.show()
 
-    upper_properties = splitBooleanDF(property_list, "upper")
-    #middle_properties = splitBooleanDF(property_list, "middle")
-    #lower_properties = splitBooleanDF(property_list, "lower")
 
-    frequent_items_upper = fpgrowth(upper_properties, min_support=0.01, use_colnames=True)
-    #frequent_items_middle = fpgrowth(middle_properties, min_support=0.005, use_colnames=True)
-    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+    makeBoxPlot()
 
+    # upper_properties = splitBooleanDF(property_list, "upper")
+    # middle_properties = splitBooleanDF(property_list, "middle")
+    # lower_properties = splitBooleanDF(property_list, "lower")
+
+    # frequent_items_upper = fpgrowth(upper_properties, min_support=0.01, use_colnames=True)
+    # frequent_items_middle = fpgrowth(middle_properties, min_support=0.005, use_colnames=True)
+    # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
