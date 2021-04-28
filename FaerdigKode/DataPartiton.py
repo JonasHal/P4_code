@@ -27,12 +27,12 @@ def getBoxplotValues(df):
     """
     Q1 = df['Frequency'].quantile(0.25)
     Q3 = df['Frequency'].quantile(0.75)
-
     IQR = Q3 - Q1
 
-    Upper_Fence = Q3 + (1.5 * IQR)
+    overlap_range = 1.5 * IQR
+    upper_fence = Q3 + overlap_range
 
-    return Upper_Fence
+    return upper_fence, overlap_range
 
 def splitBooleanDF(property_list):
     '''
@@ -47,12 +47,13 @@ def splitBooleanDF(property_list):
     boolean_df = getBooleanDF(property_list)
 
     #Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
-    lower_split = round(getBoxplotValues(df), 0) #Skal være count dataframe - svarer til Upper Fence
+    lower_split = round(getBoxplotValues(df)[0], 0) #Skal være count dataframe - svarer til Upper Fence
     upper_split = round(len(boolean_df)*0.25, 0) #Skal være boolean dataframe - svarer til support > 0.25
+    overlap_range = round(getBoxplotValues(df)[1], 0)
 
     #Define lists of properties belonging to the partitions
-    below_lower_split = df[df['Frequency'] <= lower_split]
-    between_splits = df[(df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split)] # & means and
+    below_lower_split = df[df['Frequency'] <= lower_split + overlap_range]
+    between_splits = df[(df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split - overlap_range)] # & means and
     above_upper_split = df[df['Frequency'] > upper_split]
 
     #Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
