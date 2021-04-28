@@ -3,7 +3,7 @@ from PropertyDistUni import property_count_function, replacePcodesWithPlabels
 from mlxtend.frequent_patterns import association_rules, apriori
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-from Algorthims import runAlgorthims
+from Algorithms import runAlgorthims
 import plotly.graph_objects as go
 from pathlib import Path
 from aifc import Error
