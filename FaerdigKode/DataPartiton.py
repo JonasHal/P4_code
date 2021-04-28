@@ -1,5 +1,5 @@
 from PropertyDistUni import property_count_function, replacePcodesWithPlabels
-from mlxtend.frequent_patterns import fpgrowth, association_rules
+from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
 from extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
@@ -86,6 +86,13 @@ if __name__ == '__main__':
 
     #makeBoxPlot()
 
-    test_df = splitBooleanDF(property_list)[2]
+    #upper_properties = splitBooleanDF(property_list)[2]
+    middle_properties = splitBooleanDF(property_list)[1]
+    #lower_properties = splitBooleanDF(property_list)[0]
 
-    frequent_items = fpgrowth(test_df, min_support=0.25, use_colnames=True)
+    #frequent_items_upper = fpgrowth(upper_properties, min_support=0.01, use_colnames=True)
+    frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
+    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+
+    print(frequent_items_middle)
+
