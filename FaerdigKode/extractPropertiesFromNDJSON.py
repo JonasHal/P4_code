@@ -4,9 +4,9 @@ from pathlib import Path
 
 def extractItemCodes(filename):
     """
-
+    Takes an NDJSON file and finds the list with the ItemCodes
     :param filename: What file to open: for example Path("Data/universities_latest_all.ndjson")
-    :return: returns a Python list with all the properties from the .ndjson file.
+    :return: returns a Python list with all the properties from the NDJSON file.
     """
 
     item_list = []
@@ -24,9 +24,9 @@ def extractItemCodes(filename):
 
 def extractProperties(filename):
     """
-
+    Walks through an NDJSON file and makes a nested list, with all the properties for each item in a subset of wikidata
     :param filename: What file to open: for example Path("Data/universities_latest_all.ndjson")
-    :return: returns a Python list with all the properties from the .ndjson file.
+    :return: returns a Python list with all the properties from the NDJSON file.
     """
 
     property_list = []
@@ -45,7 +45,7 @@ def extractProperties(filename):
 
 def replacePcodesWithPlabels(listofproperties):
     """
-
+    Replace P-values with P-labels
     :param listofproperties: Input the nested list from the extractProperties function
     :return: listofproperties_with_labels: A new list containing the same data as the original nested list
     only the P-codes are replaced with the P-label values from Wikidata.
@@ -72,7 +72,12 @@ def replacePcodesWithPlabels(listofproperties):
 
 
 def convertPropertyListToTXT(property_list, output_filename):
-
+    """
+    Extracts a nested list of properties to a text file
+    :param property_list: Nested list of properties
+    :param output_filename: Name of the output file to write to
+    :return: nothing
+    """
     with open(output_filename, 'w') as f:
         for nested_lists in property_list:
             try:
