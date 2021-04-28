@@ -129,6 +129,8 @@ if __name__ == '__main__':
         # fig2.show()
 
 
+    makeBoxPlot()
+    
     #upper_properties = splitBooleanDF(property_list, "upper")
     middle_properties = splitBooleanDF(property_list, "middle")
     #lower_properties = splitBooleanDF(property_list, "lower")
