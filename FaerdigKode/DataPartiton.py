@@ -34,7 +34,7 @@ def getBoxplotValues(df):
 
     return upper_fence, overlap_range
 
-def splitBooleanDF(property_list):
+def splitBooleanDF(property_list, partition):
     '''
 
     :param property_list: Input is the nested property list extracted from extractProperties()
@@ -46,25 +46,47 @@ def splitBooleanDF(property_list):
     df = property_count_function(property_list)
     boolean_df = getBooleanDF(property_list)
 
-    #Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
-    lower_split = round(getBoxplotValues(df)[0], 0) #Skal være count dataframe - svarer til Upper Fence
-    upper_split = round(len(boolean_df)*0.25, 0) #Skal være boolean dataframe - svarer til support > 0.25
+    # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
+    lower_split = round(getBoxplotValues(df)[0], 0)  # Skal være count dataframe - svarer til Upper Fence
+    upper_split = round(len(boolean_df) * 0.25, 0)  # Skal være boolean dataframe - svarer til support > 0.25
     overlap_range = round(getBoxplotValues(df)[1], 0)
 
-    #Define lists of properties belonging to the partitions
-    below_lower_split = df[df['Frequency'] <= lower_split + overlap_range]
-    between_splits = df[(df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split - overlap_range)] # & means and
-    above_upper_split = df[df['Frequency'] > upper_split]
+    if partition == "lower":
+        # Define lists of properties belonging to the partitions
+        between_splits = df[
+            (df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split + overlap_range)]  # & means and
+        above_upper_split = df[df['Frequency'] > upper_split]
 
-    #Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
-    below_lower_split_df = boolean_df.drop(between_splits['Property'].tolist() + above_upper_split['Property'].tolist(),
-                                           axis='columns')
-    between_splits_df = boolean_df.drop(below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(),
-                                        axis='columns')
-    above_upper_split_df = boolean_df.drop(below_lower_split['Property'].tolist() + between_splits['Property'].tolist(),
-                                           axis='columns')
+        # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
+        split_df = boolean_df.drop(
+            between_splits['Property'].tolist() + above_upper_split['Property'].tolist(),
+            axis='columns')
 
-    return below_lower_split_df, between_splits_df, above_upper_split_df
+    elif partition == "middle":
+        # Define lists of properties belonging to the partitions
+        below_lower_split = df[df['Frequency'] <= lower_split - overlap_range]
+        above_upper_split = df[df['Frequency'] > upper_split]
+
+        # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
+        split_df = boolean_df.drop(
+            below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(),
+            axis='columns')
+
+    elif partition == "upper":
+        # Define lists of properties belonging to the partitions
+        below_lower_split_with_overlap = df[df['Frequency'] <= lower_split + overlap_range]
+        between_splits = df[(df['Frequency'] <= upper_split) & (df['Frequency'] > lower_split + overlap_range)]
+
+        # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
+        split_df = boolean_df.drop(
+            below_lower_split_with_overlap['Property'].tolist() + between_splits['Property'].tolist(),
+            axis='columns')
+
+    else:
+        raise ValueError("The partition could not be made from the function splitBooleanDF(). "
+                         "It has to defined as either 'lower', 'middle' or 'upper'")
+
+    return split_df
 
 if __name__ == '__main__':
     # The full list of properties
@@ -86,6 +108,11 @@ if __name__ == '__main__':
 
     #makeBoxPlot()
 
-    test_df = splitBooleanDF(property_list)[2]
+    upper_properties = splitBooleanDF(property_list, "upper")
+    #middle_properties = splitBooleanDF(property_list, "middle")
+    #lower_properties = splitBooleanDF(property_list, "lower")
 
-    frequent_items = fpgrowth(test_df, min_support=0.25, use_colnames=True)
+    frequent_items_upper = fpgrowth(upper_properties, min_support=0.01, use_colnames=True)
+    #frequent_items_middle = fpgrowth(middle_properties, min_support=0.005, use_colnames=True)
+    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+
