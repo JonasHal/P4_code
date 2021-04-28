@@ -1,6 +1,6 @@
-from PropertyDistUni import property_count_function, replacePcodesWithPlabels
+from PropertyDistUni import property_count_function
 from mlxtend.frequent_patterns import fpgrowth, association_rules
-from extractPropertiesFromNDJSON import extractProperties
+from extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlabels
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
 from pathlib import Path
@@ -43,10 +43,13 @@ def splitBooleanDF(property_list, partition):
     :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
     index 2 is the most frequent properties
     '''
+    #replace P-codes with P-labels
+    property_list = replacePcodesWithPlabels(property_list)
 
     # Uses the two functions property_count_function() and getBooleanDF()
     df = property_count_function(property_list)
     boolean_df = getBooleanDF(property_list)
+
 
     # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
     lower_split = round(getBoxplotValues(df)[0], 0)  # Skal være count dataframe - svarer til Upper Fence
@@ -126,12 +129,17 @@ if __name__ == '__main__':
         # fig2.show()
 
 
-    makeBoxPlot()
+    #upper_properties = splitBooleanDF(property_list, "upper")
+    middle_properties = splitBooleanDF(property_list, "middle")
+    #lower_properties = splitBooleanDF(property_list, "lower")
 
-    # upper_properties = splitBooleanDF(property_list, "upper")
-    # middle_properties = splitBooleanDF(property_list, "middle")
-    # lower_properties = splitBooleanDF(property_list, "lower")
+    #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
+    frequent_items_middle = fpgrowth(middle_properties, min_support=0.01, use_colnames=True)
+    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.002, use_colnames=True)
 
-    # frequent_items_upper = fpgrowth(upper_properties, min_support=0.01, use_colnames=True)
-    # frequent_items_middle = fpgrowth(middle_properties, min_support=0.005, use_colnames=True)
-    # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+    print(len(frequent_items_middle))
+
+    rules = association_rules(frequent_items_middle, metric="lift", min_threshold=50)
+    print(rules[["antecedents", "consequents"]])
+
+    #Med en confidence
