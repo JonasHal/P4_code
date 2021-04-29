@@ -99,12 +99,11 @@ def removeExternalId(boolean_df):
     property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
     property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
 
-    for i in range(len(boolean_df.columns)):
-        print(boolean_df[i])
+    for column in boolean_df.columns:
+        if column in property_label_dataframe_externalIDs.index:
+            boolean_df.drop(column, axis='columns', inplace=True)
 
-
-
-
+    return boolean_df
 
 if __name__ == '__main__':
     # The full list of properties
