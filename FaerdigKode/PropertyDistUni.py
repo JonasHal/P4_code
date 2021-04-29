@@ -65,7 +65,7 @@ def entity_property_count_function(listOfProperties):
     return entity_property_dataframe, number_of_properties_list
 
 
-def replacePcodesWithPlabels(property_dataframe):
+def replacePcodesWithPlabels_df(property_dataframe):
     """
     A function that replaces a dataframe column ['Property'] with the property labels from the csv
     propertes.csv.
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     property_count_df_without_labels = property_count_df.copy()
 
     # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
-    property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
+    property_count_df_with_labels = replacePcodesWithPlabels_df(property_count_df)
 
     number_of_properties_above_1000 = []
     number_of_properties_below_1000 = []

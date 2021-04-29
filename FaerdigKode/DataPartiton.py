@@ -94,6 +94,17 @@ def splitBooleanDF(property_list, partition, external_ids = True):
 
     return split_df
 
+def removeExternalId(boolean_df):
+    property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
+    property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
+    property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
+
+    for i in range(len(boolean_df.columns)):
+        print(boolean_df[i])
+
+
+
+
 
 if __name__ == '__main__':
     # The full list of properties
@@ -132,11 +143,11 @@ if __name__ == '__main__':
 
     #makeBoxPlot()
     
-    #upper_properties = splitBooleanDF(property_list, "upper")
-    middle_properties = splitBooleanDF(property_list, "middle")
+    upper_properties = splitBooleanDF(property_list, "upper")
+    #middle_properties = splitBooleanDF(property_list, "middle")
     #lower_properties = splitBooleanDF(property_list, "lower")
 
-    print(middle_properties)
+    removeExternalId(upper_properties)
 
     #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
     #frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
