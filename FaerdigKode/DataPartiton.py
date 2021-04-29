@@ -99,16 +99,30 @@ def removeExternalId(boolean_df):
     property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
     property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
 
+    drop_count = 0
     for column in boolean_df.columns:
         if column in property_label_dataframe_externalIDs.index:
             boolean_df.drop(column, axis='columns', inplace=True)
+            drop_count += 1
 
+    print('{} number of columns that are ID"s have been dropped'.format(drop_count))
     return boolean_df
+
+def removeRulesWithId(rule_df):
+    property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
+    property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
+    property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
+    list_of_ids = property_label_dataframe_externalIDs.index.tolist()
+
+    rule_df['consequents'] = [list(rule_df['consequents'][i]) for i in rule_df.index]
+
+    print(rule_df)
+    # result = [rule_df.drop(x, axis='rows') for x in rule_df['consequents'] if x in list_of_ids]
+    # print(result)
 
 if __name__ == '__main__':
     # The full list of properties
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
-
 
     def makeBoxPlot():
         # Uses the property_count_function to create a dataframe containing properties and their frequency.
@@ -142,16 +156,16 @@ if __name__ == '__main__':
 
     #makeBoxPlot()
     
-    upper_properties = splitBooleanDF(property_list, "upper")
+    #upper_properties = splitBooleanDF(property_list, "upper")
     #middle_properties = splitBooleanDF(property_list, "middle")
-    #lower_properties = splitBooleanDF(property_list, "lower")
-
-    removeExternalId(upper_properties)
+    lower_properties = splitBooleanDF(property_list, "lower")
 
     #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
     #frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
-    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+    frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
 
-    #rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
+    lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
+    lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
+    lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) & (lower_rules['leverage'] > 0)]
 
-    #Med en confidence
+    test = removeRulesWithId(lower_rules)
