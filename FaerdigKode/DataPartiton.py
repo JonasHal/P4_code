@@ -1,6 +1,7 @@
 from PropertyDistUni import property_count_function
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlabels
+from PropertyDistUni import replacePcodesWithPlabels_df
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
 from pathlib import Path
@@ -36,14 +37,14 @@ def getBoxplotValues(df):
     return upper_fence, overlap_range
 
 
-def splitBooleanDF(property_list, partition):
+def splitBooleanDF(property_list, partition, external_ids = True):
     '''
 
     :param property_list: Input is the nested property list extracted from extractProperties()
     :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
     index 2 is the most frequent properties
     '''
-    #replace P-codes with P-labels
+    # replace P-codes with P-labels
     property_list = replacePcodesWithPlabels(property_list)
 
     # Uses the two functions property_count_function() and getBooleanDF()
@@ -54,7 +55,7 @@ def splitBooleanDF(property_list, partition):
     # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
     lower_split = round(getBoxplotValues(df)[0], 0)  # Skal være count dataframe - svarer til Upper Fence
     upper_split = round(len(boolean_df) * 0.25, 0)  # Skal være boolean dataframe - svarer til support > 0.25
-    overlap_range = round(getBoxplotValues(df)[1], 0)
+    overlap_range = round(getBoxplotValues(df)[1], 0) # Skal være count dataframe - svarer til IQR * 1.5
 
     if partition == "lower":
         # Define lists of properties belonging to the partitions
@@ -107,7 +108,7 @@ if __name__ == '__main__':
         property_count_df_without_labels = property_count_df.copy()
 
         # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
-        property_count_df_with_labels = replacePcodesWithPlabels(property_count_df)
+        property_count_df_with_labels = replacePcodesWithPlabels_df(property_count_df)
 
         fig = go.Figure()
         fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency'], boxpoints='all', marker_size=3,
@@ -124,9 +125,9 @@ if __name__ == '__main__':
 
         fig.show()
 
-        fig2 = go.Figure()
-        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency']))
-        # fig2.show()
+        #fig2 = go.Figure()
+        #fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency']))
+        #fig2.show()
 
 
     #makeBoxPlot()
@@ -135,13 +136,12 @@ if __name__ == '__main__':
     middle_properties = splitBooleanDF(property_list, "middle")
     #lower_properties = splitBooleanDF(property_list, "lower")
 
+    print(middle_properties)
+
     #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
-    frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
+    #frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
     #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
 
-    print(len(frequent_items_middle))
-
-    rules = association_rules(frequent_items_middle, metric="lift", min_threshold=50)
-    print(rules.to_string())
+    #rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
 
     #Med en confidence

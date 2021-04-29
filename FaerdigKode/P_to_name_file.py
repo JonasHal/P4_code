@@ -23,8 +23,7 @@ def get_results(endpoint_url, query):
 p_df = pd.DataFrame(columns=['Property', 'Value'])
 
 results = get_results(endpoint_url, query)
-print(results
-      )
+
 for result in results["results"]["bindings"]:
     p_df = p_df.append(
         {'Property': (result['property']['value'].split("/")[-1]), 'Value': result['propertyLabel']['value'],
