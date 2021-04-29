@@ -4,6 +4,8 @@
 # Importing the required libraries
 import os
 import itertools
+from pathlib import Path
+import timeit
 
 # Initializing the datastructures and constants
 phi = 0.0
@@ -22,24 +24,30 @@ cannotBeTogether = list()
 mustHave = list()
 tailCount = {}
 
-script_dir = os.path.dirname(__file__)
+
+script_dir = Path.cwd()
 
 
 # All functions run here according to MSApriory
 def main():
+    print("readData")
     readData()
+    print("initPass")
     initPass()
+    print("F1")
     F1()
+    print("Fi")
     Fi()
+    print("cannotBeTogetherConstraint()")
     cannotBeTogetherConstraint()
     if (mustHave != []):
         mustHaveConstraint()
+    print("output")
     output()
 
 
 # Reading data
 def readData():
-    print ('readData')
     '''To read the MIS values and phi (SDC) from parameterfile.txt'''
     global MS, TCount, IList, ICount, phi, TList, cannotBeTogether, mustHave
 
@@ -71,7 +79,6 @@ def readData():
     items = sorted(MS, key=MS.__getitem__)
 
     for item in items:
-        print('IList.append')
         IList.append(int(item))
         ICount[int(item)] = 0
 
@@ -81,7 +88,6 @@ def readData():
     file2 = open(abs_filepath_data)
 
     for i in file2:
-        print('TList.append')
         TList.append(list())
         transaction = i.replace(' ', '').replace('{', '').replace('}', '').replace('<', '').replace('>', '').split(',')
         for t in transaction:
@@ -94,7 +100,6 @@ def readData():
 
 # Making the initial pass
 def initPass():
-    print("initPass")
     global L
     for i in range(len(IList)):
         if (i == 0):
@@ -112,7 +117,6 @@ def level2CandidateGeneration():
     print("level2CandidateGeneration")
     global CList, L
     for l in range(0, len(L)):
-        print("level2CandidateGeneration", str(l))
         if (ICount[L[l]] / TCount) >= MS[L[l]]:
             for h in range(l + 1, len(L)):
                 if (ICount[L[h]] / TCount) >= MS[L[l]] and abs(
@@ -125,13 +129,12 @@ def level2CandidateGeneration():
 
 # Using itertools to find subsets
 def findSubsets(S, m):
-    print("findSubsets", str(S), str(m))
     return list(set(itertools.combinations(S, m)))
 
 
 #Candidate Generation for levels other than 2
 def MSCandidateGeneration(n):
-    print("MSCandidateGeneration")
+    print("MSCandidateGeneration" + "n")
     m = n - 1
     k = 0
     for i in range(0, len(FList[m])):
@@ -145,7 +148,6 @@ def MSCandidateGeneration(n):
                     CList[m + 1].append(list(FList[m][i]))
                     CList[m + 1][len(CList[m + 1]) - 1].append(FList[m][j][k])
                     subset = findSubsets(CList[m + 1][len(CList[m + 1]) - 1], m)
-                    print('Subset' + str(m))
                     for sub in range(0, len(subset)):
                         if (not CList[m + 1]):
                             if ((bool(CList[m + 1][len(CList[m + 1]) - 1][0]) in subset[sub]) or (
@@ -233,24 +235,25 @@ def output():
     global FList, tailCount, ICount, CDict
     FList = [x for x in FList if x != []]
 
-    rel_path_results = "results/result1-1.txt"
+    rel_path_results = Path("results/result1-1.txt")
     abs_filepath_results = os.path.join(script_dir, rel_path_results)
     file3 = open(abs_filepath_results, "w")
+    file3.write('count,' + ' ' + 'properties' + '\n')
 
     count = 0
     print("Frequent 1-itemsets")
-    file3.write("\nFrequent 1-itemsets\n")
+    #file3.write("\nFrequent 1-itemsets\n")
     if (FList != []):
         for t in FList[0]:
             count += 1
             print('\t' + str(ICount[t[0]]) + ' : { ' + str(t[0]) + ' }')
-            file3.write('\t' + str(ICount[t[0]]) + ' : { ' + str(t[0]) + ' }\n')
+            file3.write(str(ICount[t[0]]) + ', {' + 'P' + str(t[0]) + '}\n')
     print("\tTotal number of frequent 1-itemsets = " + str(count))
-    file3.write("\tTotal number of frequent 1-itemsets = " + str(count) + "\n")
+    #file3.write("\tTotal number of frequent 1-itemsets = " + str(count) + "\n")
 
     for i in range(1, len(FList)):
         print('\n\nFrequent', str(i + 1) + '-itemsets')
-        file3.write('\n\nFrequent' + str(i + 1) + '-itemsets\n')
+        #file3.write('\n\nFrequent' + str(i + 1) + '-itemsets\n')
         count = 0
         for t in FList[i]:
             tCount = 0
@@ -259,11 +262,14 @@ def output():
                     tCount += 1
             count += 1
             print('\t', tCount, ' : {', str(t).replace("[", "").replace("]", ""), '}')
-            file3.write('\t' + str(tCount) + ' : {' + str(t).replace("[", "").replace("]", "") + '}\n')
+            file3.write(str(tCount) + ' : {' + str(t).replace("[", "").replace("]", "") + '}\n')
             print('Tail Count =', tailCount[tuple(t)])
-            file3.write('Tail Count = ' + str(tailCount[tuple(t)]) + "\n")
+            #file3.write('Tail Count = ' + str(tailCount[tuple(t)]) + "\n")
         print('\n\tTotal number of frequent', str(i + 1) + '-itemsets = ', count)
-        file3.write('\n\tTotal number of frequent ' + str(i + 1) + '-itemsets = ' + str(count) + "\n")
+        #file3.write('\n\tTotal number of frequent ' + str(i + 1) + '-itemsets = ' + str(count) + "\n")
 
 
-if __name__ == "__main__": main()
+timer = timeit.timeit(main, number=1)
+
+if __name__ == "__main__":
+    print(timer)
