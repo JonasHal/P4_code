@@ -43,7 +43,7 @@ def extractProperties(filename):
     return property_list
 
 
-def replacePcodesWithPlabels(listofproperties):
+def replacePcodesWithPlabels(listofproperties, external_ids = True):
     """
     Replace P-values with P-labels
     :param listofproperties: Input the nested list from the extractProperties function
@@ -56,17 +56,31 @@ def replacePcodesWithPlabels(listofproperties):
 
     listofproperties_with_labels = []
 
-    for nested_list in listofproperties:
-        prop_list = []
-        for prop in nested_list:
-            try:
-                # if prop in property_label_dataframe.index:
-                prop_label_value = property_label_dataframe.loc[prop,].Value
-                prop_list.append(prop_label_value)
-            except KeyError:
-                print("The P-code does not exist in the property_label_dataframe")
+    if external_ids == True:
+        for nested_list in listofproperties:
+            prop_list = []
+            for prop in nested_list:
+                try:
+                    prop_label_value = property_label_dataframe.loc[prop,].Value
+                    prop_list.append(prop_label_value)
+                except :
+                    print("The P-code does not exist in the property_label_dataframe")
 
-        listofproperties_with_labels.append(prop_list)
+            listofproperties_with_labels.append(prop_list)
+
+    elif external_ids == False:
+        property_label_dataframe = property_label_dataframe[(property_label_dataframe["Type"] != "ExternalId")]
+        for nested_list in listofproperties:
+            prop_list = []
+            for prop in nested_list:
+                try:
+                    prop_label_value = property_label_dataframe.loc[prop,].Value
+                    prop_list.append(prop_label_value)
+                except:
+                    pass
+
+    else:
+        return print("Error: Please enter boolean value for external_ids")
 
     return listofproperties_with_labels
 
@@ -89,12 +103,10 @@ def convertPropertyListToTXT(property_list, output_filename):
                 print('The type of data is wrong')
         f.close()
 
-
-
 if __name__ == '__main__':
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
-    property_list_with_labels = replacePcodesWithPlabels(property_list)
+    property_list_with_labels = replacePcodesWithPlabels(property_list, external_ids=False)
 
     #convertPropertyListWithLabelsToTXT(property_list_with_labels, 'test.txt')
 
-    convertPropertyListToTXT(property_list, '../Users/Magnus/transaction.txt')
+    #convertPropertyListToTXT(property_list, '../Users/Magnus/transaction.txt')
