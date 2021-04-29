@@ -142,3 +142,4 @@ cython_debug/
 .idea/P4_code.iml
 Data/danish_humans.ndjson
 .idea/P4_code.iml
+.idea/csv-plugin.xml
