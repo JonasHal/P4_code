@@ -238,7 +238,7 @@ def output():
     rel_path_results = Path("results/result1-1.txt")
     abs_filepath_results = os.path.join(script_dir, rel_path_results)
     file3 = open(abs_filepath_results, "w")
-    file3.write('support,' + ' ' + 'properties' + '\n')
+    file3.write('support;' + ' ' + 'properties' + '\n')
 
     count = 0
     print("Frequent 1-itemsets")
@@ -247,7 +247,7 @@ def output():
         for t in FList[0]:
             count += 1
             print('\t' + str(ICount[t[0]]) + ' : { ' + str(t[0]) + ' }')
-            file3.write(str(ICount[t[0]]/8515) + ',(' + 'P' + str(t[0]) + ')\n')
+            file3.write(str(ICount[t[0]]/8515) + ';(' + 'P' + str(t[0]) + ')\n')
     print("\tTotal number of frequent 1-itemsets = " + str(count))
     #file3.write("\tTotal number of frequent 1-itemsets = " + str(count) + "\n")
 
@@ -262,7 +262,7 @@ def output():
                     tCount += 1
             count += 1
             print('\t', tCount, ' : {', str(t).replace("[", "").replace("]", ""), '}')
-            file3.write(str(tCount/8515) + ',(' + str(['P'+str(t[i]) for i in range(len(t))]).replace("[", "").replace("]", "").replace("'", "") + ')\n')
+            file3.write(str(tCount/8515) + ';(' + str(['P'+str(t[i]) for i in range(len(t))]).replace("[", "").replace("]", "").replace("'", "") + ')\n')
             print('Tail Count =', tailCount[tuple(t)])
             #file3.write('Tail Count = ' + str(tailCount[tuple(t)]) + "\n")
         print('\n\tTotal number of frequent', str(i + 1) + '-itemsets = ', count)

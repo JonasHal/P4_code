@@ -114,7 +114,13 @@ def removeRulesWithId(rule_df):
     property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
     list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
+    #print(list_of_ids)
+
     rule_df['consequents'] = [list(rule_df['consequents'][i]) for i in rule_df.index]
+
+    for i in rule_df.index:
+        if rule_df['consequents'][i][0] in list_of_ids:
+            rule_df = rule_df.drop([i])
 
     print(rule_df)
     # result = [rule_df.drop(x, axis='rows') for x in rule_df['consequents'] if x in list_of_ids]

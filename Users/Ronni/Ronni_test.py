@@ -1,45 +1,71 @@
 import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import fpgrowth
+from mlxtend.frequent_patterns import fpgrowth, association_rules
 from pathlib import Path
 from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 
-property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
-
-
-def replacePcodesWithPlabels(df):
+def replacePcodesWithPlabels(listofproperties, external_ids = True):
+    """
+    Replace P-values with P-labels
+    :param listofproperties: Input the nested list from the extractProperties function
+    :return: listofproperties_with_labels: A new list containing the same data as the original nested list
+    only the P-codes are replaced with the P-label values from Wikidata.
+    """
     # Converts the csv file containing P-codes and P label values to a dataframe
     property_label_dataframe = pd.read_csv(Path("../../Data/properties.csv"))
+    property_label_dataframe.set_index(['Property'], inplace=True)
 
-    df_name = []
+    listofproperties_with_labels = []
 
-    for list in df:
-        entity_list = []
-        for prop in list:
-            if prop in set(property_label_dataframe['Property']):
-                prop_label_value = property_label_dataframe.loc[property_label_dataframe['Property'] == prop,
-                                                                'Value'].iloc[0]
-                entity_list.append(prop_label_value)
-        df_name.append(entity_list)
+    if external_ids == True:
+        for nested_list in listofproperties:
+            prop_list = []
+            for prop in nested_list:
+                try:
+                    prop_label_value = property_label_dataframe.loc[prop,].Value
+                    prop_list.append(prop_label_value)
+                except :
+                    print("The P-code does not exist in the property_label_dataframe")
 
-    return df_name
-property_list_labels = replacePcodesWithPlabels(property_list)
+            listofproperties_with_labels.append(prop_list)
 
-te = TransactionEncoder()
-te_ary = te.fit(property_list_labels).transform(property_list_labels)
-df = pd.DataFrame(te_ary, columns=te.columns_)
+    elif external_ids == False:
+        property_label_dataframe = property_label_dataframe[(property_label_dataframe["Type"] != "ExternalId")]
+        for nested_list in listofproperties:
+            prop_list = []
+            for prop in nested_list:
+                try:
+                    prop_label_value = property_label_dataframe.loc[prop,].Value
+                    prop_list.append(prop_label_value)
+                except:
+                    pass
 
-# FPgrowth algorithm:
+    else:
+        return print("Error: Please enter boolean value for external_ids")
 
-frequent_itemsets_growth = fpgrowth(df, min_support=0.08, use_colnames=True)
-# print(frequent_itemsets_growth.info())
-# print(frequent_itemsets_growth.describe())
-frequent_itemsets_growth["itemsets_len"] = frequent_itemsets_growth["itemsets"].apply(lambda x: len(x))
-frequent_itemsets_growth = frequent_itemsets_growth[
-    (frequent_itemsets_growth["itemsets_len"] >= 10)]
-frequent_itemsets_growth = frequent_itemsets_growth[['support', 'itemsets']]
+    return listofproperties_with_labels
 
-print(frequent_itemsets_growth.head(10))
+# property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
+#
+#
+
+# property_list_labels = replacePcodesWithPlabels(property_list)
+#
+# te = TransactionEncoder()
+# te_ary = te.fit(property_list_labels).transform(property_list_labels)
+# df = pd.DataFrame(te_ary, columns=te.columns_)
+#
+# # FPgrowth algorithm:
+#
+# frequent_itemsets_growth = fpgrowth(df, min_support=0.08, use_colnames=True)
+# # print(frequent_itemsets_growth.info())
+# # print(frequent_itemsets_growth.describe())
+# frequent_itemsets_growth["itemsets_len"] = frequent_itemsets_growth["itemsets"].apply(lambda x: len(x))
+# frequent_itemsets_growth = frequent_itemsets_growth[
+#     (frequent_itemsets_growth["itemsets_len"] >= 10)]
+# frequent_itemsets_growth = frequent_itemsets_growth[['support', 'itemsets']]
+#
+# print(frequent_itemsets_growth.head(10))
 
 
 # association_rules_growth = association_rules(frequent_itemsets_growth, metric="confidence", min_threshold=0.7)
@@ -57,9 +83,14 @@ print(frequent_itemsets_growth.head(10))
 
 # Apriori algorithm:
 # frequent_itemsets_apriori = apriori(df, min_support=0.5, use_colnames=True)
-# association_rules_apriori = association_rules(frequent_itemsets_apriori, metric="confidence", min_threshold=0.7)
-# # print(association_rules_apriori.head(10))
-#
+frequent_itemsets_apriori = pd.read_csv(Path('../Magnus/results/result1-1.txt'), sep=';')
+frequent_itemsets_apriori.itemsets = [frequent_itemsets_apriori.itemsets[i].replace(' ', '').strip(')(').split(',') for i in range(len(frequent_itemsets_apriori))]
+frequent_itemsets_apriori.itemsets = replacePcodesWithPlabels(frequent_itemsets_apriori.itemsets)
+frequent_itemsets_apriori.itemsets = [frozenset(frequent_itemsets_apriori.itemsets[i]) for i in range(len(frequent_itemsets_apriori))]
+#print(frequent_itemsets_apriori.tail())
+association_rules_apriori = association_rules(frequent_itemsets_apriori, metric="confidence", min_threshold=0.7)
+print(association_rules_apriori.head(10))
+
 # rules_apriori = association_rules(frequent_itemsets_apriori, metric="lift", min_threshold=1.2)
 # rules_apriori["antecedent_len"] = rules_apriori["antecedents"].apply(lambda x: len(x))
 # rules_apriori = rules_apriori[
@@ -77,3 +108,6 @@ print(frequent_itemsets_growth.head(10))
 # Sammenligning mellem to hyppige itemsets
 # compared = frequent_itemsets_growth.compare(frequent_itemsets_apriori, keep_equal=True)
 # print(compared.head(10))
+
+#results =
+#print(results.tail())
