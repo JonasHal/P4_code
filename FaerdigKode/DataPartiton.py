@@ -129,19 +129,19 @@ if __name__ == '__main__':
         # fig2.show()
 
 
-    makeBoxPlot()
+    #makeBoxPlot()
     
     #upper_properties = splitBooleanDF(property_list, "upper")
     middle_properties = splitBooleanDF(property_list, "middle")
     #lower_properties = splitBooleanDF(property_list, "lower")
 
     #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
-    frequent_items_middle = fpgrowth(middle_properties, min_support=0.01, use_colnames=True)
-    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.002, use_colnames=True)
+    frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
+    #frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
 
     print(len(frequent_items_middle))
 
     rules = association_rules(frequent_items_middle, metric="lift", min_threshold=50)
-    print(rules[["antecedents", "consequents"]])
+    print(rules.to_string())
 
     #Med en confidence
