@@ -20,7 +20,7 @@ def get_results(endpoint_url, query):
     return sparql.query().convert()
 
 
-p_df = pd.DataFrame(columns=['Property', 'Value'])
+p_df = pd.DataFrame(columns=['Property', 'Value', 'Type'])
 
 results = get_results(endpoint_url, query)
 
