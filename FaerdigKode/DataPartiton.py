@@ -114,17 +114,19 @@ def removeRulesWithId(rule_df):
     property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
     list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
-    #print(list_of_ids)
-
+    #Changes the datatype of the consequents from frozenset, which is immutable, to a list.
     rule_df['consequents'] = [list(rule_df['consequents'][i]) for i in rule_df.index]
+
+    amount_of_dropped_rules = 0
 
     for i in rule_df.index:
         if rule_df['consequents'][i][0] in list_of_ids:
             rule_df = rule_df.drop([i])
+            amount_of_dropped_rules += 1
 
-    print(rule_df)
-    # result = [rule_df.drop(x, axis='rows') for x in rule_df['consequents'] if x in list_of_ids]
-    # print(result)
+    print('A total amount of {} rules have been dropped'.format(amount_of_dropped_rules))
+
+    return rule_df
 
 if __name__ == '__main__':
     # The full list of properties
@@ -144,9 +146,9 @@ if __name__ == '__main__':
         fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency'], boxpoints='all', marker_size=3,
                              jitter=0.3, name='Boxplot'))
 
-        fig.add_trace(go.Bar(x=[0.8], y=[81], base=0, name='Partition 1 - Rare Properties'))
-        fig.add_trace(go.Bar(x=[0.8], y=[2098], base=31, name='Partition 2 - Properties'))
-        fig.add_trace(go.Bar(x=[0.8], y=[6386], base=2129, name='Partition 3 - Frequent Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[81], width=0.1, base=0, name='Lower Partition - Rare Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[2098], width=0.1, base=31, name='Middle Partition - Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[6386], width=0.1, base=2129, name='Upper Partition - General Properties'))
 
         fig.update_layout(
             yaxis_title='Property Frequency',
@@ -155,23 +157,31 @@ if __name__ == '__main__':
 
         fig.show()
 
-        #fig2 = go.Figure()
-        #fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency']))
+        fig2 = go.Figure()
+        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all', marker_size=3,
+                       jitter=0.3, name='Boxplot'))
+        fig2.update_layout(xaxis_title='Property Frequency', xaxis_visible=False, xaxis_showticklabels=False)
         #fig2.show()
 
 
-    #makeBoxPlot()
+    makeBoxPlot()
     
     #upper_properties = splitBooleanDF(property_list, "upper")
-    #middle_properties = splitBooleanDF(property_list, "middle")
+    middle_properties = splitBooleanDF(property_list, "middle")
     lower_properties = splitBooleanDF(property_list, "lower")
 
     #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
-    #frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
-    frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
-
-    lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
-    lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
-    lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) & (lower_rules['leverage'] > 0)]
-
-    test = removeRulesWithId(lower_rules)
+    # frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
+    # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+    #
+    # lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
+    # lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
+    # lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
+    #                           (lower_rules['leverage'] > 0)]
+    #
+    # middle_rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
+    # middle_rules["consequent_len"] = middle_rules["consequents"].apply(lambda x: len(x))
+    # middle_rules = middle_rules[(middle_rules['consequent_len'] == 1) & (middle_rules['lift'] > 1) &
+    #                             (middle_rules['leverage'] > 0)]
+    #
+    # middle_rules_without_id = removeRulesWithId(middle_rules)
