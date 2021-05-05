@@ -4,6 +4,7 @@ from extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlab
 from PropertyDistUni import replacePcodesWithPlabels_df
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from pathlib import Path
 import pandas as pd
 
@@ -125,6 +126,7 @@ def removeRulesWithId(rule_df):
             amount_of_dropped_rules += 1
 
     print('A total amount of {} rules have been dropped'.format(amount_of_dropped_rules))
+    print('The amount of rules are now {0}'.format(len(rule_df)))
 
     return rule_df
 
@@ -146,9 +148,9 @@ if __name__ == '__main__':
         fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency'], boxpoints='all', marker_size=3,
                              jitter=0.3, name='Boxplot'))
 
-        fig.add_trace(go.Bar(x=[0.2], y=[81], width=0.1, base=0, name='Lower Partition - Rare Properties'))
-        fig.add_trace(go.Bar(x=[0.2], y=[2098], width=0.1, base=31, name='Middle Partition - Properties'))
-        fig.add_trace(go.Bar(x=[0.2], y=[6386], width=0.1, base=2129, name='Upper Partition - General Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[81], width=0.1, base=0, name='Lower Partition - <br> Rare Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[2098], width=0.1, base=31, name='Middle Partition - <br> Middle Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[6386], width=0.1, base=2129, name='Upper Partition - <br> General Properties'))
 
         fig.update_layout(
             yaxis_title='Property Frequency',
@@ -157,20 +159,24 @@ if __name__ == '__main__':
 
         fig.show()
 
-        fig2 = go.Figure()
+        fig2 = make_subplots(rows=1, cols=2)
         fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all', marker_size=3,
-                       jitter=0.3, name='Boxplot'))
-        fig2.update_layout(xaxis_title='Property Frequency', xaxis_visible=False, xaxis_showticklabels=False)
-        #fig2.show()
+                       jitter=0.3, name='No zoom'), row=1, col=1)
+        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all', marker_size=3,
+                              jitter=0.3, name='Zoomed in'), row=1, col=2)
+        fig2.update_yaxes(title_text='Property Frequency',
+                          row=1, col=1)
+
+        fig2.show()
 
 
     makeBoxPlot()
     
-    #upper_properties = splitBooleanDF(property_list, "upper")
-    middle_properties = splitBooleanDF(property_list, "middle")
-    lower_properties = splitBooleanDF(property_list, "lower")
-
-    #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
+    # upper_properties = splitBooleanDF(property_list, "upper")
+    # middle_properties = splitBooleanDF(property_list, "middle")
+    # lower_properties = splitBooleanDF(property_list, "lower")
+    #
+    # frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
     # frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
     # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
     #
@@ -185,3 +191,5 @@ if __name__ == '__main__':
     #                             (middle_rules['leverage'] > 0)]
     #
     # middle_rules_without_id = removeRulesWithId(middle_rules)
+    # #middle_rules_without_id = middle_rules_without_id.sort_values(by='antecedents', key=lambda x: x.str.len())
+    # middle_rules_without_id = middle_rules_without_id.sort_values(by='leverage', ascending=False)
