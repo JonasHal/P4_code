@@ -3,24 +3,39 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
 import requests
+import sys
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 app = dash.Dash(__name__)
 
 SEARCHPAGE = ""
 SEARCHENTITY = "Q314"
+endpoint_url = "https://query.wikidata.org/sparql"
 
 colors = {
     'background': '#111111',
     'text': '#7FDBFF'
 }
 
+def retrieve_properties(item):
+    S = requests.Session()
+    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
+
+    R = S.post(url=URL, headers={"user-agent": "magic browser"})
+    DATA = R.json()
+    DATA_df = pd.DataFrame(DATA)
+
+    property_list = list(DATA_df.index[1:])
+
+    return property_list
+
 
 app.layout = html.Div([
     html.Header(html.H1(children='Hello Dash')
-                ),
+    ),
 
     html.Div(children='Dash: A web application framework for Python.', style={
         'textAlign': 'center',
@@ -39,10 +54,35 @@ app.layout = html.Div([
     html.Div([
         dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
         html.Div(id="properties-output")
-    ])
+    ]),
+
+    html.H2(children="Input Properties"),
+
+    html.Div([
+        html.Button("Add Filter", id="add-filter", n_clicks=0,
+                    style={"grid-column": "1 / span 2"}
+                    ),
+        html.Div(id="properties_dropdown-container", children=[],
+                 style={"width": "240px"}
+                 ),
+        html.Div(id="values_dropdown-container", children=[],
+                 style={"width": "240px"}
+                 ),
+        html.Div(id="dropdown-container-output")
+    ], style={"display": "inline-grid",
+              "grid-gap": "24px",
+              "grid-template-columns": "auto auto"}
+    ),
+
+    html.H2(children="Get Suggestions"),
+
+    html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
+              html.Div(id="suggestion-output")
+             ])
 
 ])
 
+#Search bar
 @app.callback(
     Output("search-output", "children"),
     Input("input-1", "value"),
@@ -54,9 +94,8 @@ def update_output(input1):
     if len(input1) >= 1:
         R = S.post(url=URL, headers={"user-agent" : "magic browser"})
         DATA = R.json()
-        print(DATA)
 
-        return "sd"
+        return print(DATA)
     else:
         return ""
 
@@ -66,16 +105,87 @@ def update_output(input1):
     Input("input-2", "value"),
 )
 def extract_properties(input2):
-    S = requests.Session()
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (input2)
+    return retrieve_properties(input2)
 
-    R = S.post(url=URL, headers={"user-agent": "magic browser"})
-    DATA = R.json()
-    DATA_df = pd.DataFrame(DATA)
+#Properties and Values Input: https://dash.plotly.com/dash-core-components/dropdown (Dynamic Options)
+@app.callback(
+    Output("properties_dropdown-container", "children"),
+    Input("add-filter", "n_clicks"),
+    State('properties_dropdown-container', 'children'),
+)
+def display_dropdowns_properties(n_clicks, children):
+    new_dropdown = dcc.Dropdown(
+            id={
+                'type': 'property_filter-dropdown',
+                'index': n_clicks
+            },
+            options=[{"label": i, "value": i} for i in ["P31", "P17", "P51", "P69", "P420"]],
+            placeholder = "Select a Property...",
+            style={"margin-top": "5px"}
+        )
+    children.append(new_dropdown)
+    return children
 
-    property_list = list(DATA_df.index[1:])
+@app.callback(
+    Output("values_dropdown-container", "children"),
+    Input("add-filter", "n_clicks"),
+    State('values_dropdown-container', 'children'),
+)
+def display_dropdowns_values(n_clicks, children):
+    new_dropdown = dcc.Dropdown(
+            id={
+                'type': 'values_filter-dropdown',
+                'index': n_clicks
+            },
+            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q12321234", "Q88888888", "Q42069"]],
+            placeholder="No Value",
+            style={"margin-top": "5px"}
+        )
+    children.append(new_dropdown)
+    return children
 
-    return property_list
+@app.callback(
+    Output("suggestion-output", "children"),
+    Input("find-suggestions", "n_clicks"),
+    State("properties_dropdown-container", "children"),
+    State("values_dropdown-container", "children")
+)
+def find_suggestions(n_clicks, properties, values):
+    if n_clicks >= 1:
+        filters = ""
+        for i in range(len(properties)):
+            try:
+                temp_property = properties[i]['props']['value']
+                temp_value = values[i]['props']['value']
+                filters += "?item wdt:" + temp_property + " wd:" + temp_value + " . "
+            except:
+                try:
+                    temp_property = properties[i]['props']['value']
+                    temp_value = "?variable" + str(i + 1)
+                    filters += "?item wdt:" + temp_property + " wd:" + temp_value + " . "
+                except:
+                    pass
+
+        query_string = """ SELECT ?item WHERE {""" +filters+"""}"""
+
+        def get_results(endpoint_url, query):
+            user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+            # TODO adjust user agent; see https://w.wiki/CX6
+            sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            return sparql.query().convert()
+
+        results = get_results(endpoint_url, query_string)
+
+        nested_list = []
+
+        for result in results["results"]["bindings"]:
+            item = result['item']['value'].split("/")[-1]
+            print(item)
+            nested_list.append(retrieve_properties(item))
+
+        print(nested_list)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
