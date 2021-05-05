@@ -191,7 +191,8 @@ if __name__ == '__main__':
     #                             (middle_rules['leverage'] > 0)]
     #
     # middle_rules_without_id = removeRulesWithId(middle_rules)
-
+    # middle_rules_without_id = middle_rules_without_id.sort_values(by='antecedents', key=lambda x: x.str.len())
+    # middle_rules_without_id = middle_rules_without_id.sort_values(by='leverage', ascending=False)
 
     #antecedents...conviction
 
