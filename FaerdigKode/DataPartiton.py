@@ -164,24 +164,37 @@ if __name__ == '__main__':
         #fig2.show()
 
 
-    makeBoxPlot()
+    #makeBoxPlot()
     
-    #upper_properties = splitBooleanDF(property_list, "upper")
+    # upper_properties = splitBooleanDF(property_list, "upper")
     middle_properties = splitBooleanDF(property_list, "middle")
     lower_properties = splitBooleanDF(property_list, "lower")
-
-    #frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
-    # frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
-    # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
     #
-    # lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
+    # frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
+    frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
+    frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
+    #
+    lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
     # lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
     # lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
     #                           (lower_rules['leverage'] > 0)]
     #
-    # middle_rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
+    middle_rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
     # middle_rules["consequent_len"] = middle_rules["consequents"].apply(lambda x: len(x))
     # middle_rules = middle_rules[(middle_rules['consequent_len'] == 1) & (middle_rules['lift'] > 1) &
     #                             (middle_rules['leverage'] > 0)]
     #
     # middle_rules_without_id = removeRulesWithId(middle_rules)
+
+
+    #antecedents...conviction
+
+    test_lower1 = lower_rules[:30]
+    test_lower2 = lower_rules[20:50]
+
+    def countDuplicateRules(df1, df2):
+        test_df = pd.concat([df1, df2], ignore_index=True)
+        result = sum(test_df.duplicated(keep=False))
+        return result
+
+    print(countDuplicateRules(lower_rules[['antecedents', 'conviction']], lower_rules[['antecedents', 'conviction']]))
