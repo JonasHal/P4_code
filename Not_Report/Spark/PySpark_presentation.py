@@ -1,5 +1,3 @@
-# Exercise 1
-# Initialize your Spark environement either locally or in cloud
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,21 +10,26 @@ import seaborn as sns
 spark = SparkSession.builder.appName('BDS').getOrCreate()
 df1 = spark.read.options(header="True", inferSchema=True, delimiter=",") \
     .csv("C:/Users/magnu/Downloads/pima-indians-diabetes.csv")
-df1.printSchema()
+# df1.printSchema()
+# df1.show()
+# print(type(df1))
+
+pandas_df = pd.read_csv("C:/Users/magnu/Downloads/pima-indians-diabetes.csv")
+# print(type(pandas_df))
 
 num_cols = ['Number of times pregnant', 'Body mass index', 'Plasma glucose concentration',
             'Diastolic blood pressure', 'Triceps skinfold thickness', '2-Hour serum insulin',
-            'Body mass index', 'Diabetes pedigree function', 'Age', 'Class variable']
+            'Diabetes pedigree function', 'Age', 'Class variable']
 
 #df1.select(num_cols).describe().show()
 
 def histogram_count_pregnancies(df):
-    test = df.groupBy('Number of times pregnant').count()
-    sorted_test = test.sort(col('Number of times pregnant').asc())
-    #sorted_test.show(truncate=False)
+    df_count = df.groupBy('Number of times pregnant').count()
+    df_count_sorted = df_count.sort(col('Number of times pregnant').asc())
+    #df_count_sorted.show(truncate=False)
 
-    x = sorted_test.select(col('Number of times pregnant')).toPandas()
-    y = sorted_test.select(col('count')).toPandas()
+    x = df_count_sorted.select(col('Number of times pregnant')).toPandas()
+    y = df_count_sorted.select(col('count')).toPandas()
     bins = np.arange(0, 17, 1)
     plt.hist(x, bins, histtype='bar', color='blue', weights=y)
     plt.xlabel('Pregnancies')
@@ -65,8 +68,8 @@ def linechart_class_TST(df):
                   )
     plt.show()
 
-linechart_class_TST(df1)
-"""
+#linechart_class_TST(df1)
+
 col_names = df1.columns
 features = df1.rdd.map(lambda row: row[0:]) #PythonRDD[41] at RDD at PythonRDD.scale:54
 corr_mat = Statistics.corr(features, method="pearson")
@@ -76,7 +79,9 @@ corr_df.index, corr_df.columns = col_names, col_names
 
 #print(corr_df.to_string())
 
-#df1.select([count(when(isnull(c), c)).alias(c) for c in df1.columns]).show()
+df1.select([count(when(isnull(c), c)).alias(c) for c in df1.columns]).show()
+#Vi tæller antal gange hvornår værdierne i c (kolonne) er null, i hver c. Det selecter vi, og renammer (alias) denne count
+#til hvad end kolonnen c hedder. Det gøres i et for loop.
 
 imputer = Imputer(inputCols=["Plasma glucose concentration", "Diastolic blood pressure",
                              "Triceps skinfold thickness", "2-Hour serum insulin", "Body mass index"],
@@ -97,14 +102,9 @@ corr_df2.index, corr_df2.columns = new_col_names, new_col_names
 #imputer.fit(df1).transform(df1).show()
 #imputer.setStrategy('median').setMissingValue(np.nan).fit(df1).transform(df1).show()
 
-# ['Number of times pregnant', 'Body mass index', 'Plasma glucose concentration',
-#             'Diastolic blood pressure', 'Triceps skinfold thickness', '2-Hour serum insulin',
-#             'Diabetes pedigree function', 'Age', 'Class variable']
-
 sns.set(style='ticks')
 sns.pairplot(new_df.toPandas(),
              x_vars=["Body mass index", "Number of times pregnant", "Age"],
              y_vars=["Body mass index", "Number of times pregnant"],
              hue='Class variable', markers=["D", "o"])
 #plt.show()
-"""
