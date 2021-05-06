@@ -187,14 +187,14 @@ if __name__ == '__main__':
     # middle_rules_without_id = removeRulesWithId(middle_rules)
 
 
-    #antecedents...conviction
+    #'antecedents','consequents'
 
     test_lower1 = lower_rules[:30]
     test_lower2 = lower_rules[20:50]
 
     def countDuplicateRules(df1, df2):
-        test_df = pd.concat([df1, df2], ignore_index=True)
-        result = sum(test_df.duplicated(keep=False))
+        test_df = pd.concat([df1[['antecedents','consequents']], df2[['antecedents','consequents']]], ignore_index=True)
+        result = sum(test_df.duplicated(keep=False))/2
         return result
 
-    print(countDuplicateRules(lower_rules[['antecedents', 'conviction']], lower_rules[['antecedents', 'conviction']]))
+    print(countDuplicateRules(lower_rules, middle_rules))
