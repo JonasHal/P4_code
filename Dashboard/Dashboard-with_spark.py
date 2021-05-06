@@ -6,14 +6,12 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import requests
-import sys
-from SPARQLWrapper import SPARQLWrapper, JSON
+from qwikidata.sparql import return_sparql_query_results
 
 app = dash.Dash(__name__)
 
 SEARCHPAGE = ""
 SEARCHENTITY = "Q314"
-endpoint_url = "https://query.wikidata.org/sparql"
 
 colors = {
     'background': '#111111',
@@ -21,16 +19,12 @@ colors = {
 }
 
 def retrieve_properties(item):
-    S = requests.Session()
     URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
 
-    R = S.post(url=URL, headers={"user-agent": "magic browser"})
-    DATA = R.json()
-    DATA_df = pd.DataFrame(DATA)
+    with requests.Session() as S:
+        DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
 
-    property_list = list(DATA_df.index[1:])
-
-    return property_list
+    return list(DATA)
 
 
 app.layout = html.Div([
@@ -168,18 +162,11 @@ def find_suggestions(n_clicks, properties, values):
 
         query_string = """ SELECT ?item WHERE {""" +filters+"""}"""
 
-        def get_results(endpoint_url, query):
-            user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
-            # TODO adjust user agent; see https://w.wiki/CX6
-            sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
-            sparql.setQuery(query)
-            sparql.setReturnFormat(JSON)
-            return sparql.query().convert()
-
-        results = get_results(endpoint_url, query_string)
+        results = return_sparql_query_results(query_string)
 
         nested_list = []
 
+        print("The length of the item list is " + str(len(results["results"]["bindings"])))
         for result in results["results"]["bindings"]:
             item = result['item']['value'].split("/")[-1]
             print(item)
