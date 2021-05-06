@@ -21,7 +21,8 @@ num_cols = ['Number of times pregnant', 'Body mass index', 'Plasma glucose conce
             'Diastolic blood pressure', 'Triceps skinfold thickness', '2-Hour serum insulin',
             'Diabetes pedigree function', 'Age', 'Class variable']
 
-#df1.select(num_cols).describe().show()
+df1.select(num_cols).describe().show()
+df1.select(num_cols).summary().show()
 
 def histogram_count_pregnancies(df):
     df_count = df.groupBy('Number of times pregnant').count()
