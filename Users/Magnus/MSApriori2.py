@@ -134,7 +134,7 @@ def findSubsets(S, m):
 
 #Candidate Generation for levels other than 2
 def MSCandidateGeneration(n):
-    print("MSCandidateGeneration" + "n")
+    print("MSCandidateGeneration " + str(n))
     m = n - 1
     k = 0
     for i in range(0, len(FList[m])):
