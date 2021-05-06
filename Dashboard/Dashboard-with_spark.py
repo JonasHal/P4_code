@@ -164,15 +164,16 @@ def find_suggestions(n_clicks, properties, values):
 
         results = return_sparql_query_results(query_string)
 
-        nested_list = []
+        property_list = []
 
         print("The length of the item list is " + str(len(results["results"]["bindings"])))
+
         for result in results["results"]["bindings"]:
             item = result['item']['value'].split("/")[-1]
             print(item)
-            nested_list.append(retrieve_properties(item))
+            property_list.append(retrieve_properties(item))
 
-        print(nested_list)
+        print(property_list)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

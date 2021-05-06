@@ -7,6 +7,8 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import requests
 from qwikidata.sparql import return_sparql_query_results
+from mlxtend.frequent_patterns import fpgrowth, association_rules
+from mlxtend.preprocessing import TransactionEncoder
 
 app = dash.Dash(__name__)
 
@@ -27,7 +29,43 @@ def retrieve_properties(item):
 
     return list(DATA)
 
+def property_count_function(listOfProperties):
+    """
 
+    :param listOfProperties: Input is the listOfProperties, use the function extractProperties.
+    The for loop expects a nested list.
+    :return: property_dataframe: a dataframe containing the properties extracted from the list and the
+    frequency of which they appear
+    """
+
+    property_count = {}  # Empty dict, is gonna look like this: property_count{property : count}
+    for lists in listOfProperties:
+        try:
+            for properties in lists:
+                property_count[properties] = property_count.get(properties, 0) + 1
+        except TypeError as e:
+            print(e)
+
+    # Converts the dictionary to a dataframe
+    property_dataframe = pd.DataFrame(list(property_count.items()), columns=['Property', 'Frequency'])
+    # property_dataframe = property_dataframe.set_index("Property")
+    property_dataframe = property_dataframe.sort_values(by=['Frequency'], ascending=False)
+
+    return property_dataframe
+
+def getBooleanDF(property_list):
+    """
+    Transform the nested list into a boolean dataframe with transactions on rows and items on columns
+    :param property_list: The nested list with the wikidata properties
+    :return: A boolean dataframe
+    """
+    te = TransactionEncoder()
+    te_ary = te.fit(property_list).transform(property_list)
+    boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
+    # property_dataframe = property_dataframe.drop('P31', axis=1)
+    return boolean_dataframe
+
+#The HTML Layout
 app.layout = html.Div([
     html.Header(html.H1(children='Hello Dash')
     ),
@@ -147,6 +185,7 @@ def display_dropdowns_values(n_clicks, children):
 )
 def find_suggestions(n_clicks, properties, values):
     if n_clicks >= 1:
+        #SPARQL Query Creation
         filters = ""
         for i in range(len(properties)):
             try:
@@ -165,18 +204,46 @@ def find_suggestions(n_clicks, properties, values):
 
         results = return_sparql_query_results(query_string)
 
-        nested_list = []
+        #Extract Properties from the results
+        property_list = []
+
+        count = 0
 
         print("The length of the item list is " + str(len(results["results"]["bindings"])))
         for result in results["results"]["bindings"]:
-            try:
-                item = result['item']['value'].split("/")[-1]
-                print(item)
-                nested_list.append(retrieve_properties(item))
-            except:
-                return "Please enter properties to filter the data"
+            if count < 100:
+                try:
+                    item = result['item']['value'].split("/")[-1]
+                    print(item)
+                    property_list.append(retrieve_properties(item))
+                    count += 1
+                except:
+                    return "Please enter properties to filter the data"
+            else:
+                break
 
-        print(nested_list)
+        if len(property_list) > 1:
+            # Uses the two functions property_count_function() and getBooleanDF()
+            df = property_count_function(property_list)
+            boolean_df = getBooleanDF(property_list)
+
+            print("boolean_df Done")
+            frequent_items = fpgrowth(boolean_df, min_support=0.7, use_colnames=True)
+
+            print("frequent_items Done")
+            print(frequent_items)
+            rules = association_rules(frequent_items, metric="confidence", min_threshold=0.8)
+
+            rules["consequent_len"] = rules["consequents"].apply(lambda x: len(x))
+            rules = rules[(rules['consequent_len'] == 1) & (rules['lift'] > 1) &
+                                       (rules['leverage'] > 0)]
+
+            print(rules)
+
+            print("DONE")
+        else:
+            return "Only one item could be found with the given inputs"
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
