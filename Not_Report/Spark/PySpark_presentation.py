@@ -7,14 +7,21 @@ from pyspark.mllib.stat import Statistics
 from pyspark.ml.feature import Imputer
 import seaborn as sns
 
+#Til Jonas
+import os
+import sys
+
+os.environ['PYSPARK_PYTHON'] = sys.executable
+os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
+
 spark = SparkSession.builder.appName('BDS').getOrCreate()
 df1 = spark.read.options(header="True", inferSchema=True, delimiter=",") \
-    .csv("C:/Users/magnu/Downloads/pima-indians-diabetes.csv")
+    .csv("C:/Users/jon12/Downloads/pima-indians-diabetes.csv")
 # df1.printSchema()
 # df1.show()
 # print(type(df1))
 
-pandas_df = pd.read_csv("C:/Users/magnu/Downloads/pima-indians-diabetes.csv")
+# pandas_df = pd.read_csv("C:/Users/magnu/Downloads/pima-indians-diabetes.csv")
 # print(type(pandas_df))
 
 num_cols = ['Number of times pregnant', 'Body mass index', 'Plasma glucose concentration',

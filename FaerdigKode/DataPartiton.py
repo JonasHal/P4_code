@@ -4,7 +4,6 @@ from extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlab
 from PropertyDistUni import replacePcodesWithPlabels_df
 from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from pathlib import Path
 import pandas as pd
 
@@ -169,9 +168,9 @@ if __name__ == '__main__':
         fig.add_trace(go.Box(y=property_count_df_without_labels['Frequency'], boxpoints='all', marker_size=3,
                              jitter=0.3, name='Boxplot'))
 
-        fig.add_trace(go.Bar(x=[0.2], y=[81], width=0.1, base=0, name='Lower Partition - <br> Rare Properties'))
-        fig.add_trace(go.Bar(x=[0.2], y=[2098], width=0.1, base=31, name='Middle Partition - <br> Middle Properties'))
-        fig.add_trace(go.Bar(x=[0.2], y=[6386], width=0.1, base=2129, name='Upper Partition - <br> General Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[81], width=0.1, base=0, name='Lower Partition - Rare Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[2098], width=0.1, base=31, name='Middle Partition - Properties'))
+        fig.add_trace(go.Bar(x=[0.2], y=[6386], width=0.1, base=2129, name='Upper Partition - General Properties'))
 
         fig.update_layout(
             yaxis_title='Property Frequency',
