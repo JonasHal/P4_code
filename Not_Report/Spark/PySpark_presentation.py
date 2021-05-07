@@ -6,10 +6,8 @@ from pyspark.sql.functions import count, isnull, when, col
 from pyspark.mllib.stat import Statistics
 from pyspark.ml.feature import Imputer
 import seaborn as sns
-
-#Til Jonas
-import os
-import sys
+import os #Til Jonas
+import sys #Til Jonas
 
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable

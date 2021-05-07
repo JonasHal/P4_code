@@ -7,6 +7,7 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import requests
 from qwikidata.sparql import return_sparql_query_results
+import concurrent.futures
 
 app = dash.Dash(__name__)
 
@@ -22,7 +23,11 @@ def retrieve_properties(item):
     URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
 
     with requests.Session() as S:
-        DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
+        try:
+            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
+            print("Retrieving properties from " + str(item) + " Succeded")
+        except Exception:
+            return "Item did not have any properties"
 
     return list(DATA)
 
@@ -131,7 +136,7 @@ def display_dropdowns_values(n_clicks, children):
                 'type': 'values_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q12321234", "Q88888888", "Q42069"]],
+            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q146", "Q88888888", "Q42069"]],
             placeholder="No Value",
             style={"margin-top": "5px"}
         )
@@ -164,14 +169,24 @@ def find_suggestions(n_clicks, properties, values):
 
         results = return_sparql_query_results(query_string)
 
-        property_list = []
+        item_list = []
+
+        for result in results["results"]["bindings"]:
+            item_list.append(result['item']['value'].split("/")[-1])
 
         print("The length of the item list is " + str(len(results["results"]["bindings"])))
 
-        for result in results["results"]["bindings"]:
-            item = result['item']['value'].split("/")[-1]
-            print(item)
-            property_list.append(retrieve_properties(item))
+        property_list = []
+        loading_bar_progress = 0
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_item_list = {executor.submit(retrieve_properties, item): item for item in item_list}
+            for future in concurrent.futures.as_completed(future_item_list):
+                try:
+                    loading_bar_progress += 1
+                    property_list.append(future.result())
+                except Exception:
+                    print("Generated an exception")
 
         print(property_list)
 
