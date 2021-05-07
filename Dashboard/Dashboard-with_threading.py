@@ -20,7 +20,7 @@ colors = {
 }
 
 def retrieve_properties(item):
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
+    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
 
     with requests.Session() as S:
         try:
