@@ -238,7 +238,7 @@ def output():
     rel_path_results = Path("results/result1-1.txt")
     abs_filepath_results = os.path.join(script_dir, rel_path_results)
     file3 = open(abs_filepath_results, "w")
-    file3.write('support;' + ' ' + 'properties' + '\n')
+    file3.write('support;' + 'itemsets' + '\n')
 
     count = 0
     print("Frequent 1-itemsets")

@@ -6,7 +6,7 @@ property_list = extractProperties(Path("../../Data/universities_latest_all.ndjso
 
 mis_dataframe = property_count_function(property_list)
 
-param = 1
+param = 0.95
 
 mis_dataframe.set_index(['Property'], inplace=True)
 mis_dataframe['MIS'] = [param * mis_dataframe['Frequency'][i]/mis_dataframe['Frequency']['P31'] for i in range(len(mis_dataframe))]

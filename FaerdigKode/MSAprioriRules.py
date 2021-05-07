@@ -3,6 +3,18 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from pathlib import Path
 from FaerdigKode.extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlabels
+import fileinput
+
+# with open(Path('../Data/result1-1.txt'), 'r') as file :
+#   filedata = file.read()
+#
+# # Replace the target string
+# filedata = filedata.replace(',(', ';(')
+# filedata = filedata.replace('properties', 'itemsets')
+#
+# # Write the file out again
+# with open(Path('../Data/result1-1.txt'), 'w') as file:
+#   file.write(filedata)
 
 frequent_itemsets_apriori = pd.read_csv(Path('../Users/Magnus/results/result1-1.txt'), sep=';')
 frequent_itemsets_apriori.itemsets = [frequent_itemsets_apriori.itemsets[i].replace(' ', '').strip(')(').split(',') for i in range(len(frequent_itemsets_apriori))]
