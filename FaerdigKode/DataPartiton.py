@@ -37,7 +37,7 @@ def getBoxplotValues(df):
     return upper_fence, overlap_range
 
 
-def splitBooleanDF(property_list, partition, external_ids = True):
+def splitBooleanDF(property_list, partition, external_ids=True):
     '''
 
     :param property_list: Input is the nested property list extracted from extractProperties()
@@ -51,11 +51,10 @@ def splitBooleanDF(property_list, partition, external_ids = True):
     df = property_count_function(property_list)
     boolean_df = getBooleanDF(property_list)
 
-
     # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
     lower_split = round(getBoxplotValues(df)[0], 0)  # Skal være count dataframe - svarer til Upper Fence
     upper_split = round(len(boolean_df) * 0.25, 0)  # Skal være boolean dataframe - svarer til support > 0.25
-    overlap_range = round(getBoxplotValues(df)[1], 0) # Skal være count dataframe - svarer til IQR * 1.5
+    overlap_range = round(getBoxplotValues(df)[1], 0)  # Skal være count dataframe - svarer til IQR * 1.5
 
     if partition == "lower":
         # Define lists of properties belonging to the partitions
@@ -94,6 +93,7 @@ def splitBooleanDF(property_list, partition, external_ids = True):
 
     return split_df
 
+
 def removeExternalId(boolean_df):
     property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
     property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
@@ -108,13 +108,22 @@ def removeExternalId(boolean_df):
     print('{} number of columns that are ID"s have been dropped'.format(drop_count))
     return boolean_df
 
+
+def countUniqueConsequents(rule_df):
+    unique_consequents = []
+    for i in rule_df.index:
+        if rule_df['consequents'][i][0] not in unique_consequents:
+            unique_consequents.append(rule_df['consequents'][i][0])
+
+    return unique_consequents
+
 def removeRulesWithId(rule_df):
     property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
     property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
     property_label_dataframe_externalIDs.set_index(['Value'], inplace=True)
     list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
-    #Changes the datatype of the consequents from frozenset, which is immutable, to a list.
+    # Changes the datatype of the consequents from frozenset, which is immutable, to a list.
     rule_df['consequents'] = [list(rule_df['consequents'][i]) for i in rule_df.index]
 
     amount_of_dropped_rules = 0
@@ -124,13 +133,26 @@ def removeRulesWithId(rule_df):
             rule_df = rule_df.drop([i])
             amount_of_dropped_rules += 1
 
-    print('A total amount of {} rules have been dropped'.format(amount_of_dropped_rules))
+    print('A total amount of {} rules have been dropped from the inputted dataframe'.format(amount_of_dropped_rules))
+    print('The amount of rules are now {0}'.format(len(rule_df)))
+
+    unique_consequents = countUniqueConsequents(rule_df)
+    print('The rules consist of {} unique consequents'.format(len(unique_consequents)))
 
     return rule_df
+
+
+def countDuplicateRules(df1, df2):
+    test_df = pd.concat([df1, df2], ignore_index=True)
+    result = sum(test_df.duplicated(keep=False))
+
+    return result
+
 
 if __name__ == '__main__':
     # The full list of properties
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
+
 
     def makeBoxPlot():
         # Uses the property_count_function to create a dataframe containing properties and their frequency.
@@ -157,15 +179,21 @@ if __name__ == '__main__':
 
         fig.show()
 
-        fig2 = go.Figure()
-        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all', marker_size=3,
-                       jitter=0.3, name='Boxplot'))
-        fig2.update_layout(xaxis_title='Property Frequency', xaxis_visible=False, xaxis_showticklabels=False)
-        #fig2.show()
+        fig2 = make_subplots(rows=1, cols=2)
+        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all',
+                              marker=dict(size=3, color='blue'),
+                              jitter=0.3, name='No zoom', ), row=1, col=1)
+        fig2.add_trace(go.Box(y=property_count_df_with_labels['Frequency'], boxpoints='all',
+                              marker=dict(size=3, color='blue'),
+                              jitter=0.3, name='Zoomed in'), row=1, col=2)
+        fig2.update_yaxes(title_text='Property Frequency',
+                          row=1, col=1)
+
+        fig2.show()
 
 
     #makeBoxPlot()
-    
+
     # upper_properties = splitBooleanDF(property_list, "upper")
     middle_properties = splitBooleanDF(property_list, "middle")
     lower_properties = splitBooleanDF(property_list, "lower")
@@ -175,26 +203,21 @@ if __name__ == '__main__':
     frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
     #
     lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
-    # lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
-    # lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
-    #                           (lower_rules['leverage'] > 0)]
+    lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
+    lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
+                               (lower_rules['leverage'] > 0)]
     #
     middle_rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
-    # middle_rules["consequent_len"] = middle_rules["consequents"].apply(lambda x: len(x))
-    # middle_rules = middle_rules[(middle_rules['consequent_len'] == 1) & (middle_rules['lift'] > 1) &
-    #                             (middle_rules['leverage'] > 0)]
+    middle_rules["consequent_len"] = middle_rules["consequents"].apply(lambda x: len(x))
+    middle_rules = middle_rules[(middle_rules['consequent_len'] == 1) & (middle_rules['lift'] > 1) &
+                                 (middle_rules['leverage'] > 0)]
     #
-    # middle_rules_without_id = removeRulesWithId(middle_rules)
+    lower_rules_without_id = removeRulesWithId(lower_rules)
+    lower_rules_without_id = lower_rules_without_id.sort_values(by='leverage', ascending=False)
 
 
-    #'antecedents','consequents'
+    middle_rules_without_id = removeRulesWithId(middle_rules)
+    # middle_rules_without_id = middle_rules_without_id.sort_values(by='antecedents', key=lambda x: x.str.len())
+    middle_rules_without_id = middle_rules_without_id.sort_values(by='leverage', ascending=False)
 
-    test_lower1 = lower_rules[:30]
-    test_lower2 = lower_rules[20:50]
-
-    def countDuplicateRules(df1, df2):
-        test_df = pd.concat([df1[['antecedents','consequents']], df2[['antecedents','consequents']]], ignore_index=True)
-        result = sum(test_df.duplicated(keep=False))/2
-        return result
-
-    print(countDuplicateRules(lower_rules, middle_rules))
+    #print(countDuplicateRules(lower_rules[['antecedents', 'conviction']], lower_rules[['antecedents', 'conviction']]))
