@@ -102,7 +102,7 @@ def update_output(input1):
     URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&format=json&limit=5&formatversion=2&language=en" % (input1)
 
     if len(input1) >= 1:
-        R = S.post(url=URL, headers={"user-agent" : "magic browser"})
+        R = S.post(url=URL, headers={"user-agent" : "magic browser", "Content-Type": "application/json"})
         DATA = R.json()
 
         return print(DATA)

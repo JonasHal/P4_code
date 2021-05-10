@@ -24,7 +24,7 @@ def retrieve_properties(item):
 
     with requests.Session() as S:
         try:
-            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
+            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
             print("Retrieving properties from " + str(item) + " Succeded")
         except Exception:
             return "Item did not have any properties"
@@ -91,7 +91,7 @@ def update_output(input1):
     URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&format=json&limit=5&formatversion=2&language=en" % (input1)
 
     if len(input1) >= 1:
-        R = S.post(url=URL, headers={"user-agent" : "magic browser"})
+        R = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"})
         DATA = R.json()
 
         return print(DATA)

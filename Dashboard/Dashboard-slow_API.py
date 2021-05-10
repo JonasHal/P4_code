@@ -24,7 +24,7 @@ def retrieve_properties(item):
     S = requests.Session()
     URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
 
-    DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
+    DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
     S.close()
 
     return list(DATA)
@@ -125,7 +125,7 @@ def update_output(input1):
     URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&format=json&limit=5&formatversion=2&language=en" % (input1)
 
     if len(input1) >= 1:
-        R = S.post(url=URL, headers={"user-agent" : "magic browser"})
+        R = S.post(url=URL, headers={"user-agent" : "magic browser", "Content-Type": "application/json"})
         DATA = R.json()
 
         return print(DATA)
