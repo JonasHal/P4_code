@@ -191,13 +191,13 @@ def find_suggestions(n_clicks, properties, values):
         loading_bar_progress = 0
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_item_list = {executor.submit(retrieve_properties, item): item for item in item_list}
-            for future in concurrent.futures.as_completed(future_item_list):
+            future_nested_list = {executor.submit(retrieve_properties, item): item for item in item_list}
+            for future in concurrent.futures.as_completed(future_nested_list):
                 try:
-                    loading_bar_progress += 1
                     nested_list.append(future.result())
-                    print(nested_list)
+                    loading_bar_progress += 1
                 except Exception:
+                    loading_bar_progress += 1
                     print("Generated an exception")
 
         print(nested_list)
