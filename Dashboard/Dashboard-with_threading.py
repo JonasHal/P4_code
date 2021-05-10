@@ -46,7 +46,7 @@ app.layout = html.Div([
     html.H2(children="Search Bar"),
 
     html.Div([
-        dcc.Input(id="input-1", type="text", value=SEARCHPAGE),
+        dcc.Input(id="input-1", type="text", value=SEARCHENTITY),
         html.Div(id="search-output"),
     ]),
 
@@ -89,14 +89,21 @@ app.layout = html.Div([
     Input("input-1", "value"),
 )
 def update_output(input1):
-    S = requests.Session()
-    URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&format=json&limit=5&formatversion=2&language=en" % (input1)
-
     if len(input1) >= 1:
-        R = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"})
-        DATA = R.json()
+        S = requests.Session()
+        URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s" \
+              "&format=json&limit=5&formatversion=2&language=en" % (input1)
+        DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
 
-        return print(DATA)
+        if len(DATA["search"]) >= 1:
+
+
+            return html.Ul([html.Li(option["label"] + "/" + option["id"] + "/" + option["description"]) for option in
+                     DATA["search"]])
+
+        else:
+            return "No results could be found"
+
     else:
         return ""
 
