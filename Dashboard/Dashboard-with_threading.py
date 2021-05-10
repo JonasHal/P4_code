@@ -96,10 +96,28 @@ def update_output(input1):
         DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
 
         if len(DATA["search"]) >= 1:
+            option_list = []
+            for option in DATA["search"]:
+                temp_str = ""
 
+                try:
+                    temp_str += option["id"] + "|"
+                except Exception:
+                    temp_str += "|"
 
-            return html.Ul([html.Li(option["label"] + "/" + option["id"] + "/" + option["description"]) for option in
-                     DATA["search"]])
+                try:
+                    temp_str += option["label"] + "|"
+                except Exception:
+                    temp_str += "|"
+
+                try:
+                    temp_str += option["description"]
+                except Exception:
+                    ""
+
+                option_list.append(temp_str)
+
+            return html.Ul([html.Li(temp_str) for temp_str in option_list])
 
         else:
             return "No results could be found"
