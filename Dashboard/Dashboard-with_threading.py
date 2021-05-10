@@ -20,7 +20,9 @@ colors = {
 }
 
 def retrieve_properties(item):
+    # Props er tom så vi ikke får references med også
     URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
+
 
     with requests.Session() as S:
         try:
