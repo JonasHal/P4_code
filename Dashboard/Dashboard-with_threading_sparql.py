@@ -7,13 +7,14 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import requests
 from qwikidata.sparql import return_sparql_query_results
-from mlxtend.frequent_patterns import fpgrowth, association_rules
-from mlxtend.preprocessing import TransactionEncoder
+from SPARQLWrapper import SPARQLWrapper, JSON
+import concurrent.futures
 
 app = dash.Dash(__name__)
 
 SEARCHPAGE = ""
 SEARCHENTITY = "Q314"
+endpoint_url = "https://query.wikidata.org/sparql"
 
 colors = {
     'background': '#111111',
@@ -21,51 +22,27 @@ colors = {
 }
 
 def retrieve_properties(item):
-    S = requests.Session()
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json" % (item)
-
-    DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
-    S.close()
-
-    return list(DATA)
-
-def property_count_function(listOfProperties):
+    query = """
+    SELECT DISTINCT ?properties
+    WHERE
+    {
+        wd:""" + item + """ ?properties ?value.
+        FILTER regex(str(?properties), "http://www.wikidata.org/prop/direct/")
+    }
     """
 
-    :param listOfProperties: Input is the listOfProperties, use the function extractProperties.
-    The for loop expects a nested list.
-    :return: property_dataframe: a dataframe containing the properties extracted from the list and the
-    frequency of which they appear
-    """
+    sparql = SPARQLWrapper(endpoint_url)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
 
-    property_count = {}  # Empty dict, is gonna look like this: property_count{property : count}
-    for lists in listOfProperties:
-        try:
-            for properties in lists:
-                property_count[properties] = property_count.get(properties, 0) + 1
-        except TypeError as e:
-            print(e)
+    property_list = []
 
-    # Converts the dictionary to a dataframe
-    property_dataframe = pd.DataFrame(list(property_count.items()), columns=['Property', 'Frequency'])
-    # property_dataframe = property_dataframe.set_index("Property")
-    property_dataframe = property_dataframe.sort_values(by=['Frequency'], ascending=False)
+    for result in results["results"]["bindings"]:
+        property_list.append(result['properties']['value'].split("/")[-1])
 
-    return property_dataframe
+    return property_list
 
-def getBooleanDF(property_list):
-    """
-    Transform the nested list into a boolean dataframe with transactions on rows and items on columns
-    :param property_list: The nested list with the wikidata properties
-    :return: A boolean dataframe
-    """
-    te = TransactionEncoder()
-    te_ary = te.fit(property_list).transform(property_list)
-    boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
-    # property_dataframe = property_dataframe.drop('P31', axis=1)
-    return boolean_dataframe
-
-#The HTML Layout
 app.layout = html.Div([
     html.Header(html.H1(children='Hello Dash')
     ),
@@ -170,7 +147,7 @@ def display_dropdowns_values(n_clicks, children):
                 'type': 'values_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q12321234", "Q88888888", "Q42069"]],
+            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q146", "Q88888888", "Q42069"]],
             placeholder="No Value",
             style={"margin-top": "5px"}
         )
@@ -185,7 +162,6 @@ def display_dropdowns_values(n_clicks, children):
 )
 def find_suggestions(n_clicks, properties, values):
     if n_clicks >= 1:
-        #SPARQL Query Creation
         filters = ""
         for i in range(len(properties)):
             try:
@@ -204,45 +180,27 @@ def find_suggestions(n_clicks, properties, values):
 
         results = return_sparql_query_results(query_string)
 
-        #Extract Properties from the results
-        property_list = []
+        item_list = []
 
-        count = 0
+        for result in results["results"]["bindings"]:
+            item_list.append(result['item']['value'].split("/")[-1])
 
         print("The length of the item list is " + str(len(results["results"]["bindings"])))
-        for result in results["results"]["bindings"]:
-            if count < 100:
+
+        nested_list = []
+        loading_bar_progress = 0
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_nested_list = {executor.submit(retrieve_properties, item): item for item in item_list}
+            for future in concurrent.futures.as_completed(future_nested_list):
                 try:
-                    item = result['item']['value'].split("/")[-1]
-                    print(item)
-                    property_list.append(retrieve_properties(item))
-                    count += 1
-                except:
-                    return "Please enter properties to filter the data"
-            else:
-                break
+                    nested_list.append(future.result())
+                    loading_bar_progress += 1
+                except Exception:
+                    loading_bar_progress += 1
+                    print("Generated an exception")
 
-        if len(property_list) > 1:
-            # Uses the two functions property_count_function() and getBooleanDF()
-            df = property_count_function(property_list)
-            boolean_df = getBooleanDF(property_list)
-
-            print("boolean_df Done")
-            frequent_items = fpgrowth(boolean_df, min_support=0.7, use_colnames=True)
-
-            print("frequent_items Done")
-            print(frequent_items)
-            rules = association_rules(frequent_items, metric="confidence", min_threshold=0.8)
-
-            rules["consequent_len"] = rules["consequents"].apply(lambda x: len(x))
-            rules = rules[(rules['consequent_len'] == 1) & (rules['lift'] > 1) &
-                                       (rules['leverage'] > 0)]
-
-            print(rules)
-
-            print("DONE")
-        else:
-            return "Only one item could be found with the given inputs"
+        print(nested_list)
 
 
 if __name__ == '__main__':

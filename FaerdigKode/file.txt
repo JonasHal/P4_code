@@ -1,4 +1,4 @@
-support;itemsets
+support, itemsets
 9;(P3743)
 9;(P1155)
 9;(P641)

@@ -26,7 +26,7 @@ def retrieve_properties(item):
 
     with requests.Session() as S:
         try:
-            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser"}).json())["claims"].keys()
+            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
             print("Retrieving properties from " + str(item) + " Succeded")
         except Exception:
             return "Item did not have any properties"
@@ -93,7 +93,7 @@ def update_output(input1):
     URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&format=json&limit=5&formatversion=2&language=en" % (input1)
 
     if len(input1) >= 1:
-        R = S.post(url=URL, headers={"user-agent" : "magic browser"})
+        R = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"})
         DATA = R.json()
 
         return print(DATA)
@@ -178,19 +178,20 @@ def find_suggestions(n_clicks, properties, values):
 
         print("The length of the item list is " + str(len(results["results"]["bindings"])))
 
-        property_list = []
+        nested_list = []
         loading_bar_progress = 0
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_item_list = {executor.submit(retrieve_properties, item): item for item in item_list}
-            for future in concurrent.futures.as_completed(future_item_list):
+            future_nested_list = {executor.submit(retrieve_properties, item): item for item in item_list}
+            for future in concurrent.futures.as_completed(future_nested_list):
                 try:
+                    nested_list.append(future.result())
                     loading_bar_progress += 1
-                    property_list.append(future.result())
                 except Exception:
+                    loading_bar_progress += 1
                     print("Generated an exception")
 
-        print(property_list)
+        print(nested_list)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
