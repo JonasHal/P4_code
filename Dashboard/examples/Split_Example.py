@@ -3,4 +3,7 @@ print(brb[::2])
 print(brb[::3])
 print(brb[1::3])
 print(brb[::7])
-print(brb[2::7])
+
+print("What happens?")
+for i in range(4):
+    print(brb[i::4])
