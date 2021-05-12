@@ -6,6 +6,7 @@ from mlxtend.preprocessing import TransactionEncoder
 import plotly.graph_objects as go
 from pathlib import Path
 import pandas as pd
+from plotly.subplots import make_subplots
 
 
 def getBooleanDF(property_list):

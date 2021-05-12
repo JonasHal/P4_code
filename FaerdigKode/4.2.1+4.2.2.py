@@ -2,7 +2,8 @@ import pandas as pd
 from pathlib import Path
 from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpgrowth
+from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
+from FaerdigKode.DataPartiton import countUniqueConsequents, removeRulesWithId
 
 property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
@@ -21,13 +22,17 @@ for prop in boolean_dataframe.columns:
         # # This line replaces the P-code with the P label value
         boolean_dataframe.rename({prop: prop_label_value}, axis='columns', inplace=True)
 
-apriori_fp = apriori(boolean_dataframe, min_support=0.2, use_colnames=True)
-apriori_fp = apriori_fp.sort_values(by=['support'], ascending=False)
-print(apriori_fp)
+# apriori_fp = apriori(boolean_dataframe, min_support=0.2, use_colnames=True)
+# apriori_fp = apriori_fp.sort_values(by=['support'], ascending=False)
 
 fpgrowth_fp = fpgrowth(boolean_dataframe, min_support=0.2, use_colnames=True)
 fpgrowth_fp = fpgrowth_fp.sort_values(by=['support'], ascending=False)
-print(fpgrowth_fp)
 
+fpgrowth_rules = association_rules(fpgrowth_fp, metric="confidence", min_threshold=0.99)
+fpgrowth_rules["consequent_len"] = fpgrowth_rules["consequents"].apply(lambda x: len(x))
+fpgrowth_rules = fpgrowth_rules[(fpgrowth_rules['consequent_len'] == 1) & (fpgrowth_rules['lift'] > 1) &
+                           (fpgrowth_rules['leverage'] > 0)]
+fpgrowth_rules_without_id = removeRulesWithId(fpgrowth_rules)
 
+print(countUniqueConsequents(fpgrowth_rules_without_id))
 
