@@ -139,7 +139,15 @@ def splitNestedListToBooleanDFs(property_list):
 
     return split_df_lower, split_df_middle, split_df_upper
 
-def mineAssociationRules():
+def mineAssociationRules(frequent_items):
+    #Uses the package mlxtend to mine rules
+    rules = association_rules(frequent_items, metric="confidence", min_threshold=0.99)
+
+    #Define and locate the rules with only 1 consequent
+    rules["consequent_len"] = rules["consequents"].apply(lambda x: len(x))
+    rules = rules[(rules['consequent_len'] == 1) & (rules['lift'] > 1) &(rules['leverage'] > 0)]
+
+    print(rules)
 
 #Dashboard Skeleton
 
@@ -353,13 +361,16 @@ def find_suggestions(n_clicks, properties, values):
         BooleanDFs = splitNestedListToBooleanDFs(nested_list)
         lower_rel_support = (len(str(item_list_len)) - 1) / item_list_len
 
-        print(BooleanDFs[2])
         frequent_items_middle = fpgrowth(BooleanDFs[1], min_support=0.008, use_colnames=True)
-        print(frequent_items_middle)
-        print(lower_rel_support)
         frequent_items_lower = fpgrowth(BooleanDFs[0], min_support=lower_rel_support, use_colnames=True)
-        print(frequent_items_lower)
 
+        print(frequent_items_middle)
+        print("middle Rules")
+        mineAssociationRules(frequent_items_middle)
+
+        print(frequent_items_lower)
+        print("lower Rules")
+        mineAssociationRules(frequent_items_lower)
     else:
         return ""
 if __name__ == '__main__':
