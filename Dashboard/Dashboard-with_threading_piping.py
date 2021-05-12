@@ -226,11 +226,11 @@ def find_suggestions(n_clicks, properties, values):
             item_list.append(result['item']['value'].split("/")[-1])
 
         #Check if this step is fulfilled
-        print("The length of the item list is " + str(len(results["results"]["bindings"])))
+        print("The length of the item list is " + str(len(item_list)))
 
         #The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
         #Ceil makes sure that the each subset from item_list is no longer than 50
-        limit = ceil(len(results["results"]["bindings"]) / 50)
+        limit = ceil(len(item_list) / 50)
         piped_list = []
 
         #Seperates the item_list to a nested_list with max 50 items in each list
