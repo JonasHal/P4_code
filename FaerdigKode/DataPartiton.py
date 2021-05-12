@@ -38,7 +38,7 @@ def getBoxplotValues(df):
     return upper_fence, overlap_range
 
 
-def splitBooleanDF(property_list, partition, external_ids=True):
+def splitBooleanDF(property_list, partition):
     '''
 
     :param property_list: Input is the nested property list extracted from extractProperties()

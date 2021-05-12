@@ -1,16 +1,22 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
+import pandas as pd
 import requests
+import concurrent.futures
+from dash.dependencies import Input, Output, State
 from math import ceil
 from qwikidata.sparql import return_sparql_query_results
-import concurrent.futures
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import fpgrowth, association_rules
+
 
 app = dash.Dash(__name__)
 
 SEARCHPAGE = ""
 SEARCHENTITY = "Q314"
+
+#Functions utilized in the dashboard
 
 def retrieve_properties(item):
     # Props er tom så vi ikke får references med også
@@ -51,6 +57,91 @@ def retrieve_properties_piped(item_list):
             pass
 
     return nested_list
+
+def getBooleanDF(property_list):
+    """
+    Transform the nested list into a boolean dataframe with transactions on rows and items on columns
+    :param property_list: The nested list with the wikidata properties
+    :return: A boolean dataframe
+    """
+    te = TransactionEncoder()
+    te_ary = te.fit(property_list).transform(property_list)
+    boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
+    return boolean_dataframe
+
+def getBoxplotValues(df):
+    """
+    Calculates the quatilies for the dataframe with items and the count of items
+    :param df: A dataframe with columns "item" and "count"
+    :return: The number of the threshold used to partition data
+    """
+    Q1 = df['Frequency'].quantile(0.25)
+    Q3 = df['Frequency'].quantile(0.75)
+    IQR = Q3 - Q1
+
+    overlap_range = 1.5 * IQR
+    upper_fence = Q3 + overlap_range
+
+    return upper_fence, overlap_range
+
+def property_count_function(listOfProperties):
+    """
+
+    :param listOfProperties: Input is the listOfProperties, use the function extractProperties.
+    The for loop expects a nested list.
+    :return: property_dataframe: a dataframe containing the properties extracted from the list and the
+    frequency of which they appear
+    """
+
+    property_count = {}  # Empty dict, is gonna look like this: property_count{property : count}
+    for lists in listOfProperties:
+        try:
+            for properties in lists:
+                property_count[properties] = property_count.get(properties, 0) + 1
+        except TypeError as e:
+            print(e)
+
+    # Converts the dictionary to a dataframe
+    property_dataframe = pd.DataFrame(list(property_count.items()), columns=['Property', 'Frequency'])
+    # property_dataframe = property_dataframe.set_index("Property")
+    property_dataframe = property_dataframe.sort_values(by=['Frequency'], ascending=False)
+
+    return property_dataframe
+
+def splitNestedListToBooleanDFs(property_list):
+    '''
+
+    :param property_list: Input is the nested property list extracted from extractProperties()
+    :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
+    index 2 is the most frequent properties
+    '''
+    # Uses the two functions property_count_function() and getBooleanDF()
+    df = property_count_function(property_list)
+    boolean_df = getBooleanDF(property_list)
+
+    print(len(df))
+
+    # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
+    lower_split = round(len(boolean_df) * 0.01, 0)   # Skal være count dataframe - svarer til support > 0.01
+    upper_split = round(len(boolean_df) * 0.25, 0)  # Skal være boolean dataframe - svarer til support > 0.25
+    overlap_range = round(len(boolean_df) * 0.01, 0)  # Skal være count dataframe - svarer til 0.01
+
+    # Define lists of properties belonging to the partitions
+    above_lower_split_overlap = df[(df['Frequency'] > lower_split + overlap_range)]  # Here is the overlap
+    above_upper_split = df[df['Frequency'] > upper_split]
+    below_lower_split = df[df['Frequency'] <= lower_split]
+    below_upper_split = df[df['Frequency'] <= upper_split]
+
+    # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
+    split_df_lower = boolean_df.drop(above_lower_split_overlap['Property'].tolist(), axis='columns')
+    split_df_middle = boolean_df.drop(below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(), axis='columns')
+    split_df_upper = boolean_df.drop(below_upper_split['Property'].tolist(), axis='columns')
+
+    return split_df_lower, split_df_middle, split_df_upper
+
+def mineAssociationRules():
+
+#Dashboard Skeleton
 
 #The HTML behind the dashboard
 app.layout = html.Div([
@@ -93,6 +184,8 @@ app.layout = html.Div([
              ])
 
 ])
+
+#App Callback functionalities on the Dashboard
 
 #Search bar
 @app.callback(
@@ -183,7 +276,7 @@ def display_dropdowns_values(n_clicks, children):
                 'type': 'values_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["Q3918", "Q1337", "Q146", "Q88888888", "Q42069"]],
+            options=[{"label": i, "value": i} for i in ["Q3918", "Q146", "Q35872", "Q5107", "Q40218"]],
             placeholder="No Value",
             style={"margin-top": "5px"}
         )
@@ -216,6 +309,7 @@ def find_suggestions(n_clicks, properties, values):
                 except:
                     #If nothing is in the input, move on
                     pass
+
         #Create the SPARQL query and run it on wikidata
         query_string = """ SELECT ?item WHERE {""" +filters+"""}"""
         results = return_sparql_query_results(query_string)
@@ -225,12 +319,14 @@ def find_suggestions(n_clicks, properties, values):
         for result in results["results"]["bindings"]:
             item_list.append(result['item']['value'].split("/")[-1])
 
+        item_list_len = len(item_list)
+
         #Check if this step is fulfilled
-        print("The length of the item list is " + str(len(item_list)))
+        print("The length of the item list is " + str(item_list_len))
 
         #The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
         #Ceil makes sure that the each subset from item_list is no longer than 50
-        limit = ceil(len(item_list) / 50)
+        limit = ceil(item_list_len / 50)
         piped_list = []
 
         #Seperates the item_list to a nested_list with max 50 items in each list
@@ -252,8 +348,19 @@ def find_suggestions(n_clicks, properties, values):
                 loading_bar_progress += 1
                 print(str(loading_bar_progress) + " / " + str(limit))
 
-        #Partition Here
-        print(nested_list)
 
+        #Partitioning Part
+        BooleanDFs = splitNestedListToBooleanDFs(nested_list)
+        lower_rel_support = (len(str(item_list_len)) - 1) / item_list_len
+
+        print(BooleanDFs[2])
+        frequent_items_middle = fpgrowth(BooleanDFs[1], min_support=0.008, use_colnames=True)
+        print(frequent_items_middle)
+        print(lower_rel_support)
+        frequent_items_lower = fpgrowth(BooleanDFs[0], min_support=lower_rel_support, use_colnames=True)
+        print(frequent_items_lower)
+
+    else:
+        return ""
 if __name__ == '__main__':
     app.run_server(debug=True)
