@@ -216,7 +216,7 @@ app.layout = html.Div([
             html.Div(id="properties-output", style={"display": "none"})
         ]),
 
-        html.H2(children="Input Properties"),
+        html.H2(children="Input Properties", style={"text-align": "center"}),
 
         html.Div([
             html.Button("Add Filter", id="add-filter", n_clicks=0,
@@ -234,11 +234,8 @@ app.layout = html.Div([
                   "grid-template-columns": "auto auto"}
         ),
 
-        html.H2(children="Get Suggestions"),
-
-        html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
-                  html.Div(id="suggestion-output")
-                 ])
+        html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
+                 ], style={"text-align": "center"})
     ]),
 
     html.Div([
@@ -367,6 +364,7 @@ def display_dropdowns_values(n_clicks, children):
     Output("upper_suggestion-container", "children"),
     Output("middle_suggestion-container", "children"),
     Output("lower_suggestion-container", "children"),
+    Output("find-suggestions", "n_clicks"),
     Input("find-suggestions", "n_clicks"),
     Input("properties-output", "children"),
     State("properties_dropdown-container", "children"),
@@ -374,7 +372,7 @@ def display_dropdowns_values(n_clicks, children):
 )
 def find_suggestions(n_clicks, item_properties, properties, values):
     #Whenever the user clicks the "Get Suggestions" button, do something
-    if n_clicks >= 1:
+    if n_clicks == 1:
         #Creates the SPARQL query from the filters
         filters = ""
         for i in range(len(properties)):
@@ -439,7 +437,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         else:
             lower_rel_support = (len(str(item_list_len)) + 1) / item_list_len
 
-        #Define the min_support according to len of item_list
+        #Define the middle_min_support according to len of item_list
         if item_list_len <= 10:
             middle_rel_support = 0.15 #Means that if there are less than 7 items, every property set is mapped once
         elif item_list_len <= 28:
@@ -452,39 +450,30 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         # Find the Frequent_items and mine rules on the lower partition, if there are more than 28 itemsets
         if item_list_len > 28:
             frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support, use_colnames=True)
-            print("Lower:")
             lower_rules = mineAssociationRules(frequent_items_lower)
             lower_suggestions = filter_suggestions(lower_rules, item_properties)
-
         else:
             lower_suggestions = ["Not enough items to search for lower properties"]
 
         # Find the Frequent_items and mine rule on the middle partition
         frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support,
                                          use_colnames=True)
-        print("Middle:")
         middle_rules = mineAssociationRules(frequent_items_middle)
         middle_suggestions = filter_suggestions(middle_rules, item_properties)
-        print(middle_suggestions)
 
         # Find the support of the upper partition
         frequent_items_upper = fpgrowth(BooleanDFs[2], max_len=1, min_support=0.25, use_colnames=True)
         frequent_items_upper = removeExternalIdsSingle(frequent_items_upper, "itemsets")
-
         upper_suggestions = upper_properties(frequent_items_upper, item_properties)
-
-        print("Upper:")
-        print(upper_suggestions)
-        print('The suggestions consist of {} unique properties'.format(len(frequent_items_upper)))
 
         print("Everything Done")
 
         return html.Ul([html.Li(prop) for prop in upper_suggestions]), \
                html.Ul([html.Li(prop) for prop in middle_suggestions]), \
-               html.Ul([html.Li(prop) for prop in lower_suggestions])
+               html.Ul([html.Li(prop) for prop in lower_suggestions]), 0
 
     else:
-        return [], [], []
+        return [], [], [], 0
 
 
 if __name__ == '__main__':
