@@ -2,6 +2,7 @@ from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
 from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
+import numpy as np
 
 def property_count_function(listOfProperties):
     """
@@ -39,7 +40,7 @@ def entity_property_count_function(listOfProperties):
     The for loop expects a nested list.
     :return: returns 1. the entity_property_dataframe containing ['Number of Properties'] and how many universites
     have this exact number in ['#Universities'].
-    also returns 2. the number_of_properties_list which is list of amount of properties in each university item
+    also returns 2. the number_of_properties_list which is a sorted list of amount of properties in each university item
     """
     entity_property_count = {}
     number_of_properties_list = []
@@ -92,7 +93,6 @@ def replacePcodesWithPlabels_df(property_dataframe):
 if __name__ == '__main__':
     # The full list of properties
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
-
     # Uses the property_count_function to create a dataframe containing properties and their frequency.
     property_count_df = property_count_function(property_list)
     # Copy of the property_count_df that should be with P-codes and not P label values
