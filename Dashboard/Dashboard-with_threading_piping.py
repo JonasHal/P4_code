@@ -151,7 +151,7 @@ def removeExternalIdsSingle(dfWithFrozenset, column):
 
 def mineAssociationRules(frequent_items):
     #Uses the package mlxtend to mine rules
-    rules = association_rules(frequent_items, metric="confidence", min_threshold=0.8)
+    rules = association_rules(frequent_items, metric="confidence", min_threshold=0.99)
 
     #Define and locate the rules with only 1 consequent
     rules["consequent_len"] = rules["consequents"].apply(lambda x: len(x))
