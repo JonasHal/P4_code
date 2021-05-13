@@ -2,6 +2,8 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
+import numpy as np
+import itertools
 import requests
 import concurrent.futures
 from pathlib import Path
@@ -165,6 +167,15 @@ def mineAssociationRules(frequent_items):
 
     return rules
 
+
+def upper_properties(upper, item):
+    result = []
+    for [prop] in upper.itemsets:
+        if prop not in item:
+            result.append(prop)
+
+    return result
+
 def filter_suggestions(rules, item):
     suggestions = rules.copy()
     for i in suggestions.index:
@@ -178,7 +189,9 @@ def filter_suggestions(rules, item):
         if all(prop in item for prop in list(suggestions['antecedents'][j])) == False:
             suggestions.drop([j], inplace=True)
 
-    return suggestions
+    result = np.unique([*itertools.chain.from_iterable(suggestions.consequents)]).tolist()
+
+    return result
 
 #Dashboard Skeleton
 
@@ -428,7 +441,9 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         frequent_items_upper = fpgrowth(BooleanDFs[2], max_len=1, min_support=0.25, use_colnames=True)
         frequent_items_upper = removeExternalIdsSingle(frequent_items_upper, "itemsets")
 
-        print(frequent_items_upper)
+        upper_suggestions = upper_properties(frequent_items_upper, item_properties)
+
+        print(upper_suggestions)
 
         print("Upper:")
         print('The suggestions consist of {} unique properties'.format(len(frequent_items_upper)))
