@@ -11,24 +11,23 @@ query = """SELECT ?property ?propertyLabel ?propertyType WHERE {
 }
 ORDER BY ASC(xsd:integer(STRAFTER(STR(?property), 'P')))"""
 
-
 def get_results(endpoint_url, query):
-    user_agent = f"WDQS-example Python/{sys.version_info[0]}.{sys.version_info[1]}"
+    user_agent = f"Data Science semester project/{sys.version_info[0]}.{sys.version_info[1]}"
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
 
-p_df = pd.DataFrame(columns=['Property', 'Value', 'Type'])
-
 results = get_results(endpoint_url, query)
 
+property_df = pd.DataFrame(columns=['Property', 'Value', 'Type'])
+
 for result in results["results"]["bindings"]:
-    p_df = p_df.append(
+    property_df = property_df.append(
         {'Property': (result['property']['value'].split("/")[-1]), 'Value': result['propertyLabel']['value'],
          'Type': (result['propertyType']['value'].split("#")[-1])}, ignore_index=True)
 
-p_df = p_df.set_index('Property')
+property_df = property_df.set_index('Property')
 
-p_df.to_csv(Path('../Data/properties.csv'))
+property_df.to_csv(Path('../Data/properties.csv'))
