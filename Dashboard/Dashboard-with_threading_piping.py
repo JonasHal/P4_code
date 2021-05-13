@@ -14,7 +14,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, suppress_callback_exceptions = True)
 
 SEARCHPAGE = ""
 SEARCHENTITY = "Q314"
@@ -197,45 +197,73 @@ def filter_suggestions(rules, item):
 
 #The HTML behind the dashboard
 app.layout = html.Div([
-    html.H1(children="Search Bar"),
+    html.H1("Wikidata Property Suggester", id="title",
+                        style={"grid-column": "1 / span 4", "text-align": "center"}
+                        ),
 
     html.Div([
-        dcc.Input(id="input-1", type="text", value=SEARCHENTITY),
-        html.Div(id="search-output"),
+        html.H1(children="Search Bar"),
+
+        html.Div([
+            dcc.Input(id="input-1", type="text", value=SEARCHENTITY),
+            html.Div(id="search-output")
+        ]),
+
+        html.H2(children="Retrieve Properties"),
+
+        html.Div([
+            dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
+            html.Div(id="properties-output", style={"display": "none"})
+        ]),
+
+        html.H2(children="Input Properties"),
+
+        html.Div([
+            html.Button("Add Filter", id="add-filter", n_clicks=0,
+                        style={"grid-column": "1 / span 2"}
+                        ),
+            html.Div(id="properties_dropdown-container", children=[],
+                     style={"width": "200px"}
+                     ),
+            html.Div(id="values_dropdown-container", children=[],
+                     style={"width": "200px"}
+                     ),
+            html.Div(id="dropdown-container-output")
+        ], style={"display": "inline-grid",
+                  "grid-gap": "24px",
+                  "grid-template-columns": "auto auto"}
+        ),
+
+        html.H2(children="Get Suggestions"),
+
+        html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
+                  html.Div(id="suggestion-output")
+                 ])
     ]),
 
-    html.H2(children="Retrieve Properties"),
-
     html.Div([
-        dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
-        html.Div(id="properties-output")
+        html.H3(children="General Properties"),
+        html.Div(id="upper_suggestion-container")
+
     ]),
 
-    html.H2(children="Input Properties"),
+    html.Div([
+        html.H3(children="Occasional Properties"),
+        html.Div(id="middle_suggestion-container")
+
+    ]),
 
     html.Div([
-        html.Button("Add Filter", id="add-filter", n_clicks=0,
-                    style={"grid-column": "1 / span 2"}
-                    ),
-        html.Div(id="properties_dropdown-container", children=[],
-                 style={"width": "240px"}
-                 ),
-        html.Div(id="values_dropdown-container", children=[],
-                 style={"width": "240px"}
-                 ),
-        html.Div(id="dropdown-container-output")
-    ], style={"display": "inline-grid",
-              "grid-gap": "24px",
-              "grid-template-columns": "auto auto"}
-    ),
+        html.H3(children="Rare Properties"),
+        html.Div(id="lower_suggestion-container")
 
-    html.H2(children="Get Suggestions"),
-
-    html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
-              html.Div(id="suggestion-output")
-             ])
-
-])
+    ])
+], style={"display": "inline-grid",
+          "grid-gap": "1%",
+          "grid-template-columns": "auto auto auto auto",
+          "width":"94%",
+          "margin-left": "3%",
+          "margin-right": "3%"})
 
 #App Callback functionalities on the Dashboard
 
@@ -336,7 +364,9 @@ def display_dropdowns_values(n_clicks, children):
     return children
 
 @app.callback(
-    Output("suggestion-output", "children"),
+    Output("upper_suggestion-container", "children"),
+    Output("middle_suggestion-container", "children"),
+    Output("lower_suggestion-container", "children"),
     Input("find-suggestions", "n_clicks"),
     Input("properties-output", "children"),
     State("properties_dropdown-container", "children"),
@@ -419,15 +449,15 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         else:
             middle_rel_support = 0.0085 #Means that if there are less than 120 items, every property set is mapped once
 
-        print(item_properties)
-
         # Find the Frequent_items and mine rules on the lower partition, if there are more than 28 itemsets
         if item_list_len > 28:
             frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support, use_colnames=True)
             print("Lower:")
             lower_rules = mineAssociationRules(frequent_items_lower)
             lower_suggestions = filter_suggestions(lower_rules, item_properties)
-            print(lower_suggestions)
+
+        else:
+            lower_suggestions = ["Not enough items to search for lower properties"]
 
         # Find the Frequent_items and mine rule on the middle partition
         frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support,
@@ -443,14 +473,19 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         upper_suggestions = upper_properties(frequent_items_upper, item_properties)
 
-        print(upper_suggestions)
-
         print("Upper:")
+        print(upper_suggestions)
         print('The suggestions consist of {} unique properties'.format(len(frequent_items_upper)))
 
         print("Everything Done")
 
+        return html.Ul([html.Li(prop) for prop in upper_suggestions]), \
+               html.Ul([html.Li(prop) for prop in middle_suggestions]), \
+               html.Ul([html.Li(prop) for prop in lower_suggestions])
+
     else:
-        return ""
+        return [], [], []
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
