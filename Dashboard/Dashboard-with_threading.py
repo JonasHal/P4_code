@@ -81,6 +81,8 @@ def update_output(input1):
 
         if len(DATA["search"]) >= 1:
             option_list = []
+            #The reason to do this transformation is to ensure that the suggestions can handle items without
+            #a description
             for option in DATA["search"]:
                 temp_str = ""
 
@@ -101,7 +103,8 @@ def update_output(input1):
 
                 option_list.append(temp_str)
 
-            return html.Ul([html.Li(temp_str) for temp_str in option_list])
+            return html.Ul([html.Li(temp_str) for temp_str in option_list],
+                           style=)
 
         else:
             return "No results could be found"
