@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 import pandas as pd
 from plotly.subplots import make_subplots
+import time
 
 
 def getBooleanDF(property_list):
@@ -118,6 +119,7 @@ def countUniqueConsequents(rule_df):
 
     return unique_consequents
 
+
 def removeRulesWithId(rule_df):
     property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
     property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
@@ -193,32 +195,53 @@ if __name__ == '__main__':
         fig2.show()
 
 
-    #makeBoxPlot()
+    # makeBoxPlot()
 
     # upper_properties = splitBooleanDF(property_list, "upper")
     middle_properties = splitBooleanDF(property_list, "middle")
-    lower_properties = splitBooleanDF(property_list, "lower")
-    #
-    # frequent_items_upper = fpgrowth(upper_properties, min_support=0.25, use_colnames=True)
+    # lower_properties = splitBooleanDF(property_list, "lower")
+
+    # frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
     frequent_items_middle = fpgrowth(middle_properties, min_support=0.006, use_colnames=True)
-    frequent_items_lower = fpgrowth(lower_properties, min_support=0.0003, use_colnames=True)
-    #
-    lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
-    lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
-    lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
-                               (lower_rules['leverage'] > 0)]
-    #
+
+    # lower_rules = association_rules(frequent_items_lower, metric="confidence", min_threshold=0.99)
+    # lower_rules["consequent_len"] = lower_rules["consequents"].apply(lambda x: len(x))
+    # lower_rules = lower_rules[(lower_rules['consequent_len'] == 1) & (lower_rules['lift'] > 1) &
+    #                            (lower_rules['leverage'] > 0)]
+
     middle_rules = association_rules(frequent_items_middle, metric="confidence", min_threshold=0.99)
     middle_rules["consequent_len"] = middle_rules["consequents"].apply(lambda x: len(x))
     middle_rules = middle_rules[(middle_rules['consequent_len'] == 1) & (middle_rules['lift'] > 1) &
-                                 (middle_rules['leverage'] > 0)]
-    #
-    lower_rules_without_id = removeRulesWithId(lower_rules)
-    lower_rules_without_id = lower_rules_without_id.sort_values(by='leverage', ascending=False)
+                                (middle_rules['leverage'] > 0)]
 
+    # lower_rules_without_id = removeRulesWithId(lower_rules)
+    # lower_rules_without_id = lower_rules_without_id.sort_values(by='leverage', ascending=False)
 
     middle_rules_without_id = removeRulesWithId(middle_rules)
     # middle_rules_without_id = middle_rules_without_id.sort_values(by='antecedents', key=lambda x: x.str.len())
     middle_rules_without_id = middle_rules_without_id.sort_values(by='leverage', ascending=False)
 
-    #print(countDuplicateRules(lower_rules[['antecedents', 'conviction']], lower_rules[['antecedents', 'conviction']]))
+    test = ['street address', 'Integrated Postsecondary Education Data System ID',
+            'Carnegie Classification of Institutions of Higher Education']
+    # Burde suggest postal code
+
+    def find_suggestions(rules, item):
+        suggestions = rules.copy()
+        for i in suggestions.index:
+            # Checks if the consequent already exists in the item. If yes, the rule is dropped.
+            if suggestions['consequents'][i][0] in item:
+                suggestions.drop([i], inplace=True)
+        for j in suggestions.index:
+            # Checks if all properties in the item is contained in each list of antecedents from the rules.
+            # If no, the rule is dropped.
+            if all(prop in item for prop in list(suggestions['antecedents'][j])) == False:
+                suggestions.drop([j], inplace=True)
+
+        return suggestions
+
+
+    t1 = time.perf_counter()
+    ok = find_suggestions(middle_rules_without_id, test)
+    t2 = time.perf_counter()
+
+    print(t2 - t1)

@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
 
-
 def property_count_function(listOfProperties):
     """
 
@@ -91,26 +90,18 @@ def replacePcodesWithPlabels_df(property_dataframe):
 
 
 if __name__ == '__main__':
-
     # The full list of properties
     property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
     # Uses the property_count_function to create a dataframe containing properties and their frequency.
     property_count_df = property_count_function(property_list)
-
     # Copy of the property_count_df that should be with P-codes and not P label values
     property_count_df_without_labels = property_count_df.copy()
-
     # Uses the function replacePcodesWithPlabels on the dataframe to make a new one with P label values
     property_count_df_with_labels = replacePcodesWithPlabels_df(property_count_df)
 
-    number_of_properties_above_1000 = []
-    number_of_properties_below_1000 = []
-    for index, row in property_count_df.iterrows():
-        if row['Frequency'] > 1000:
-            number_of_properties_above_1000.append(index)
-        else:
-            number_of_properties_below_1000.append(index)
+    number_of_properties_above_1000 = [index for index, row in property_count_df.iterrows() if row['Frequency'] > 1000]
+    number_of_properties_below_1000 = [index for index, row in property_count_df.iterrows() if row['Frequency'] <= 1000]
 
     # Below are the figures
     # Barplot with ALL P-codes and their frequency
@@ -132,7 +123,7 @@ if __name__ == '__main__':
         xaxis_title="Property Frequency",
         yaxis_title="Property"
     )
-    #fig_with_labels.show()
+    fig_with_labels.show()
 
     # The two lines below are the dataframe and a list. The list is used for median and average calculations.
     university_property_dataframe = entity_property_count_function(property_list)[0]
@@ -146,7 +137,7 @@ if __name__ == '__main__':
         xaxis_title="Number of Properties",
         yaxis_title="Number of Universities"
     )
-    #university_property_fig.show()
+    university_property_fig.show()
 
-    #print("The median value for the amount of properties in universities is {}".format(np.median(count_list)))
-    #print("The average value for the amount of properties in universities is {}".format(np.average(count_list)))
+    print("The median value for the amount of properties in universities is {}".format(np.median(count_list)))
+    print("The average value for the amount of properties in universities is {}".format(np.average(count_list)))
