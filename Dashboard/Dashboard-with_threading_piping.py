@@ -210,7 +210,7 @@ app.layout = html.Div([
         ]),
 
         html.H2(children="Investigate Item"),
-        html.H5(children="Input the items Q-code you want to investigate:"),
+        html.P(children="Input the items Q-code you want to investigate:"),
 
         html.Div([
             dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
@@ -241,6 +241,7 @@ app.layout = html.Div([
 
     html.Div([
         html.H3(children="General Properties"),
+        html.P(children="Disclaimer: If the propety filters are very broad, some of these general properties will not make sense in every context."),
         html.Div(id="upper_suggestion-container")
 
     ]),
@@ -397,9 +398,10 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         results = return_sparql_query_results(query_string)
 
         #Takes the results from the SPARQL query and append the wikibase value to the item_list
-        item_list = []
-        for result in results["results"]["bindings"]:
-            item_list.append(result['item']['value'].split("/")[-1])
+        # item_list = []
+        item_list = [result['item']['value'].split("/")[-1] for result in results["results"]["bindings"]]
+        # for result in results["results"]["bindings"]:
+        #     item_list.append(result['item']['value'].split("/")[-1])
 
         item_list_len = len(item_list)
 
@@ -409,11 +411,12 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         #The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
         #Ceil makes sure that the each subset from item_list is no longer than 50
         limit = ceil(item_list_len / 50)
-        piped_list = []
+        # Seperates the item_list to a nested_list with max 50 items in each list
+        piped_list = [item_list[pipe::limit] for pipe in range(limit)]
 
         #Seperates the item_list to a nested_list with max 50 items in each list
-        for pipe in range(limit):
-            piped_list.append(item_list[pipe::limit])
+        # for pipe in range(limit):
+        #     piped_list.append(item_list[pipe::limit])
 
         loading_bar_progress = 0
         nested_list = []
