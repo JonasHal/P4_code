@@ -70,20 +70,6 @@ def searchWikidata(input, type):
     else:
         return ""
 
-def retrieve_properties(item):
-    # Props er tom så vi ikke får references med også
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
-
-    #Opens a HTML request session and finds the claims from one item as a list()
-    with requests.Session() as S:
-        try:
-            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
-            print("Retrieving properties from " + str(item) + " Succeded")
-        except Exception:
-            return "Item did not have any properties"
-
-    return list(DATA)
-
 def retrieve_properties_piped(item_list):
     #Creates the query by seperating each item with "|"
     item_list_query = ""
@@ -245,26 +231,16 @@ app.layout = html.Div([
                         ),
 
     html.Div([
-<<<<<<< Updated upstream
-        html.H1(children="Search Bar"),
-
-        html.Div([
-            dcc.Input(id="input-1", type="text", value=SEARCHENTITY),
-            html.Div(id="search-output")
-        ]),
-
         html.H2(children="Investigate Item"),
         html.H5(children="Input the items Q-code you want to investigate:"),
-=======
-        html.H2(children="Retrieve Properties"),
->>>>>>> Stashed changes
 
         html.Div([
-            dcc.Input(id="input-2", type="text", debounce=True),
-            html.Div(id="properties-output", style={"display": "none"})
+            dcc.Input(id="investigate_item", type="text", debounce=True),
+            html.Div(id="properties-output", style={"display": "none"}),
+            html.Div(id="investigate_item-confirmed")
         ]),
 
-        html.H2(children="Input Properties To Filter On", style={"text-align": "center"}),
+        html.H2(children="Input Properties To Filter On"),
 
         html.Div([
             html.Button("Add Filter", id="add-filter", n_clicks=0,
@@ -285,10 +261,9 @@ app.layout = html.Div([
                   "width": "8em"}
         ),
 
-        html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
-                 ], style={"text-align": "center"}),
-
-        html.H1(children="Search Bar")
+        html.Div([
+            html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
+        ])
     ]),
 
     html.Div([
@@ -306,21 +281,23 @@ app.layout = html.Div([
     html.Div([
         html.H3(children="Rare Properties"),
         html.Div(id="lower_suggestion-container")
-
     ]),
 
     html.Div([
         html.Div([
+            html.H4(children="Search entities"),
             dcc.Input(id="entities-input", type="text", value=SEARCHPAGE),
             html.Div(id="item_search-output")
         ]),
+
         html.Div([
+            html.H4(children="Search properties"),
             dcc.Input(id="properties-input", type="text", value=SEARCHPAGE),
             html.Div(id="property_search-output")
         ]),
     ], style={"grid-column": "1 / span 4",
               "display": "inline-grid",
-              "grid-gap": "60px",
+              "grid-gap": "40px",
               "grid-template-columns": "auto auto"}
     )
 
@@ -329,7 +306,8 @@ app.layout = html.Div([
           "grid-template-columns": "auto auto auto auto",
           "width":"94%",
           "margin-left": "3%",
-          "margin-right": "3%"})
+          "margin-right": "3%"}
+)
 
 #App Callback functionalities on the Dashboard
 
@@ -351,10 +329,23 @@ def update_output(input):
 #Bruger mediawiki API wbgetclaims til at hente claims fra en item
 @app.callback(
     Output("properties-output", "children"),
-    Input("input-2", "value"),
+    Output("investigate_item-confirmed", "children"),
+    Input("investigate_item", "value"),
 )
-def extract_properties(input2):
-    return retrieve_properties(input2)
+def extract_properties(item):
+    # Props er tom så vi ikke får references med også
+    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
+
+    # Opens a HTML request session and finds the claims from one item as a list()
+    with requests.Session() as S:
+        try:
+            DATA = \
+            dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())[
+                "claims"].keys()
+        except Exception:
+            return [], "Item: " + str(item) + " did not have any properties"
+
+    return list(DATA), ("Properties have been extracted from " + str(item))
 
 #Properties and Values Input: https://dash.plotly.com/dash-core-components/dropdown (Dynamic Options)
 @app.callback(
