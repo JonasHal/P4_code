@@ -209,14 +209,15 @@ app.layout = html.Div([
             html.Div(id="search-output")
         ]),
 
-        html.H2(children="Retrieve Properties"),
+        html.H2(children="Investigate Item"),
+        html.H5(children="Input the items Q-code you want to investigate:"),
 
         html.Div([
             dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
             html.Div(id="properties-output", style={"display": "none"})
         ]),
 
-        html.H2(children="Input Properties"),
+        html.H2(children="Input Properties To Filter On"),
 
         html.Div([
             html.Button("Add Filter", id="add-filter", n_clicks=0,
@@ -234,7 +235,7 @@ app.layout = html.Div([
                   "grid-template-columns": "auto auto"}
         ),
 
-        html.H2(children="Get Suggestions"),
+
 
         html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
                   html.Div(id="suggestion-output")
