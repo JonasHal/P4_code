@@ -184,9 +184,9 @@ def filter_suggestions(rules, item):
             suggestions.drop([i], inplace=True)
 
     for j in suggestions.index:
-        # Checks if all properties in the item is contained in each list of antecedents from the rules.
+        # For every list of properties in the antecedents, check if they are contained in item properties list
         # If no, the rule is dropped.
-        if all(prop in item for prop in list(suggestions['antecedents'][j])) == False:
+        if all(props in item for props in list(suggestions['antecedents'][j])) == False:
             suggestions.drop([j], inplace=True)
 
     result = np.unique([*itertools.chain.from_iterable(suggestions.consequents)]).tolist()
