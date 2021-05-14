@@ -334,7 +334,7 @@ def display_dropdowns_properties(n_clicks, children):
                 'type': 'property_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["P31", "P27", "P51", "P69", "P420"]],
+            options=[{"label": i, "value": i} for i in ["P31", "P27", "P51", "P69", "P420", "P106"]],
             placeholder = "Select a Property...",
             style={"margin-top": "5px"}
         )
@@ -353,7 +353,7 @@ def display_dropdowns_values(n_clicks, children):
                 'type': 'values_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["Q3918", "Q146", "Q35872", "Q5107", "Q40218", "Q198", "Q35", "Q5"]],
+            options=[{"label": i, "value": i} for i in ["Q3918", "Q146", "Q35872", "Q5107", "Q40218", "Q198", "Q35", "Q5", "Q1440300", "Q2252262"]],
             placeholder="No Value",
             style={"margin-top": "5px"}
         )
@@ -432,8 +432,10 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         #Partitioning Part
         BooleanDFs = splitNestedListToBooleanDFs(nested_list)
-        if len(str(item_list_len)) <= 4:
+        if len(str(item_list_len)) <= 3:
             lower_rel_support = (len(str(item_list_len)) - 1) / item_list_len
+        elif len(str(item_list_len)) == 4:
+            lower_rel_support = (len(str(item_list_len))) / item_list_len
         else:
             lower_rel_support = (len(str(item_list_len)) + 1) / item_list_len
 
@@ -453,7 +455,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
             lower_rules = mineAssociationRules(frequent_items_lower)
             lower_suggestions = filter_suggestions(lower_rules, item_properties)
         else:
-            lower_suggestions = ["Not enough items to search for lower properties"]
+            lower_suggestions = ["Not enough items to search for rare properties"]
 
         # Find the Frequent_items and mine rule on the middle partition
         frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support,
