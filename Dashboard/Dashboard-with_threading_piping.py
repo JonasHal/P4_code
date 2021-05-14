@@ -286,12 +286,12 @@ def update_output(input1):
                 temp_str = ""
 
                 try:
-                    temp_str += option["id"] + "|"
+                    temp_str += option["label"] + " ("
                 except Exception:
                     temp_str += "|"
 
                 try:
-                    temp_str += option["label"] + "|"
+                    temp_str += option["id"] + ") | "
                 except Exception:
                     temp_str += "|"
 
