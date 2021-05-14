@@ -17,7 +17,6 @@ from mlxtend.frequent_patterns import fpgrowth, association_rules
 app = dash.Dash(__name__, suppress_callback_exceptions = True)
 
 SEARCHPAGE = ""
-SEARCHENTITY = "Q314"
 
 #List of ids with type ExteralIDs
 property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
@@ -26,6 +25,50 @@ property_label_dataframe_externalIDs.set_index(['Property'], inplace=True)
 list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
 #Functions utilized in the dashboard
+
+def searchWikidata(input, type):
+    # Whenever the user types something in the searchbar open a session
+    if len(input) >= 1:
+        # The string with API wbsearchentities to suggestions to the user input
+        URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s" \
+              "&format=json&limit=5&formatversion=2&language=en&type=%s" % (input, type)
+        with requests.Session() as S:
+            DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
+
+        # Whenever a search entity is returned, do something
+        if len(DATA["search"]) >= 1:
+            # Go through the DATA.json and append an entity label, id and description to a option list
+            option_list = []
+            for option in DATA["search"]:
+                temp_str = ""
+
+                try:
+                    temp_str += option["label"] + " ("
+                except Exception:
+                    temp_str += "|"
+
+                try:
+                    temp_str += option["id"] + ") | "
+                except Exception:
+                    temp_str += "|"
+
+                try:
+                    temp_str += option["description"]
+                except Exception:
+                    ""
+
+                option_list.append(temp_str)
+
+            # Creates a list with the suggested entities
+            return html.Ul([html.Li(temp_str) for temp_str in option_list])
+
+        # If no results is returned do something
+        else:
+            return "No results could be found"
+
+    # Do nothing when no input
+    else:
+        return ""
 
 def retrieve_properties(item):
     # Props er tom så vi ikke får references med også
@@ -202,6 +245,7 @@ app.layout = html.Div([
                         ),
 
     html.Div([
+<<<<<<< Updated upstream
         html.H1(children="Search Bar"),
 
         html.Div([
@@ -211,9 +255,12 @@ app.layout = html.Div([
 
         html.H2(children="Investigate Item"),
         html.H5(children="Input the items Q-code you want to investigate:"),
+=======
+        html.H2(children="Retrieve Properties"),
+>>>>>>> Stashed changes
 
         html.Div([
-            dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
+            dcc.Input(id="input-2", type="text", debounce=True),
             html.Div(id="properties-output", style={"display": "none"})
         ]),
 
@@ -224,19 +271,24 @@ app.layout = html.Div([
                         style={"grid-column": "1 / span 2"}
                         ),
             html.Div(id="properties_dropdown-container", children=[],
-                     style={"width": "200px"}
+                     style={"width": "160px"}
                      ),
             html.Div(id="values_dropdown-container", children=[],
-                     style={"width": "200px"}
+                     style={"width": "160px"}
                      ),
             html.Div(id="dropdown-container-output")
         ], style={"display": "inline-grid",
                   "grid-gap": "24px",
-                  "grid-template-columns": "auto auto"}
+                  "grid-template-columns": "auto auto",
+                  "margin-right": "auto",
+                  "margin-left": "auto",
+                  "width": "8em"}
         ),
 
         html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
-                 ], style={"text-align": "center"})
+                 ], style={"text-align": "center"}),
+
+        html.H1(children="Search Bar")
     ]),
 
     html.Div([
@@ -255,7 +307,23 @@ app.layout = html.Div([
         html.H3(children="Rare Properties"),
         html.Div(id="lower_suggestion-container")
 
-    ])
+    ]),
+
+    html.Div([
+        html.Div([
+            dcc.Input(id="entities-input", type="text", value=SEARCHPAGE),
+            html.Div(id="item_search-output")
+        ]),
+        html.Div([
+            dcc.Input(id="properties-input", type="text", value=SEARCHPAGE),
+            html.Div(id="property_search-output")
+        ]),
+    ], style={"grid-column": "1 / span 4",
+              "display": "inline-grid",
+              "grid-gap": "60px",
+              "grid-template-columns": "auto auto"}
+    )
+
 ], style={"display": "inline-grid",
           "grid-gap": "1%",
           "grid-template-columns": "auto auto auto auto",
@@ -267,52 +335,18 @@ app.layout = html.Div([
 
 #Search bar
 @app.callback(
-    Output("search-output", "children"),
-    Input("input-1", "value"),
+    Output("item_search-output", "children"),
+    Input("entities-input", "value"),
 )
-def update_output(input1):
-    #Whenever the user types something in the searchbar open a session
-    if len(input1) >= 1:
-        # The string with API wbsearchentities to suggestions to the user input
-        URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s" \
-              "&format=json&limit=5&formatversion=2&language=en" % (input1)
-        with requests.Session() as S:
-            DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
+def update_output(input):
+    return searchWikidata(input, "item")
 
-        #Whenever a search entity is returned, do something
-        if len(DATA["search"]) >= 1:
-            #Go through the DATA.json and append an entity label, id and description to a option list
-            option_list = []
-            for option in DATA["search"]:
-                temp_str = ""
-
-                try:
-                    temp_str += option["label"] + " ("
-                except Exception:
-                    temp_str += "|"
-
-                try:
-                    temp_str += option["id"] + ") | "
-                except Exception:
-                    temp_str += "|"
-
-                try:
-                    temp_str += option["description"]
-                except Exception:
-                    ""
-
-                option_list.append(temp_str)
-
-            #Creates a list with the suggested entities
-            return html.Ul([html.Li(temp_str) for temp_str in option_list])
-
-        #If no results is returned do something
-        else:
-            return "No results could be found"
-
-    #Do nothing when no input
-    else:
-        return ""
+@app.callback(
+    Output("property_search-output", "children"),
+    Input("properties-input", "value"),
+)
+def update_output(input):
+    return searchWikidata(input, "property")
 
 #Bruger mediawiki API wbgetclaims til at hente claims fra en item
 @app.callback(
