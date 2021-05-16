@@ -17,7 +17,6 @@ from mlxtend.frequent_patterns import fpgrowth, association_rules
 app = dash.Dash(__name__, suppress_callback_exceptions = True)
 
 SEARCHPAGE = ""
-SEARCHENTITY = "Q314"
 
 #List of ids with type ExteralIDs
 property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
@@ -27,19 +26,49 @@ list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
 #Functions utilized in the dashboard
 
-def retrieve_properties(item):
-    # Props er tom så vi ikke får references med også
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
+def searchWikidata(input, type):
+    # Whenever the user types something in the searchbar open a session
+    if len(input) >= 1:
+        # The string with API wbsearchentities to suggestions to the user input
+        URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s" \
+              "&format=json&limit=5&formatversion=2&language=en&type=%s" % (input, type)
+        with requests.Session() as S:
+            DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
 
-    #Opens a HTML request session and finds the claims from one item as a list()
-    with requests.Session() as S:
-        try:
-            DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())["claims"].keys()
-            print("Retrieving properties from " + str(item) + " Succeded")
-        except Exception:
-            return "Item did not have any properties"
+        # Whenever a search entity is returned, do something
+        if len(DATA["search"]) >= 1:
+            # Go through the DATA.json and append an entity label, id and description to a option list
+            option_list = []
+            for option in DATA["search"]:
+                temp_str = ""
 
-    return list(DATA)
+                try:
+                    temp_str += option["label"] + " ("
+                except Exception:
+                    temp_str += "|"
+
+                try:
+                    temp_str += option["id"] + ") | "
+                except Exception:
+                    temp_str += "|"
+
+                try:
+                    temp_str += option["description"]
+                except Exception:
+                    ""
+
+                option_list.append(temp_str)
+
+            # Creates a list with the suggested entities
+            return html.Ul([html.Li(temp_str) for temp_str in option_list])
+
+        # If no results is returned do something
+        else:
+            return "No results could be found"
+
+    # Do nothing when no input
+    else:
+        return ""
 
 def retrieve_properties_piped(item_list):
     #Creates the query by seperating each item with "|"
@@ -202,41 +231,39 @@ app.layout = html.Div([
                         ),
 
     html.Div([
-        html.H1(children="Search Bar"),
-
-        html.Div([
-            dcc.Input(id="input-1", type="text", value=SEARCHENTITY),
-            html.Div(id="search-output")
-        ]),
-
         html.H2(children="Investigate Item"),
         html.P(children="Input the items Q-code you want to investigate:"),
 
         html.Div([
-            dcc.Input(id="input-2", type="text", value=SEARCHENTITY, debounce=True),
-            html.Div(id="properties-output", style={"display": "none"})
+            dcc.Input(id="investigate_item", type="text", debounce=True),
+            html.Div(id="properties-output", style={"display": "none"}),
+            html.Div(id="investigate_item-confirmed")
         ]),
 
-        html.H2(children="Input Properties To Filter On", style={"text-align": "center"}),
+        html.H2(children="Input Properties To Filter On"),
 
         html.Div([
             html.Button("Add Filter", id="add-filter", n_clicks=0,
                         style={"grid-column": "1 / span 2"}
                         ),
             html.Div(id="properties_dropdown-container", children=[],
-                     style={"width": "200px"}
+                     style={"width": "160px"}
                      ),
             html.Div(id="values_dropdown-container", children=[],
-                     style={"width": "200px"}
+                     style={"width": "160px"}
                      ),
             html.Div(id="dropdown-container-output")
         ], style={"display": "inline-grid",
                   "grid-gap": "24px",
-                  "grid-template-columns": "auto auto"}
+                  "grid-template-columns": "auto auto",
+                  "margin-right": "auto",
+                  "margin-left": "auto",
+                  "width": "8em"}
         ),
 
-        html.Div([html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
-                 ], style={"text-align": "center"})
+        html.Div([
+            html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
+        ])
     ]),
 
     html.Div([
@@ -255,73 +282,71 @@ app.layout = html.Div([
     html.Div([
         html.H3(children="Rare Properties"),
         html.Div(id="lower_suggestion-container")
+    ]),
 
-    ])
+    html.Div([
+        html.Div([
+            html.H4(children="Search entities"),
+            dcc.Input(id="entities-input", type="text", value=SEARCHPAGE),
+            html.Div(id="item_search-output")
+        ]),
+
+        html.Div([
+            html.H4(children="Search properties"),
+            dcc.Input(id="properties-input", type="text", value=SEARCHPAGE),
+            html.Div(id="property_search-output")
+        ]),
+    ], style={"grid-column": "1 / span 4",
+              "display": "inline-grid",
+              "grid-gap": "40px",
+              "grid-template-columns": "auto auto"}
+    )
+
 ], style={"display": "inline-grid",
           "grid-gap": "1%",
           "grid-template-columns": "auto auto auto auto",
           "width":"94%",
           "margin-left": "3%",
-          "margin-right": "3%"})
+          "margin-right": "3%"}
+)
 
 #App Callback functionalities on the Dashboard
 
 #Search bar
 @app.callback(
-    Output("search-output", "children"),
-    Input("input-1", "value"),
+    Output("item_search-output", "children"),
+    Input("entities-input", "value"),
 )
-def update_output(input1):
-    #Whenever the user types something in the searchbar open a session
-    if len(input1) >= 1:
-        # The string with API wbsearchentities to suggestions to the user input
-        URL = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s" \
-              "&format=json&limit=5&formatversion=2&language=en" % (input1)
-        with requests.Session() as S:
-            DATA = S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json()
+def update_output(input):
+    return searchWikidata(input, "item")
 
-        #Whenever a search entity is returned, do something
-        if len(DATA["search"]) >= 1:
-            #Go through the DATA.json and append an entity label, id and description to a option list
-            option_list = []
-            for option in DATA["search"]:
-                temp_str = ""
-
-                try:
-                    temp_str += option["label"] + " ("
-                except Exception:
-                    temp_str += "|"
-
-                try:
-                    temp_str += option["id"] + ") | "
-                except Exception:
-                    temp_str += "|"
-
-                try:
-                    temp_str += option["description"]
-                except Exception:
-                    ""
-
-                option_list.append(temp_str)
-
-            #Creates a list with the suggested entities
-            return html.Ul([html.Li(temp_str) for temp_str in option_list])
-
-        #If no results is returned do something
-        else:
-            return "No results could be found"
-
-    #Do nothing when no input
-    else:
-        return ""
+@app.callback(
+    Output("property_search-output", "children"),
+    Input("properties-input", "value"),
+)
+def update_output(input):
+    return searchWikidata(input, "property")
 
 #Bruger mediawiki API wbgetclaims til at hente claims fra en item
 @app.callback(
     Output("properties-output", "children"),
-    Input("input-2", "value"),
+    Output("investigate_item-confirmed", "children"),
+    Input("investigate_item", "value"),
 )
-def extract_properties(input2):
-    return retrieve_properties(input2)
+def extract_properties(item):
+    # Props er tom så vi ikke får references med også
+    URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
+
+    # Opens a HTML request session and finds the claims from one item as a list()
+    with requests.Session() as S:
+        try:
+            DATA = \
+            dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())[
+                "claims"].keys()
+        except Exception:
+            return [], "Item: " + str(item) + " did not have any properties"
+
+    return list(DATA), ("Properties have been extracted from " + str(item))
 
 #Properties and Values Input: https://dash.plotly.com/dash-core-components/dropdown (Dynamic Options)
 @app.callback(
