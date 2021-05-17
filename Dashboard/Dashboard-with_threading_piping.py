@@ -1,6 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 import itertools
@@ -268,9 +269,19 @@ app.layout = html.Div([
 
     html.Div([
         html.H3(children="General Properties"),
-        html.P(children="Disclaimer: If the propety filters are very broad, some of these general properties will not make sense in every context."),
+        html.Div([html.Span(
+                    "Disclaimer",
+                    id="tooltip-target",
+                    style={"color": "blue", "cursor": "pointer"},
+                ),
+            dbc.Tooltip("If the propety filters are very broad, "
+                                     "some of these general properties will not make sense in every context.",
+                        target="tooltip-target",
+                        style={"background-color": "#f0f0f5",
+                               "text-align": "center",
+                               "width": "200px"})
+        ]),
         html.Div(id="upper_suggestion-container")
-
     ]),
 
     html.Div([
@@ -483,8 +494,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
             lower_suggestions = ["Not enough items to search for rare properties"]
 
         # Find the Frequent_items and mine rule on the middle partition
-        frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support,
-                                         use_colnames=True)
+        frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support, use_colnames=True)
         middle_rules = mineAssociationRules(frequent_items_middle)
         middle_suggestions = filter_suggestions(middle_rules, item_properties)
 
