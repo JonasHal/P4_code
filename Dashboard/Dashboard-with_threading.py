@@ -103,8 +103,7 @@ def update_output(input1):
 
                 option_list.append(temp_str)
 
-            return html.Ul([html.Li(temp_str) for temp_str in option_list],
-                           style=)
+            return html.Ul([html.Li(temp_str) for temp_str in option_list])
 
         else:
             return "No results could be found"
