@@ -137,7 +137,8 @@ def splitNestedListToBooleanDFs(property_list):
 
     :param property_list: Input is the nested property list extracted from extractProperties()
     :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
-    index 2 is the most frequent properties
+    index 2 is the most frequent properties. If the len of the property list is less than 28, The rare properties wont exist and
+    would not return anything.
     '''
     # Uses the two functions property_count_function() and getBooleanDF()
     df = property_count_function(property_list)
@@ -146,16 +147,16 @@ def splitNestedListToBooleanDFs(property_list):
     item_count = len(property_list)
     overlap = 0.025/len(str(item_count))
 
-    # Define the splits - the lower is the boxplot upperfence and the upper is at the number corresponding to 25 % frequency
-    lower_split = round(item_count * 0.01, 0)   #Svarer til support > 0.01
-    upper_split = round(item_count * 0.25, 0)  #Svarer til support > 0.25
-    overlap_range = round(item_count * overlap, 0)  #Svarer til 1-9: 0.025, 10-99: 0.0125, 100-999: 0.00625 osv.
+    # Define the splits - the lower is 0.01 + overlap and the upper is at the number corresponding to 25 % frequency
+    lower_split = round(item_count * 0.01, 0)   #Support > 0.01
+    upper_split = round(item_count * 0.25, 0)  #Support > 0.25
+    overlap_range = round(item_count * overlap, 0)  #Same as til 10-99: 0.0125, 100-999: 0.00625 etc.
 
     # Define lists of properties belonging to the partitions
-    above_lower_split_overlap = df[(df['Frequency'] > lower_split + overlap_range)]  # Here is the overlap
-    above_upper_split = df[df['Frequency'] > upper_split]
-    below_lower_split = df[df['Frequency'] <= lower_split]
-    below_upper_split = df[df['Frequency'] <= upper_split]
+    above_lower_split_overlap = df[(df['Frequency'] > lower_split + overlap_range)]  #Lower, Here is the overlap
+    above_upper_split = df[df['Frequency'] > upper_split] #Middle
+    below_lower_split = df[df['Frequency'] <= lower_split] #Middle
+    below_upper_split = df[df['Frequency'] <= upper_split] #Upper
 
     # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
     split_df_lower = boolean_df.drop(above_lower_split_overlap['Property'].tolist(), axis='columns')
@@ -465,15 +466,30 @@ def find_suggestions(n_clicks, item_properties, properties, values):
                 loading_bar_progress += 1
                 print(str(loading_bar_progress) + " / " + str(limit))
 
-
         #Partitioning Part
         BooleanDFs = splitNestedListToBooleanDFs(nested_list)
-        if len(str(item_list_len)) <= 3:
-            lower_rel_support = (len(str(item_list_len)) - 1) / item_list_len
-        elif len(str(item_list_len)) == 4:
-            lower_rel_support = (len(str(item_list_len))) / item_list_len
+
+
+        # Find the Frequent_items and mine rules on the lower partition, if there are more than 28 itemsets
+        if item_list_len > 28:
+            # Define the lower_min_support according to len of item_list
+            if len(str(item_list_len)) <= 3:
+                lower_rel_support = (len(str(
+                    item_list_len)) - 1) / item_list_len  # From 28-99 every pair is included in the Frequent Items
+                # From 100-999 every pair that appears twice are included
+            elif len(str(item_list_len)) == 4:
+                lower_rel_support = (len(str(
+                    item_list_len))) / item_list_len  # From 1000-9999 every pair that appears 4 times are included
+            else:
+                lower_rel_support = (len(str(
+                    item_list_len)) + 1) / item_list_len  # From 10000-99999 every pair that appears 6 times are included
+
+            frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support,
+                                            use_colnames=True)
+            lower_rules = mineAssociationRules(frequent_items_lower)
+            lower_suggestions = filter_suggestions(lower_rules, item_properties)
         else:
-            lower_rel_support = (len(str(item_list_len)) + 1) / item_list_len
+            lower_suggestions = ["Not enough items to search for rare properties"]
 
         #Define the middle_min_support according to len of item_list
         if item_list_len <= 10:
@@ -483,15 +499,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         elif item_list_len <= 120:
             middle_rel_support = 0.036 #Means that if there are less than 28 items, every property set is mapped once
         else:
-            middle_rel_support = 0.0085 #Means that if there are less than 120 items, every property set is mapped once
-
-        # Find the Frequent_items and mine rules on the lower partition, if there are more than 28 itemsets
-        if item_list_len > 28:
-            frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support, use_colnames=True)
-            lower_rules = mineAssociationRules(frequent_items_lower)
-            lower_suggestions = filter_suggestions(lower_rules, item_properties)
-        else:
-            lower_suggestions = ["Not enough items to search for rare properties"]
+            middle_rel_support = 0.00836 #Means that if there are less than 120 items, every property set is mapped once
 
         # Find the Frequent_items and mine rule on the middle partition
         frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support, use_colnames=True)
