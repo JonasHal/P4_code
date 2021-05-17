@@ -423,11 +423,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         results = return_sparql_query_results(query_string)
 
         #Takes the results from the SPARQL query and append the wikibase value to the item_list
-        # item_list = []
         item_list = [result['item']['value'].split("/")[-1] for result in results["results"]["bindings"]]
-        # for result in results["results"]["bindings"]:
-        #     item_list.append(result['item']['value'].split("/")[-1])
-
         item_list_len = len(item_list)
 
         #Check if this step is fulfilled
