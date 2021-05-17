@@ -354,18 +354,18 @@ def extract_properties(item):
     Input("add-filter", "n_clicks"),
     State('properties_dropdown-container', 'children'),
 )
-def display_dropdowns_properties(n_clicks, children):
+def input_properties(n_clicks, children):
     #Everytime the user clicks "New Filter" a add a dropdown to the properties container
-    new_dropdown = dcc.Dropdown(
+    new_input = dcc.Input(
             id={
                 'type': 'property_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["P31", "P27", "P51", "P69", "P420", "P106"]],
+            size="22.5",
             placeholder = "Select a Property...",
-            style={"margin-top": "5px"}
+            style={"margin-top": "10px"}
         )
-    children.append(new_dropdown)
+    children.append(new_input)
     return children
 
 @app.callback(
@@ -373,16 +373,16 @@ def display_dropdowns_properties(n_clicks, children):
     Input("add-filter", "n_clicks"),
     State('values_dropdown-container', 'children'),
 )
-def display_dropdowns_values(n_clicks, children):
+def input_values(n_clicks, children):
     # Everytime the user clicks "New Filter" a add a dropdown to the values container
-    new_dropdown = dcc.Dropdown(
+    new_dropdown = dcc.Input(
             id={
                 'type': 'values_filter-dropdown',
                 'index': n_clicks
             },
-            options=[{"label": i, "value": i} for i in ["Q3918", "Q146", "Q35872", "Q5107", "Q40218", "Q198", "Q35", "Q5", "Q1440300", "Q2252262"]],
+            size="22.5",
             placeholder="No Value",
-            style={"margin-top": "5px"}
+            style={"margin-top": "10px"}
         )
     children.append(new_dropdown)
     return children
