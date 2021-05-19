@@ -498,10 +498,10 @@ def find_suggestions(n_clicks, item_properties, properties, values):
             lower_suggestions = ["Not enough items to search for rare properties"]
 
         #Define the middle_min_support according to len of item_list
-        if item_list_len <= 12:
+        if item_list_len <= 13:
             middle_rel_support = 0.15 #Means that if there are more than 6 items, every property set is mapped atleast twice
         elif item_list_len <= 44:
-            middle_rel_support = 0.084 #Means that if there are more than 12 items, every property set is mapped atleast twice
+            middle_rel_support = 0.077 #Means that if there are more than 13 items, every property set is mapped atleast twice
         elif item_list_len <= 120:
             middle_rel_support = 0.0226 #Means that if there are more than 44 items, every property set is mapped atleast twice
         else:
