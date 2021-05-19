@@ -266,7 +266,10 @@ app.layout = html.Div([
         ),
 
         html.Div([
-            html.Button("Get Suggestions", id="find-suggestions", n_clicks=0)
+            html.Button("Get Suggestions", id="find-suggestions", n_clicks=0),
+            dcc.Loading(
+                type="circle",
+                children=[html.Div(id="loading-output")])
         ])
     ]),
 
@@ -406,6 +409,7 @@ def input_values(n_clicks, children):
     Output("middle_suggestion-container", "children"),
     Output("lower_suggestion-container", "children"),
     Output("find-suggestions", "n_clicks"),
+    Output("loading-output", "children"),
     Input("find-suggestions", "n_clicks"),
     Input("properties-output", "children"),
     State("properties_dropdown-container", "children"),
@@ -523,10 +527,10 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         return html.Ul([html.Li(prop) for prop in upper_suggestions]), \
                html.Ul([html.Li(prop) for prop in middle_suggestions]), \
-               html.Ul([html.Li(prop) for prop in lower_suggestions]), 0
+               html.Ul([html.Li(prop) for prop in lower_suggestions]), 0, ""
 
     else:
-        return [], [], [], 0
+        return [], [], [], 0, ""
 
 
 if __name__ == '__main__':
