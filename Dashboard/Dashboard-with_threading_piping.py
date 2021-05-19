@@ -7,6 +7,7 @@ import numpy as np
 import itertools
 import requests
 import concurrent.futures
+import time
 from pathlib import Path
 from dash.dependencies import Input, Output, State
 from math import ceil
@@ -15,7 +16,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 
-app = dash.Dash(__name__, suppress_callback_exceptions = True)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 SEARCHPAGE = ""
 
@@ -143,6 +144,7 @@ def splitNestedListToBooleanDFs(property_list):
     # Uses the two functions property_count_function() and getBooleanDF()
     df = property_count_function(property_list)
     boolean_df = getBooleanDF(property_list)
+    print("Unique Properties for this query: " + str(len(df)))
 
     item_count = len(property_list)
     overlap = 0.025/len(str(item_count))
@@ -469,49 +471,55 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         #Partitioning Part
         BooleanDFs = splitNestedListToBooleanDFs(nested_list)
 
-
-        # Find the Frequent_items and mine rules on the lower partition, if there are more than 28 itemsets
-        if item_list_len > 28:
+        start = time.perf_counter()
+        # Find the Frequent_items and mine rules on the lower partition, if there are more than 44 itemsets
+        if item_list_len > 44:
             # Define the lower_min_support according to len of item_list
             if len(str(item_list_len)) <= 3:
                 lower_rel_support = (len(str(
-                    item_list_len)) - 1) / item_list_len  # From 28-99 every pair is included in the Frequent Items
+                    item_list_len)) - 1) / item_list_len  # From 44-99 every pair is included in the Frequent Items
                 # From 100-999 every pair that appears twice are included
             elif len(str(item_list_len)) == 4:
-                lower_rel_support = (len(str(
-                    item_list_len))) / item_list_len  # From 1000-9999 every pair that appears 4 times are included
+                lower_rel_support = 4 / item_list_len  # From 1000-9999 every pair that appears 4 times are included
             else:
                 lower_rel_support = (len(str(
                     item_list_len)) + 1) / item_list_len  # From 10000-99999 every pair that appears 6 times are included
 
-            frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support,
-                                            use_colnames=True)
+            print("Lower:")
+            frequent_items_lower = fpgrowth(BooleanDFs[0], max_len=3, min_support=lower_rel_support, use_colnames=True)
+            print(len(frequent_items_lower))
             lower_rules = mineAssociationRules(frequent_items_lower)
             lower_suggestions = filter_suggestions(lower_rules, item_properties)
         else:
             lower_suggestions = ["Not enough items to search for rare properties"]
 
         #Define the middle_min_support according to len of item_list
-        if item_list_len <= 10:
-            middle_rel_support = 0.15 #Means that if there are less than 7 items, every property set is mapped once
-        elif item_list_len <= 28:
-            middle_rel_support = 0.1 #Means that if there are less than 10 items, every property set is mapped once
+        if item_list_len <= 12:
+            middle_rel_support = 0.15 #Means that if there are more than 6 items, every property set is mapped atleast twice
+        elif item_list_len <= 44:
+            middle_rel_support = 0.084 #Means that if there are more than 12 items, every property set is mapped atleast twice
         elif item_list_len <= 120:
-            middle_rel_support = 0.036 #Means that if there are less than 28 items, every property set is mapped once
+            middle_rel_support = 0.0226 #Means that if there are more than 44 items, every property set is mapped atleast twice
         else:
-            middle_rel_support = 0.00836 #Means that if there are less than 120 items, every property set is mapped once
+            middle_rel_support = 0.0084 #Means that if there are more than 120 items, every property set is mapped atleast twice
 
         # Find the Frequent_items and mine rule on the middle partition
+        print("Middle:")
         frequent_items_middle = fpgrowth(BooleanDFs[1], max_len=3, min_support=middle_rel_support, use_colnames=True)
+        print(len(frequent_items_middle))
         middle_rules = mineAssociationRules(frequent_items_middle)
         middle_suggestions = filter_suggestions(middle_rules, item_properties)
 
         # Find the support of the upper partition
+        print("Upper:")
         frequent_items_upper = fpgrowth(BooleanDFs[2], max_len=1, min_support=0.25, use_colnames=True)
         frequent_items_upper = removeExternalIdsSingle(frequent_items_upper, "itemsets")
+        print(len(frequent_items_upper))
         upper_suggestions = upper_properties(frequent_items_upper, item_properties)
 
         print("Everything Done")
+        stop = time.perf_counter()
+        print("The execution time of FP-Growth and rule mining is: " + str(stop-start))
 
         return html.Ul([html.Li(prop) for prop in upper_suggestions]), \
                html.Ul([html.Li(prop) for prop in middle_suggestions]), \
