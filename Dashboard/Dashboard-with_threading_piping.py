@@ -8,10 +8,12 @@ import itertools
 import requests
 import concurrent.futures
 import time
+import sys
+from SPARQLWrapper import SPARQLWrapper, JSON
 from pathlib import Path
 from dash.dependencies import Input, Output, State
 from math import ceil
-from qwikidata.sparql import return_sparql_query_results
+#from qwikidata.sparql import return_sparql_query_results
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
@@ -27,6 +29,14 @@ property_label_dataframe_externalIDs.set_index(['Property'], inplace=True)
 list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
 #Functions utilized in the dashboard
+
+def get_results(query):
+    user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+    # TODO adjust user agent; see https://w.wiki/CX6
+    sparql = SPARQLWrapper("https://query.wikidata.org/sparql", agent=user_agent)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    return sparql.query().convert()
 
 def searchWikidata(input, type):
     # Whenever the user types something in the searchbar open a session
@@ -438,7 +448,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         #Create the SPARQL query and run it on wikidata
         query_string = """ SELECT ?item WHERE {""" +filters+"""}"""
-        results = return_sparql_query_results(query_string)
+        results = get_results(query_string)
 
         #Takes the results from the SPARQL query and append the wikibase value to the item_list
         item_list = [result['item']['value'].split("/")[-1] for result in results["results"]["bindings"]]
