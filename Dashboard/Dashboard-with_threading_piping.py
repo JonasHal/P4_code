@@ -533,9 +533,13 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         stop = time.perf_counter()
         print("The execution time of FP-Growth and rule mining is: " + str(stop-start))
 
-        return html.Ul([html.Li(prop) for prop in upper_suggestions]), \
-               html.Ul([html.Li(prop) for prop in middle_suggestions]), \
-               html.Ul([html.Li(prop) for prop in lower_suggestions]), 0, ""
+        return html.Ul([html.Li(dcc.Link(href="https://www.wikidata.org/wiki/Property:" + prop,
+                                         children=prop, target='_blank')) for prop in upper_suggestions]), \
+               html.Ul([html.Li(dcc.Link(href="https://www.wikidata.org/wiki/Property:" + prop,
+                                         children=prop, target='_blank')) for prop in middle_suggestions]), \
+               html.Ul([html.Li(dcc.Link(href="https://www.wikidata.org/wiki/Property:" + prop,
+                                         children=prop, target='_blank')) for prop in lower_suggestions]), \
+               0, ""
 
     else:
         return [], [], [], 0, ""
