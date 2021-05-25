@@ -112,7 +112,7 @@ if __name__ == '__main__':
         xaxis_title="Property", yaxis_title="Property Frequency"
     )
     fig_without_labels.update_yaxes(type='log')
-    fig_without_labels.show()
+    #fig_without_labels.show()
 
     # Horizontal barplot with top 24 P label values and their frequency
     fig_with_labels = go.Figure()
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         xaxis_title="Property Frequency",
         yaxis_title="Property"
     )
-    fig_with_labels.show()
+    #fig_with_labels.show()
 
     # The two lines below are the dataframe and a list. The list is used for median and average calculations.
     university_property_dataframe = entity_property_count_function(property_list)[0]
@@ -137,7 +137,9 @@ if __name__ == '__main__':
         xaxis_title="Number of Properties",
         yaxis_title="Number of Universities"
     )
-    university_property_fig.show()
+    #university_property_fig.show()
 
+    print("The median value for the property frequency is {}".format(np.median(property_count_df['Frequency'])))
+    print("The mean value for the property frequency is {}".format(np.average(property_count_df['Frequency'])))
     print("The median value for the amount of properties in universities is {}".format(np.median(count_list)))
     print("The average value for the amount of properties in universities is {}".format(np.average(count_list)))
