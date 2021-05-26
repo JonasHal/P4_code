@@ -22,13 +22,13 @@ def extractItemCodes(filename):
 
     return item_list
 
+#3.1.1
 def extractProperties(filename):
     """
     Walks through an NDJSON file and makes a nested list, with all the properties for each item in a subset of wikidata
     :param filename: What file to open: for example Path("Data/universities_latest_all.ndjson")
     :return: returns a Python list with all the properties from the NDJSON file.
     """
-
     property_list = []
 
     with open(filename, encoding="utf-8") as f:

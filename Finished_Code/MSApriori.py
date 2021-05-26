@@ -2,7 +2,7 @@ import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from pathlib import Path
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlabels
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties, replacePcodesWithPlabels
 import fileinput
 
 # with open(Path('../Data/result1-1.txt'), 'r') as file :

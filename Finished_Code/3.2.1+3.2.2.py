@@ -1,9 +1,9 @@
 import pandas as pd
 from pathlib import Path
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
-from FaerdigKode.DataPartiton import countUniqueConsequents, removeRulesWithId
+from Finished_Code.PartitionData import countUniqueConsequents, removeRulesWithId
 
 property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 

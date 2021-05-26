@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpgrowth
 
@@ -33,7 +33,7 @@ def runtime_frequent(df, min_sup=0.5, frequent=True):
 
 
 if __name__ == "__main__":
-    property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
+    property_list = extractProperties(Path("../Data/universities_latest_all.ndjson"))
 
     te = TransactionEncoder()
     te_ary = te.fit(property_list).transform(property_list)

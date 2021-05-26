@@ -1,4 +1,4 @@
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
 from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
@@ -112,6 +112,9 @@ if __name__ == '__main__':
         xaxis_title="Property", yaxis_title="Property Frequency"
     )
     fig_without_labels.update_yaxes(type='log')
+    """
+    fig_without_labels is fig 3.1.2
+    """
     #fig_without_labels.show()
 
     # Horizontal barplot with top 24 P label values and their frequency
@@ -123,6 +126,9 @@ if __name__ == '__main__':
         xaxis_title="Property Frequency",
         yaxis_title="Property"
     )
+    """
+    fig_with_labels is fig 3.1.3
+    """
     #fig_with_labels.show()
 
     # The two lines below are the dataframe and a list. The list is used for median and average calculations.
@@ -137,6 +143,9 @@ if __name__ == '__main__':
         xaxis_title="Number of Properties",
         yaxis_title="Number of Universities"
     )
+    """
+    university_property_fig is fig 3.1.4
+    """
     #university_property_fig.show()
 
     print("The median value for the property frequency is {}".format(np.median(property_count_df['Frequency'])))

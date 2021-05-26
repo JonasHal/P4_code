@@ -1,5 +1,5 @@
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
-from FaerdigKode.PropertyDistUni import property_count_function
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.findPropertyDist import property_count_function
 from pathlib import Path
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
