@@ -32,7 +32,6 @@ list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
 def get_results(query):
     user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
-    # TODO adjust user agent; see https://w.wiki/CX6
     sparql = SPARQLWrapper("https://query.wikidata.org/sparql", agent=user_agent)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
@@ -290,7 +289,7 @@ app.layout = html.Div([
                     id="tooltip-target",
                     style={"color": "blue", "cursor": "pointer"},
                 ),
-            dbc.Tooltip("If the propety filters are very broad, "
+            dbc.Tooltip("If the property filters are very broad, "
                                      "some of these general properties will not make sense in every context.",
                         target="tooltip-target",
                         style={"background-color": "#f0f0f5",
