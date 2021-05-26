@@ -15,18 +15,21 @@ from dash.dependencies import Input, Output, State
 from math import ceil
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
+import webbrowser
+from threading import Timer
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 SEARCHPAGE = ""
 
-#List of ids with type ExteralIDs
+# List of ids with type ExteralIDs
 property_label_dataframe = pd.read_csv(Path("../Data/properties.csv"))
 property_label_dataframe_externalIDs = property_label_dataframe[(property_label_dataframe["Type"] == "ExternalId")]
 property_label_dataframe_externalIDs.set_index(['Property'], inplace=True)
 list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
-#Functions utilized in the dashboard
+
+# Functions utilized in the dashboard
 
 def get_results(query):
     """
@@ -39,6 +42,7 @@ def get_results(query):
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
+
 
 def searchWikidata(input, type):
     """
@@ -91,6 +95,7 @@ def searchWikidata(input, type):
     else:
         return ""
 
+
 def retrieve_properties_piped(item_list):
     """
     Sends a request to the Wikidata API and transform the data from JSON into a dictionary to
@@ -98,7 +103,7 @@ def retrieve_properties_piped(item_list):
     :param item_list: A list with up to 50 wikidata items written with Q-code
     :return: A nested list, with all the properties each item has
     """
-    #Creates the query by seperating each item with "|"
+    # Creates the query by seperating each item with "|"
     item_list_query = ""
     for item in range(len(item_list)):
         if item == (len(item_list) - 1):
@@ -106,14 +111,15 @@ def retrieve_properties_piped(item_list):
         else:
             item_list_query += item_list[item] + "%7C"
 
-    #The string with API wbgetentities to find multiple items in an optimal format
-    URL = "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=%s&props=claims&languages=en&formatversion=2" % (item_list_query)
+    # The string with API wbgetentities to find multiple items in an optimal format
+    URL = "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=%s&props=claims&languages=en&formatversion=2" % (
+        item_list_query)
 
-    #Opens a HTMl session and gets the DATA from the API
+    # Opens a HTMl session and gets the DATA from the API
     with requests.Session() as S:
         DATA = dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())
 
-    #Appends the properties of each item to a nested list
+    # Appends the properties of each item to a nested list
     nested_list = []
     for entity in DATA["entities"]:
         try:
@@ -122,6 +128,7 @@ def retrieve_properties_piped(item_list):
             pass
 
     return nested_list
+
 
 def getBooleanDF(property_list):
     """
@@ -133,6 +140,7 @@ def getBooleanDF(property_list):
     te_ary = te.fit(property_list).transform(property_list)
     boolean_dataframe = pd.DataFrame(te_ary, columns=te.columns_)
     return boolean_dataframe
+
 
 def property_count_function(listOfProperties):
     """
@@ -158,6 +166,7 @@ def property_count_function(listOfProperties):
 
     return property_dataframe
 
+
 def splitNestedListToBooleanDFs(property_list):
     '''
     Takes a nested list from all the retrieve_properties_piped() outputs and partition the data
@@ -172,25 +181,27 @@ def splitNestedListToBooleanDFs(property_list):
     print("Unique Properties for this query: " + str(len(df)))
 
     item_count = len(property_list)
-    overlap = 0.025/len(str(item_count))
+    overlap = 0.025 / len(str(item_count))
 
     # Define the splits - the lower is 0.01 + overlap and the upper is at the number corresponding to 25 % frequency
-    lower_split = round(item_count * 0.01, 0)   #Support > 0.01
-    upper_split = round(item_count * 0.25, 0)  #Support > 0.25
-    overlap_range = round(item_count * overlap, 0)  #Same as til 10-99: 0.0125, 100-999: 0.00625 etc.
+    lower_split = round(item_count * 0.01, 0)  # Support > 0.01
+    upper_split = round(item_count * 0.25, 0)  # Support > 0.25
+    overlap_range = round(item_count * overlap, 0)  # Same as til 10-99: 0.0125, 100-999: 0.00625 etc.
 
     # Define lists of properties belonging to the partitions
-    above_lower_split_overlap = df[(df['Frequency'] > lower_split + overlap_range)]  #Lower, Here is the overlap
-    above_upper_split = df[df['Frequency'] > upper_split] #Middle
-    below_lower_split = df[df['Frequency'] <= lower_split] #Middle
-    below_upper_split = df[df['Frequency'] <= upper_split] #Upper
+    above_lower_split_overlap = df[(df['Frequency'] > lower_split + overlap_range)]  # Lower, Here is the overlap
+    above_upper_split = df[df['Frequency'] > upper_split]  # Middle
+    below_lower_split = df[df['Frequency'] <= lower_split]  # Middle
+    below_upper_split = df[df['Frequency'] <= upper_split]  # Upper
 
     # Drops the relevant list of properties from the original boolean dataframe thereby creating the partitioned datasets
     split_df_lower = boolean_df.drop(above_lower_split_overlap['Property'].tolist(), axis='columns')
-    split_df_middle = boolean_df.drop(below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(), axis='columns')
+    split_df_middle = boolean_df.drop(below_lower_split['Property'].tolist() + above_upper_split['Property'].tolist(),
+                                      axis='columns')
     split_df_upper = boolean_df.drop(below_upper_split['Property'].tolist(), axis='columns')
 
     return split_df_lower, split_df_middle, split_df_upper
+
 
 def removeExternalIdsSingle(rule_df, column):
     """
@@ -207,6 +218,7 @@ def removeExternalIdsSingle(rule_df, column):
 
     return rule_df
 
+
 def countUniqueConsequents(rule_df):
     """
     Function used to count unique properties that gets recommeded for that partition
@@ -220,18 +232,19 @@ def countUniqueConsequents(rule_df):
 
     return unique_consequents
 
+
 def mineAssociationRules(frequent_items):
     """
     Mines Association Rules, counts the consequents, removes ExternalIds and counts unique consequents.
     :param frequent_items: The frequent itemsets found using FP-Growth algorithm
     :return:
     """
-    #Uses the package mlxtend to mine rules
+    # Uses the package mlxtend to mine rules
     rules = association_rules(frequent_items, metric="confidence", min_threshold=0.99)
 
-    #Define and locate the rules with only 1 consequent
+    # Define and locate the rules with only 1 consequent
     rules["consequent_len"] = rules["consequents"].apply(lambda x: len(x))
-    rules = rules[(rules['consequent_len'] == 1) & (rules['lift'] > 1) &(rules['leverage'] > 0)]
+    rules = rules[(rules['consequent_len'] == 1) & (rules['lift'] > 1) & (rules['leverage'] > 0)]
 
     # Changes the datatype of the consequents from frozenset, which is immutable, to a list.
     rules = removeExternalIdsSingle(rules, "consequents")
@@ -240,6 +253,7 @@ def mineAssociationRules(frequent_items):
     print('The rules consist of {} unique consequents'.format(len(unique_consequents)))
 
     return rules
+
 
 def filter_suggestions(rules, item):
     """
@@ -281,13 +295,14 @@ def upper_properties(upper, item):
 
     return result
 
-#Dashboard Skeleton
 
-#The HTML behind the dashboard
+# Dashboard Skeleton
+
+# The HTML behind the dashboard
 app.layout = html.Div([
     html.H1("Wikidata Property Suggester", id="title",
-                        style={"grid-column": "1 / span 4", "text-align": "center"}
-                        ),
+            style={"grid-column": "1 / span 4", "text-align": "center"}
+            ),
 
     html.Div([
         html.H2(children="Investigate Item"),
@@ -331,12 +346,12 @@ app.layout = html.Div([
     html.Div([
         html.H3(children="General Properties"),
         html.Div([html.Span(
-                    "Disclaimer",
-                    id="tooltip-target",
-                    style={"color": "blue", "cursor": "pointer"},
-                ),
+            "Disclaimer",
+            id="tooltip-target",
+            style={"color": "blue", "cursor": "pointer"},
+        ),
             dbc.Tooltip("If the propety filters are very broad, "
-                                     "some of these general properties will not make sense in every context.",
+                        "some of these general properties will not make sense in every context.",
                         target="tooltip-target",
                         style={"background-color": "#f0f0f5",
                                "text-align": "center",
@@ -377,20 +392,22 @@ app.layout = html.Div([
 ], style={"display": "inline-grid",
           "grid-gap": "1%",
           "grid-template-columns": "auto auto auto auto",
-          "width":"94%",
+          "width": "94%",
           "margin-left": "3%",
           "margin-right": "3%"}
 )
 
-#App Callback functionalities on the Dashboard
 
-#Search bar
+# App Callback functionalities on the Dashboard
+
+# Search bar
 @app.callback(
     Output("item_search-output", "children"),
     Input("entities-input", "value"),
 )
 def update_output(input):
     return searchWikidata(input, "item")
+
 
 @app.callback(
     Output("property_search-output", "children"),
@@ -399,7 +416,8 @@ def update_output(input):
 def update_output(input):
     return searchWikidata(input, "property")
 
-#Bruger mediawiki API wbgetclaims til at hente claims fra en item
+
+# Bruger mediawiki API wbgetclaims til at hente claims fra en item
 @app.callback(
     Output("properties-output", "children"),
     Output("investigate_item-confirmed", "children"),
@@ -413,32 +431,35 @@ def extract_properties(item):
     with requests.Session() as S:
         try:
             DATA = \
-            dict(S.post(url=URL, headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())[
-                "claims"].keys()
+                dict(S.post(url=URL,
+                            headers={"user-agent": "magic browser", "Content-Type": "application/json"}).json())[
+                    "claims"].keys()
         except Exception:
             return [], "Item: " + str(item) + " did not have any properties"
 
     return list(DATA), ("Properties have been extracted from " + str(item))
 
-#Properties and Values Input: https://dash.plotly.com/dash-core-components/dropdown (Dynamic Options)
+
+# Properties and Values Input: https://dash.plotly.com/dash-core-components/dropdown (Dynamic Options)
 @app.callback(
     Output("properties_dropdown-container", "children"),
     Input("add-filter", "n_clicks"),
     State('properties_dropdown-container', 'children'),
 )
 def input_properties(n_clicks, children):
-    #Everytime the user clicks "New Filter" a add a dropdown to the properties container
+    # Everytime the user clicks "New Filter" a add a dropdown to the properties container
     new_input = dcc.Input(
-            id={
-                'type': 'property_filter-dropdown',
-                'index': n_clicks
-            },
-            size="22.5",
-            placeholder = "Select a Property...",
-            style={"margin-top": "10px"}
-        )
+        id={
+            'type': 'property_filter-dropdown',
+            'index': n_clicks
+        },
+        size="22.5",
+        placeholder="Select a Property...",
+        style={"margin-top": "10px"}
+    )
     children.append(new_input)
     return children
+
 
 @app.callback(
     Output("values_dropdown-container", "children"),
@@ -448,16 +469,17 @@ def input_properties(n_clicks, children):
 def input_values(n_clicks, children):
     # Everytime the user clicks "New Filter" a add a dropdown to the values container
     new_dropdown = dcc.Input(
-            id={
-                'type': 'values_filter-dropdown',
-                'index': n_clicks
-            },
-            size="22.5",
-            placeholder="No Value",
-            style={"margin-top": "10px"}
-        )
+        id={
+            'type': 'values_filter-dropdown',
+            'index': n_clicks
+        },
+        size="22.5",
+        placeholder="No Value",
+        style={"margin-top": "10px"}
+    )
     children.append(new_dropdown)
     return children
+
 
 @app.callback(
     Output("upper_suggestion-container", "children"),
@@ -471,63 +493,63 @@ def input_values(n_clicks, children):
     State("values_dropdown-container", "children")
 )
 def find_suggestions(n_clicks, item_properties, properties, values):
-    #Whenever the user clicks the "Get Suggestions" button, do something
+    # Whenever the user clicks the "Get Suggestions" button, do something
     if n_clicks == 1:
-        #Creates the SPARQL query from the filters
+        # Creates the SPARQL query from the filters
         filters = ""
         for i in range(len(properties)):
             try:
-                #Extracts the property and property value from the filter and add to the query
+                # Extracts the property and property value from the filter and add to the query
                 temp_property = properties[i]['props']['value']
                 temp_value = values[i]['props']['value']
                 filters += "?item wdt:" + temp_property + " wd:" + temp_value + " . "
             except:
                 try:
-                    #Extracts the property from the filter, but sets property as a variable and add to the query
+                    # Extracts the property from the filter, but sets property as a variable and add to the query
                     temp_property = properties[i]['props']['value']
                     temp_value = "?variable" + str(i + 1)
                     filters += "?item wdt:" + temp_property + temp_value + " . "
                 except:
-                    #If nothing is in the input, move on
+                    # If nothing is in the input, move on
                     pass
 
-        #Create the SPARQL query and run it on wikidata
-        query_string = """ SELECT ?item WHERE {""" +filters+"""}"""
+        # Create the SPARQL query and run it on wikidata
+        query_string = """ SELECT ?item WHERE {""" + filters + """}"""
         results = get_results(query_string)
 
-        #Takes the results from the SPARQL query and append the wikibase value to the item_list
+        # Takes the results from the SPARQL query and append the wikibase value to the item_list
         item_list = [result['item']['value'].split("/")[-1] for result in results["results"]["bindings"]]
         item_list_len = len(item_list)
 
-        #Check if this step is fulfilled
+        # Check if this step is fulfilled
         print("The length of the item list is " + str(item_list_len))
 
-        #The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
-        #Ceil makes sure that the each subset from item_list is no longer than 50
+        # The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
+        # Ceil makes sure that the each subset from item_list is no longer than 50
         limit = ceil(item_list_len / 50)
         # Seperates the item_list to a nested_list with max 50 items in each list
         piped_list = [item_list[pipe::limit] for pipe in range(limit)]
 
-        #Seperates the item_list to a nested_list with max 50 items in each list
+        # Seperates the item_list to a nested_list with max 50 items in each list
         # for pipe in range(limit):
         #     piped_list.append(item_list[pipe::limit])
 
         loading_bar_progress = 0
         nested_list = []
 
-        #Utilizes threading to send multiple HTML requests at once
+        # Utilizes threading to send multiple HTML requests at once
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            #Submits each subset of the item_list to the function retrieve_properties_piped
+            # Submits each subset of the item_list to the function retrieve_properties_piped
             future_nested_list = {executor.submit(retrieve_properties_piped, items): items for items in piped_list}
-            #Whenever the HTML request completes, run the iteration in the for-loop
+            # Whenever the HTML request completes, run the iteration in the for-loop
             for future in concurrent.futures.as_completed(future_nested_list):
-                #Since the return is a nested list already, extend() adds the individual property_lists to the nested_list
+                # Since the return is a nested list already, extend() adds the individual property_lists to the nested_list
                 nested_list.extend(future.result())
-                #Loadingbar to follow the progress in the console
+                # Loadingbar to follow the progress in the console
                 loading_bar_progress += 1
                 print(str(loading_bar_progress) + " / " + str(limit))
 
-        #Partitioning Part
+        # Partitioning Part
         BooleanDFs = splitNestedListToBooleanDFs(nested_list)
 
         start = time.perf_counter()
@@ -552,11 +574,11 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         else:
             lower_suggestions = ["Not enough items to search for rare properties"]
 
-        #Define the middle_min_support according to len of item_list
+        # Define the middle_min_support according to len of item_list
         if item_list_len <= 9:
-            middle_rel_support = 1 / item_list_len #Means that if there are less than 10 items, every property set should appear once
+            middle_rel_support = 1 / item_list_len  # Means that if there are less than 10 items, every property set should appear once
         elif item_list_len <= 120:
-            middle_rel_support = 2 / item_list_len #Means that if there are less than 121 items, every property set should appear twice
+            middle_rel_support = 2 / item_list_len  # Means that if there are less than 121 items, every property set should appear twice
         else:
             middle_rel_support = 0.0084
 
@@ -576,7 +598,7 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         print("Everything Done")
         stop = time.perf_counter()
-        print("The execution time of FP-Growth and rule mining is: " + str(stop-start))
+        print("The execution time of FP-Growth and rule mining is: " + str(stop - start))
 
         return html.Ul([html.Li(dcc.Link(href="https://www.wikidata.org/wiki/Property:" + prop,
                                          children=prop, target='_blank')) for prop in upper_suggestions]), \
@@ -590,5 +612,10 @@ def find_suggestions(n_clicks, item_properties, properties, values):
         return [], [], [], 0, ""
 
 
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:8050/")
+
+
 if __name__ == '__main__':
+    Timer(1, open_browser).start()
     app.run_server(debug=True)

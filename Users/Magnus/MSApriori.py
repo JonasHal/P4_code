@@ -3,8 +3,8 @@ import re
 from sys import argv
 
 print('Computing frequent item sets.')
-transaction_file = 'transaction.txt'
-parameter_file = 'mis.txt'
+transaction_file = '../../Data/transaction.txt'
+parameter_file = '../../Data/mis.txt'
 output_file = 'msa_output.txt'
 
 

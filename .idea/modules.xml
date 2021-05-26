@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/Downloads/MS-Apriori_Algorithm-master/.idea/MS-Apriori_Algorithm-master.iml" filepath="$USER_HOME$/Downloads/MS-Apriori_Algorithm-master/.idea/MS-Apriori_Algorithm-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/P4_code.iml" filepath="$PROJECT_DIR$/.idea/P4_code.iml" />
+      <module fileurl="file://$USER_HOME$/Downloads/ms-apriori-master/.idea/ms-apriori-master.iml" filepath="$USER_HOME$/Downloads/ms-apriori-master/.idea/ms-apriori-master.iml" />
     </modules>
   </component>
 </project>
