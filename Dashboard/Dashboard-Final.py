@@ -28,9 +28,7 @@ property_label_dataframe_externalIDs = property_label_dataframe[(property_label_
 property_label_dataframe_externalIDs.set_index(['Property'], inplace=True)
 list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 
-
 # Functions utilized in the dashboard
-
 def get_results(query):
     """
     Sends a request to the Wikidata SPARQL query tool and receives the data in JSON format
@@ -611,11 +609,5 @@ def find_suggestions(n_clicks, item_properties, properties, values):
     else:
         return [], [], [], 0, ""
 
-
-def open_browser():
-    webbrowser.open_new("http://127.0.0.1:8050/")
-
-
 if __name__ == '__main__':
-    Timer(1, open_browser).start()
     app.run_server(debug=True)
