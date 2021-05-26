@@ -344,12 +344,12 @@ app.layout = html.Div([
     html.Div([
         html.H3(children="General Properties"),
         html.Div([html.Span(
-            "Disclaimer",
-            id="tooltip-target",
-            style={"color": "blue", "cursor": "pointer"},
-        ),
-            dbc.Tooltip("If the propety filters are very broad, "
-                        "some of these general properties will not make sense in every context.",
+                    "Disclaimer",
+                    id="tooltip-target",
+                    style={"color": "blue", "cursor": "pointer"},
+                ),
+            dbc.Tooltip("If the property filters are very broad, "
+                                     "some of these general properties will not make sense in every context.",
                         target="tooltip-target",
                         style={"background-color": "#f0f0f5",
                                "text-align": "center",
