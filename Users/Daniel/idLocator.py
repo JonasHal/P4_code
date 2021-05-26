@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
 
 property_list = extractProperties(Path("../../Data/universities_latest_all.ndjson"))
 

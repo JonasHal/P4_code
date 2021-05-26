@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 claims = pd.read_csv('q_claims.csv')
-properties = pd.read_csv(Path('../../FaerdigKode/properties.csv'))
+properties = pd.read_csv(Path('../../Finished_Code/properties.csv'))
 properties = properties.set_index(['Property'])
 property_dict = properties.to_dict(orient='index')
 for key in property_dict.keys():

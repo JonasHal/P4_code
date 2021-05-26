@@ -2,7 +2,7 @@ import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from pathlib import Path
-from FaerdigKode.extractPropertiesFromNDJSON import extractProperties
+from Finished_Code.extractPropertiesFromNDJSON import extractProperties
 
 def replacePcodesWithPlabels(listofproperties, external_ids = True):
     """
@@ -83,7 +83,7 @@ def replacePcodesWithPlabels(listofproperties, external_ids = True):
 
 # Apriori algorithm:
 # frequent_itemsets_apriori = apriori(df, min_support=0.5, use_colnames=True)
-frequent_itemsets_apriori = pd.read_csv(Path('../Magnus/results/result1-1.txt'), sep=';')
+frequent_itemsets_apriori = pd.read_csv(Path('../../Data/result1-1.txt'), sep=';')
 frequent_itemsets_apriori.itemsets = [frequent_itemsets_apriori.itemsets[i].replace(' ', '').strip(')(').split(',') for i in range(len(frequent_itemsets_apriori))]
 frequent_itemsets_apriori.itemsets = replacePcodesWithPlabels(frequent_itemsets_apriori.itemsets)
 frequent_itemsets_apriori.itemsets = [frozenset(frequent_itemsets_apriori.itemsets[i]) for i in range(len(frequent_itemsets_apriori))]
