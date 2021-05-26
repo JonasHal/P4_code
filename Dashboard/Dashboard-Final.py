@@ -13,10 +13,8 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from pathlib import Path
 from dash.dependencies import Input, Output, State
 from math import ceil
-#from qwikidata.sparql import return_sparql_query_results
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
-
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
@@ -31,14 +29,25 @@ list_of_ids = property_label_dataframe_externalIDs.index.tolist()
 #Functions utilized in the dashboard
 
 def get_results(query):
+    """
+    Sends a request to the Wikidata SPARQL query tool and receives the data in JSON format
+    :param query: A SPARQL query, that works on Wikidata SPARQL tool
+    :return: The query with JSON format
+    """
     user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
-    # TODO adjust user agent; see https://w.wiki/CX6
     sparql = SPARQLWrapper("https://query.wikidata.org/sparql", agent=user_agent)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
 def searchWikidata(input, type):
+    """
+    Sends a request to the Wikidata API and transform the data from JSON into a list
+    that has been formatted like "label ("id") | "description
+    :param input: The user input in the text field
+    :param type: Specifies which entities to search for: Either "item" or "property"
+    :return: The results from the API action=wbsearchentities as HTML.li in a HTML.Ul
+    """
     # Whenever the user types something in the searchbar open a session
     if len(input) >= 1:
         # The string with API wbsearchentities to suggestions to the user input
@@ -83,6 +92,12 @@ def searchWikidata(input, type):
         return ""
 
 def retrieve_properties_piped(item_list):
+    """
+    Sends a request to the Wikidata API and transform the data from JSON into a dictionary to
+    extract the claims each property has.
+    :param item_list: A list with up to 50 wikidata items written with Q-code
+    :return: A nested list, with all the properties each item has
+    """
     #Creates the query by seperating each item with "|"
     item_list_query = ""
     for item in range(len(item_list)):
@@ -121,7 +136,7 @@ def getBooleanDF(property_list):
 
 def property_count_function(listOfProperties):
     """
-
+    Counts the frequency of each property
     :param listOfProperties: Input is the listOfProperties, use the function extractProperties.
     The for loop expects a nested list.
     :return: property_dataframe: a dataframe containing the properties extracted from the list and the
@@ -145,7 +160,7 @@ def property_count_function(listOfProperties):
 
 def splitNestedListToBooleanDFs(property_list):
     '''
-
+    Takes a nested list from all the retrieve_properties_piped() outputs and partition the data
     :param property_list: Input is the nested property list extracted from extractProperties()
     :return: a list of in total 3 dataframes. Index 0 is the "rarest" properties, index 1 is the middle properties and
     index 2 is the most frequent properties. If the len of the property list is less than 28, The rare properties wont exist and
@@ -177,7 +192,27 @@ def splitNestedListToBooleanDFs(property_list):
 
     return split_df_lower, split_df_middle, split_df_upper
 
+def removeExternalIdsSingle(rule_df, column):
+    """
+    Function used to remove properties of type ExternalId from a given column
+    :param rule_df: The rules mined from the function mineAssociationRules()
+    :param column: Specifies which column to remove ExternalIds from
+    :return: The dataframe with the rules without properties of type ExternalId in a given column
+    """
+    rule_df[column] = [list(rule_df[column][i]) for i in rule_df.index]
+
+    for i in rule_df.index:
+        if rule_df[column][i][0] in list_of_ids:
+            rule_df = rule_df.drop([i])
+
+    return rule_df
+
 def countUniqueConsequents(rule_df):
+    """
+    Function used to count unique properties that gets recommeded for that partition
+    :param rule_df: The dataframe created from running the association_rules() function from mlxtend package.
+    :return: The unique consequences that has been found after rule mining.
+    """
     unique_consequents = []
     for i in rule_df.index:
         if rule_df['consequents'][i][0] not in unique_consequents:
@@ -185,16 +220,12 @@ def countUniqueConsequents(rule_df):
 
     return unique_consequents
 
-def removeExternalIdsSingle(dfWithFrozenset, column):
-    dfWithFrozenset[column] = [list(dfWithFrozenset[column][i]) for i in dfWithFrozenset.index]
-
-    for i in dfWithFrozenset.index:
-        if dfWithFrozenset[column][i][0] in list_of_ids:
-            dfWithFrozenset = dfWithFrozenset.drop([i])
-
-    return dfWithFrozenset
-
 def mineAssociationRules(frequent_items):
+    """
+    Mines Association Rules, counts the consequents, removes ExternalIds and counts unique consequents.
+    :param frequent_items: The frequent itemsets found using FP-Growth algorithm
+    :return:
+    """
     #Uses the package mlxtend to mine rules
     rules = association_rules(frequent_items, metric="confidence", min_threshold=0.99)
 
@@ -210,16 +241,14 @@ def mineAssociationRules(frequent_items):
 
     return rules
 
-
-def upper_properties(upper, item):
-    result = []
-    for [prop] in upper.itemsets:
-        if prop not in item:
-            result.append(prop)
-
-    return result
-
 def filter_suggestions(rules, item):
+    """
+    Filters the suggestions based on the user input of the item that the user has specified.
+    This function is used on the mined association rules
+    :param rules: The rules retrieved from the function mineAssociationRules()
+    :param item: The properties of a wikidata item. This is the output from extract_properties()
+    :return: A list of suggestions
+    """
     suggestions = rules.copy()
     for i in suggestions.index:
         # Checks if the consequent already exists in the item. If yes, the rule is dropped.
@@ -233,6 +262,22 @@ def filter_suggestions(rules, item):
             suggestions.drop([j], inplace=True)
 
     result = np.unique([*itertools.chain.from_iterable(suggestions.consequents)]).tolist()
+
+    return result
+
+
+def upper_properties(upper, item):
+    """
+    Filters the suggestions based on the user input of the item that the user has specified.
+    This function is used on the properties without association rule mining.
+    :param upper: The upper partition (as this is the only partition where we dont rule mine)
+    :param item: The properties of a wikidata item. This is the output from extract_properties()
+    :return: A list of suggestions
+    """
+    result = []
+    for [prop] in upper.itemsets:
+        if prop not in item:
+            result.append(prop)
 
     return result
 
@@ -361,7 +406,7 @@ def update_output(input):
     Input("investigate_item", "value"),
 )
 def extract_properties(item):
-    # Props er tom så vi ikke får references med også
+    # Props is empty, so the references are not included
     URL = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=%s&format=json&props=" % (item)
 
     # Opens a HTML request session and finds the claims from one item as a list()
