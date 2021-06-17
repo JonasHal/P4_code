@@ -9,9 +9,11 @@ import requests
 import concurrent.futures
 import time
 import sys
+from pickle import dumps
 from SPARQLWrapper import SPARQLWrapper, JSON
 from pathlib import Path
-from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State, MATCH
 from math import ceil
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
@@ -68,30 +70,27 @@ def searchWikidata(input, type):
                 try:
                     temp_str += option["label"] + " ("
                 except Exception:
-                    temp_str += "|"
+                    temp_str += "("
 
                 try:
-                    temp_str += option["id"] + ") | "
+                    temp_str += option["id"] + ")"
                 except Exception:
-                    temp_str += "|"
+                    temp_str += ")"
 
-                try:
-                    temp_str += option["description"]
-                except Exception:
-                    ""
+                temp_json = {"label": temp_str, "value": option["id"]}
 
-                option_list.append(temp_str)
+                option_list.append(temp_json)
 
             # Creates a list with the suggested entities
-            return html.Ul([html.Li(temp_str) for temp_str in option_list])
+            return option_list
 
-        # If no results is returned do something
+        # If no results is returned do nothing
         else:
-            return "No results could be found"
+            return []
 
     # Do nothing when no input
     else:
-        return ""
+        return []
 
 
 def retrieve_properties_piped(item_list):
@@ -307,7 +306,7 @@ app.layout = html.Div([
         html.P(children="Input the items Q-code you want to investigate:"),
 
         html.Div([
-            dcc.Input(id="investigate_item", type="text", debounce=True),
+            dcc.Dropdown(id="investigate_item"),
             html.Div(id="properties-output", style={"display": "none"}),
             html.Div(id="investigate_item-confirmed")
         ]),
@@ -319,10 +318,10 @@ app.layout = html.Div([
                         style={"grid-column": "1 / span 2"}
                         ),
             html.Div(id="properties_dropdown-container", children=[],
-                     style={"width": "160px"}
+                     style={"width": "220px"}
                      ),
             html.Div(id="values_dropdown-container", children=[],
-                     style={"width": "160px"}
+                     style={"width": "220px"}
                      ),
             html.Div(id="dropdown-container-output")
         ], style={"display": "inline-grid",
@@ -369,24 +368,6 @@ app.layout = html.Div([
         html.Div(id="lower_suggestion-container")
     ]),
 
-    html.Div([
-        html.Div([
-            html.H4(children="Search entities"),
-            dcc.Input(id="entities-input", type="text", value=SEARCHPAGE),
-            html.Div(id="item_search-output")
-        ]),
-
-        html.Div([
-            html.H4(children="Search properties"),
-            dcc.Input(id="properties-input", type="text", value=SEARCHPAGE),
-            html.Div(id="property_search-output")
-        ]),
-    ], style={"grid-column": "1 / span 4",
-              "display": "inline-grid",
-              "grid-gap": "40px",
-              "grid-template-columns": "auto auto"}
-    )
-
 ], style={"display": "inline-grid",
           "grid-gap": "1%",
           "grid-template-columns": "auto auto auto auto",
@@ -395,25 +376,17 @@ app.layout = html.Div([
           "margin-right": "3%"}
 )
 
-
 # App Callback functionalities on the Dashboard
 
 # Search bar
 @app.callback(
-    Output("item_search-output", "children"),
-    Input("entities-input", "value"),
+    Output("investigate_item", "options"),
+    [Input("investigate_item", "search_value")],
 )
 def update_output(input):
+    if not input:
+        raise PreventUpdate
     return searchWikidata(input, "item")
-
-
-@app.callback(
-    Output("property_search-output", "children"),
-    Input("properties-input", "value"),
-)
-def update_output(input):
-    return searchWikidata(input, "property")
-
 
 # Bruger mediawiki API wbgetclaims til at hente claims fra en item
 @app.callback(
@@ -446,16 +419,16 @@ def extract_properties(item):
 )
 def input_properties(n_clicks, children):
     # Everytime the user clicks "New Filter" a add a dropdown to the properties container
-    new_input = dcc.Input(
+    new_dropdown = dcc.Dropdown(
         id={
             'type': 'property_filter-dropdown',
             'index': n_clicks
         },
-        size="22.5",
+        options=[],
         placeholder="Select a Property...",
-        style={"margin-top": "10px"}
+        style={"margin-top": "5px"}
     )
-    children.append(new_input)
+    children.append(new_dropdown)
     return children
 
 
@@ -466,18 +439,35 @@ def input_properties(n_clicks, children):
 )
 def input_values(n_clicks, children):
     # Everytime the user clicks "New Filter" a add a dropdown to the values container
-    new_dropdown = dcc.Input(
+    new_dropdown = dcc.Dropdown(
         id={
             'type': 'values_filter-dropdown',
-            'index': n_clicks
+            'index': n_clicks,
         },
-        size="22.5",
+        options=[],
         placeholder="No Value",
-        style={"margin-top": "10px"}
+        style={"margin-top": "5px"}
     )
     children.append(new_dropdown)
     return children
 
+@app.callback(
+    Output({'type': "property_filter-dropdown", 'index': MATCH}, "options"),
+    [Input({'type': "property_filter-dropdown", 'index': MATCH}, "search_value")],
+)
+def update_output(input):
+    if not input:
+        raise PreventUpdate
+    return searchWikidata(input, "property")
+
+@app.callback(
+    Output({'type': "values_filter-dropdown", 'index': MATCH}, "options"),
+    [Input({'type': "values_filter-dropdown", 'index': MATCH}, "search_value")],
+)
+def update_output(input):
+    if not input:
+        raise PreventUpdate
+    return searchWikidata(input, "item")
 
 @app.callback(
     Output("upper_suggestion-container", "children"),
@@ -521,6 +511,8 @@ def find_suggestions(n_clicks, item_properties, properties, values):
 
         # Check if this step is fulfilled
         print("The length of the item list is " + str(item_list_len))
+        if item_list_len == 0:
+            raise PreventUpdate
 
         # The limit is set to meet the requirements of the wikibase API wbgetentities (max 50)
         # Ceil makes sure that the each subset from item_list is no longer than 50
